@@ -4,8 +4,7 @@
   "defaultSeverity": "warning",
   "rules": {
     "comment-empty-line-before": null,
-    "comment-whitespace-inside": null,
-    "color-hex-length": null
+    "comment-whitespace-inside": null
   },
   "ignoreFiles": ["node_modules/**", "dist/**"]
 }
