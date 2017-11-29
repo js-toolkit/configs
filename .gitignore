@@ -1,0 +1,22 @@
+# Output
+dist/
+build/
+target/
+out/
+classes/
+logs/
+*.log
+
+# Temp and caches
+node_modules/
+.cache/
+.awcache/
+tmp
+*~
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.history/
+lib/src/test/

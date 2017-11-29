@@ -1,0 +1,11 @@
+{
+  "extends": ["stylelint-config-standard", "stylelint-config-css-modules"],
+  "plugins": ["stylelint-scss"],
+  "defaultSeverity": "warning",
+  "rules": {
+    "comment-empty-line-before": null,
+    "comment-whitespace-inside": null,
+    "color-hex-length": null
+  },
+  "ignoreFiles": ["node_modules/**", "dist/**"]
+}

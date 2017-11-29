@@ -1,0 +1,12 @@
+{
+  "extends": "./common.babelrc",
+  "presets": [
+    ["env", { "modules": false }],
+    "react"
+  ],
+  "plugins": [
+    "react-hot-loader/babel",
+    "transform-react-constant-elements",
+    "transform-react-inline-elements"
+  ]
+}
