@@ -1,4 +1,7 @@
 {
   "extends": ["./common.eslintrc.json", "airbnb", "plugin:css-modules/recommended"],
-  "plugins": ["react", "jsx-a11y", "css-modules"]
+  "plugins": ["react", "jsx-a11y", "css-modules"],
+  "env": {
+    "browser": true
+  }
 }
