@@ -2,8 +2,11 @@
   "name": "@vzh/boilerplates",
   "version": "0.0.4",
   "description": "Boilerplates for internal projects",
-  "main": "./config",
+  "main": "./lib",
   "scripts": {
+    "clean": "rimraf lib/",
+    "build": "babel src --out-dir lib/ --copy-files",
+    "prepublishOnly": "npm run clean && npm run build",
     "patch-publish": "npm version patch && npm publish --access public && git push --follow-tags",
     "minor-publish": "npm version minor && npm publish --access public && git push --follow-tags",
     "major-publish": "npm version major && npm publish --access public && git push --follow-tags"

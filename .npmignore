@@ -2,7 +2,8 @@
 .history/
 .awcache/
 .idea/
-lib/
+src/
+.babelrc
 .gitignore
 .npmignore
 yarn.lock

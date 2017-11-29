@@ -3,7 +3,7 @@ dist/
 build/
 target/
 out/
-classes/
+lib/
 logs/
 *.log
 
@@ -19,4 +19,3 @@ tmp
 *.iml
 .vscode/
 .history/
-lib/src/test/
