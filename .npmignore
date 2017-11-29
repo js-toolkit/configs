@@ -3,17 +3,6 @@
 .awcache/
 .idea/
 lib/
-config/
-.babelrc
 .gitignore
 .npmignore
-.stylelintrc
-tsconfig.json
-tsconfig.webpack.json
-tslint.json
-postcss.config.js
-webpack.config.client.babel.js
-webpack.config.common.babel.js
 yarn.lock
-dist/lib.js
-dist/test/
