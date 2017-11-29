@@ -26,11 +26,13 @@ export default {
   ],
 
   /** In order to runs typescript type checker on a separate process. */
-  tsCheckerPlugin: ({ tsconfig }) =>
-    new require('fork-ts-checker-webpack-plugin')({
+  tsCheckerPlugin: ({ tsconfig }) => {
+    const plugin = new require('fork-ts-checker-webpack-plugin');
+    return new plugin({
       tsconfig,
       checkSyntacticErrors: true,
-    }),
+    });
+  },
 
   ats: ({ tsconfig }) => ({
     loader: 'awesome-typescript-loader',
