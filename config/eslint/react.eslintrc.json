@@ -1,3 +1,4 @@
 {
-  "extends": ["./common.eslintrc.json", "airbnb"]
+  "extends": ["./common.eslintrc.json", "airbnb", "plugin:css-modules/recommended"],
+  "plugins": ["react", "jsx-a11y", "css-modules"]
 }
