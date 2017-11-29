@@ -4,6 +4,7 @@
 .idea/
 src/
 .babelrc
+.eslintrc.json
 .gitignore
 .npmignore
 yarn.lock
