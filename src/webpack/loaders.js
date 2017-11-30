@@ -27,7 +27,7 @@ export default {
 
   /** In order to runs typescript type checker on a separate process. */
   tsCheckerPlugin: ({ tsconfig }) => {
-    const Plugin = require('fork-ts-checker-webpack-plugin');
+    const Plugin = require('fork-ts-checker-webpack-plugin'); // eslint-disable-line
     return new Plugin({
       tsconfig,
       checkSyntacticErrors: true,
@@ -45,7 +45,7 @@ export default {
 
   /** In order to runs typescript type checker on a separate process. */
   atsCheckerPlugin: () => {
-    const { CheckerPlugin } = require('awesome-typescript-loader');
+    const { CheckerPlugin } = require('awesome-typescript-loader'); // eslint-disable-line
     return new CheckerPlugin();
   },
 
