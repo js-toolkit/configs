@@ -1,5 +1,5 @@
 import webpack from 'webpack';
-import reactEnv from '../env';
+import reactEnv from '../reactEnv';
 import paths from '../paths';
 
 export default ({ outputPath, outputPublicPath }) => ({

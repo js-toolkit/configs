@@ -1,11 +1,8 @@
 import webpack from 'webpack';
 import webpackMerge from 'webpack-merge';
-import webpackNodeExternals from 'webpack-node-externals';
-import fs from 'fs';
-import path from 'path';
-import reactEnv from '../env';
+import reactEnv from '../reactEnv';
 import paths from '../paths';
-import serverConfig from './webpack.config.server.babel';
+import serverConfig from './server.config';
 import loaders from './loaders';
 
 export default entry =>

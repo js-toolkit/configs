@@ -1,8 +1,7 @@
 import webpackMerge from 'webpack-merge';
 import webpackNodeExternals from 'webpack-node-externals';
-import fs from 'fs';
 import paths from '../paths';
-import commonConfig from './webpack.config.common.babel';
+import commonConfig from './common.config';
 import loaders from './loaders';
 
 export default entry =>
@@ -17,7 +16,7 @@ export default entry =>
 
       context: paths.server.root,
 
-      entry: entry,
+      entry,
 
       output: {
         filename: '[name].js', // Только так работает HMR с webpack
@@ -45,5 +44,5 @@ export default entry =>
           },
         ],
       },
-    }
+    },
   );

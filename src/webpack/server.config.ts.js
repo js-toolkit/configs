@@ -1,6 +1,6 @@
 import webpackMerge from 'webpack-merge';
 import paths from '../paths';
-import serverConfig from './webpack.config.server.babel';
+import serverConfig from './server.config';
 import loaders from './loaders';
 
 export default entry =>

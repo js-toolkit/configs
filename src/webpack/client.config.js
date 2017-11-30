@@ -3,9 +3,9 @@ import webpackMerge from 'webpack-merge';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import * as path from 'path';
-import reactEnv from '../env';
+import reactEnv from '../reactEnv';
 import paths from '../paths';
-import commonConfig from './webpack.config.common.babel';
+import commonConfig from './common.config';
 import loaders from './loaders';
 
 export default entry =>
@@ -20,7 +20,7 @@ export default entry =>
 
       context: paths.client.sources,
 
-      entry: entry,
+      entry,
 
       resolve: {
         modules: [paths.nodeModules.path, paths.client.sources, paths.context],
@@ -65,9 +65,8 @@ export default entry =>
         // To extract a common code to single separate file.
         new webpack.optimize.CommonsChunkPlugin({
           name: 'vendor', // Add link to this file in html before other JS files, it has a common code.
-          minChunks: module => {
-            return module.context && module.context.indexOf(paths.nodeModules.dirname) !== -1;
-          },
+          minChunks: module =>
+            module.context && module.context.indexOf(paths.nodeModules.dirname) !== -1,
         }),
         // Saves received text to the file, for example css from style-loader and css-loader.
         new ExtractTextPlugin({
@@ -104,5 +103,5 @@ export default entry =>
         //   cachedAssets: false,
         // },
       },
-    }
+    },
   );

@@ -1,7 +1,7 @@
 import webpackMerge from 'webpack-merge';
 import path from 'path';
 import paths from '../paths';
-import universalConfig from './webpack.config.universal.babel';
+import universalConfig from './universal.config';
 import loaders from './loaders';
 
 export default entry =>

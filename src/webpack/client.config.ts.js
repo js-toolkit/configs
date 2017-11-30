@@ -1,7 +1,7 @@
 import webpackMerge from 'webpack-merge';
 import * as path from 'path';
 import paths from '../paths';
-import clientConfig from './webpack.config.client.babel';
+import clientConfig from './client.config';
 import loaders from './loaders';
 
 export default entry =>

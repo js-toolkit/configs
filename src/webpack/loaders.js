@@ -1,4 +1,4 @@
-import reactEnv from '../env';
+import reactEnv from '../reactEnv';
 import paths from '../paths';
 
 export default {
@@ -27,8 +27,8 @@ export default {
 
   /** In order to runs typescript type checker on a separate process. */
   tsCheckerPlugin: ({ tsconfig }) => {
-    const plugin = new require('fork-ts-checker-webpack-plugin');
-    return new plugin({
+    const Plugin = require('fork-ts-checker-webpack-plugin');
+    return new Plugin({
       tsconfig,
       checkSyntacticErrors: true,
     });
@@ -44,7 +44,10 @@ export default {
   }),
 
   /** In order to runs typescript type checker on a separate process. */
-  atsCheckerPlugin: () => new require('awesome-typescript-loader').CheckerPlugin(),
+  atsCheckerPlugin: () => {
+    const { CheckerPlugin } = require('awesome-typescript-loader');
+    return new CheckerPlugin();
+  },
 
   babel: () => ({
     loader: 'babel-loader',
@@ -60,7 +63,7 @@ export default {
         modules: true,
         // localIdentName: '[name]__[local]--[hash:base64:5]',
         localIdentName: '[name]__[local]--[hash:5]',
-        context: context, // https://github.com/webpack-contrib/css-loader/issues/267
+        context, // https://github.com/webpack-contrib/css-loader/issues/267
         importLoaders: 1,
       },
     },
@@ -88,7 +91,7 @@ export default {
                 publicPath: paths.client.output.publicPath,
               },
             },
-          ]
+          ],
         )),
     {
       loader: ssr ? 'css-loader/locals' : 'css-loader',

@@ -3,7 +3,6 @@
     "tslint:latest",
     "tslint-eslint-rules",
     "tslint-consistent-codestyle",
-    "tslint-react",
     "tslint-config-prettier"
   ],
   "rules": {
