@@ -1,6 +1,6 @@
 {
   "name": "@vzh/boilerplates",
-  "version": "0.0.12",
+  "version": "0.1.0",
   "description": "Boilerplates for internal projects",
   "main": "./lib",
   "scripts": {
