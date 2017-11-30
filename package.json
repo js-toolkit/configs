@@ -1,6 +1,6 @@
 {
   "name": "@vzh/boilerplates",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Boilerplates for internal projects",
   "main": "./lib",
   "scripts": {
@@ -60,7 +60,7 @@
     "tslint-react": "^3.2.0",
     "typescript": "^2.6.1",
     "url-loader": "^0.6.2",
-    "webpack": "^3.8.1",
+    "webpack": "^3.9.0",
     "webpack-merge": "^4.1.1",
     "webpack-node-externals": "^1.6.0"
   },
