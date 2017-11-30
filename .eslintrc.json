@@ -1,3 +1,6 @@
 {
-  "extends": ["./src/eslint/common.eslintrc.json"]
+  "extends": ["./src/eslint/common.eslintrc.json"],
+  "rules": {
+    "global-require": "off"
+  }
 }
