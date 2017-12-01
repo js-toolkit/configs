@@ -1,8 +1,7 @@
 import webpack from 'webpack';
 import webpackMerge from 'webpack-merge';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
-import CopyWebpackPlugin from 'copy-webpack-plugin';
-import * as path from 'path';
+import path from 'path';
 import reactEnv from '../reactEnv';
 import paths, { dirMap } from '../paths';
 import commonConfig from './common.config';
@@ -74,13 +73,7 @@ export default entry =>
           disable: reactEnv.ifDevMode(true, false),
           allChunks: true,
         }),
-        new CopyWebpackPlugin([
-          {
-            from: path.join(paths.client.staticContent, 'images'),
-            to: path.join(paths.client.output.path, paths.client.output.assets),
-          },
-        ]),
-        //
+        // Enable HMR
         new webpack.HotModuleReplacementPlugin(),
       ],
 
