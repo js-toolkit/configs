@@ -1,12 +1,12 @@
 {
   "name": "@vzh/configs",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "description": "Default configurations for internal projects",
   "main": "./index.js",
   "scripts": {
     "clean": "rimraf lib/",
     "build": "npm run clean && babel src/ --out-dir lib/ --copy-files && cp -t ./lib/ package.json LICENSE",
-    "prepublishOnly": "npm run clean && npm run build",
+    "prepublishOnly": "npm run build",
     "patch-publish": "npm version patch && npm publish ./lib --access public && git push --follow-tags",
     "minor-publish": "npm version minor && npm publish ./lib --access public && git push --follow-tags",
     "major-publish": "npm version major && npm publish ./lib --access public && git push --follow-tags"
