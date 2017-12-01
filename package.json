@@ -4,7 +4,7 @@
   "description": "Default configurations for internal projects",
   "main": "./lib/index.js",
   "files": [
-    "lib"
+    "lib/*"
   ],
   "scripts": {
     "clean": "rimraf lib/",
