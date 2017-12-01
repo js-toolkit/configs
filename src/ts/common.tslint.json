@@ -10,7 +10,6 @@
     "ordered-imports": false,
     "interface-name": false,
     "member-access": false,
-    "jsx-boolean-value": false,
     "member-ordering": false,
     "no-unused-expression": [true, "allow-fast-null-checks"],
     "no-string-literal": false,
