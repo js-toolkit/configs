@@ -70,7 +70,7 @@ export default entry =>
         // Saves received text to the file, for example css from style-loader and css-loader.
         new ExtractTextPlugin({
           filename: `${paths.client.output.styles}/[name].css`,
-          disable: reactEnv.ifDevMode(true, false),
+          disable: reactEnv.dev,
           allChunks: true,
         }),
         // Enable HMR
