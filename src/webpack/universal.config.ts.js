@@ -4,7 +4,7 @@ import paths from '../paths';
 import universalConfig from './universal.config';
 import loaders from './loaders';
 
-export default entry =>
+export default (entry, tsconfigPath = path.join(paths.root, 'tsconfig.json')) =>
   webpackMerge(universalConfig(entry), {
     module: {
       rules: [
@@ -12,12 +12,12 @@ export default entry =>
           test: /\.tsx?$/,
           include: [paths.server.sources, paths.client.sources, paths.shared.root],
           use: loaders.ts({
-            tsconfig: path.join(paths.root, 'tsconfig.json'),
+            tsconfig: tsconfigPath,
             forkedChecks: true,
           }),
         },
       ],
     },
 
-    plugins: [loaders.tsCheckerPlugin({ tsconfig: path.join(paths.root, 'tsconfig.json') })],
+    plugins: [loaders.tsCheckerPlugin({ tsconfig: tsconfigPath })],
   });
