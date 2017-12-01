@@ -8,7 +8,7 @@ import loaders from './loaders';
 export default entry =>
   webpackMerge(serverConfig(entry), {
     resolve: {
-      modules: [paths.nodeModules.path, paths.server.sources, paths.client.sources, paths.context],
+      modules: [paths.nodeModules.path, paths.server.sources, paths.client.sources, paths.root],
     },
 
     module: {

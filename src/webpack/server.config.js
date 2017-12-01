@@ -23,7 +23,7 @@ export default entry =>
       },
 
       resolve: {
-        modules: [paths.nodeModules.path, paths.server.sources, paths.context],
+        modules: [paths.nodeModules.path, paths.server.sources, paths.root],
       },
 
       // http://jlongster.com/Backend-Apps-with-Webpack--Part-I

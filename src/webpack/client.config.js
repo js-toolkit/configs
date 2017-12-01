@@ -23,7 +23,7 @@ export default entry =>
       entry,
 
       resolve: {
-        modules: [paths.nodeModules.path, paths.client.sources, paths.context],
+        modules: [paths.nodeModules.path, paths.client.sources, paths.root],
       },
 
       // recordsOutputPath: path.join(paths.output.path, 'webpack.client.stats.json'),
@@ -76,7 +76,7 @@ export default entry =>
         }),
         new CopyWebpackPlugin([
           {
-            from: path.join(paths.devServer.contentBase, 'images'),
+            from: path.join(paths.client.staticContent, 'images'),
             to: path.join(paths.client.output.path, paths.client.output.assets),
           },
         ]),
@@ -86,7 +86,7 @@ export default entry =>
 
       devServer: {
         // Static content which not processed by webpack and loadable from disk.
-        contentBase: paths.devServer.contentBase,
+        contentBase: paths.client.staticContent,
         publicPath: paths.client.output.publicPath,
         historyApiFallback: true, // For react subpages handling with webpack-dev-server
         port: 9000,

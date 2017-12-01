@@ -1,34 +1,42 @@
 import path from 'path';
+import fs from 'fs';
 
 const baseDir = process.cwd();
 
-export default {
-  context: baseDir,
+export const defaultDirMap = Object.freeze({
+  clientDir: 'client',
+  serverDir: 'server',
+  sharedDir: 'shared',
+});
 
-  // output: {
-  // path: path.resolve(baseDir, 'dist'),
-  // publicPath: '/',
-  // },
+const customDirMapPath = path.resolve(baseDir, 'dirmap.json');
+
+const dirMap = fs.existsSync(customDirMapPath)
+  ? { ...defaultDirMap, ...require(customDirMapPath) }
+  : defaultDirMap;
+
+export default Object.freeze({
+  root: baseDir,
 
   nodeModules: {
     dirname: 'node_modules',
     path: path.resolve(baseDir, 'node_modules'),
-    bootstrap: path.resolve(baseDir, 'node_modules/bootstrap'),
-    fontAwesome: path.resolve(baseDir, 'node_modules/font-awesome'),
   },
 
   client: {
-    root: path.resolve(baseDir, 'client'),
-    sources: path.resolve(baseDir, 'client/src'),
-    assets: path.resolve(baseDir, 'client/src/assets'),
+    root: path.resolve(baseDir, dirMap.clientDir),
+    sources: path.resolve(baseDir, `${dirMap.clientDir}/src`),
+    assets: path.resolve(baseDir, `${dirMap.clientDir}/src/assets`),
+    staticContent: path.resolve(baseDir, `${dirMap.clientDir}/public`),
+
     output: {
-      path: path.resolve(baseDir, 'dist/client'),
+      path: path.resolve(baseDir, `dist/${dirMap.clientDir}`),
       // If multiple webpack configurations (i.e. client and server)
       // and used forked? process with express server
       // then for url-loader (fonts) must be equals to path suffix if path is subdir of output path.
-      // publicPath: '/client/',
+      // publicPath: `/${dirMap.clientDir}/`,
       publicPath: '/',
-      dir: 'client',
+      dir: dirMap.clientDir,
       js: 'js',
       styles: 'styles',
       assets: 'assets',
@@ -37,23 +45,15 @@ export default {
   },
 
   server: {
-    root: path.resolve(baseDir, 'server'),
-    sources: path.resolve(baseDir, 'server'),
+    root: path.resolve(baseDir, dirMap.serverDir),
+    sources: path.resolve(baseDir, dirMap.serverDir),
     output: {
-      path: path.resolve(baseDir, 'dist/server'),
+      path: path.resolve(baseDir, `dist/${dirMap.serverDir}`),
       publicPath: '/',
     },
   },
 
   shared: {
-    root: path.resolve(baseDir, 'shared'),
+    root: path.resolve(baseDir, dirMap.sharedDir),
   },
-
-  devServer: {
-    contentBase: path.resolve(baseDir, 'client/public'),
-  },
-
-  get publicUrl() {
-    return this.client.output.publicPath.slice(0, -1);
-  },
-};
+});

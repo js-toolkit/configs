@@ -12,12 +12,12 @@ export default entry =>
           test: /\.tsx?$/,
           include: [paths.server.sources, paths.client.sources, paths.shared.root],
           use: loaders.ts({
-            tsconfig: path.join(paths.context, 'tsconfig.json'),
+            tsconfig: path.join(paths.root, 'tsconfig.json'),
             forkedChecks: true,
           }),
         },
       ],
     },
 
-    plugins: [loaders.tsCheckerPlugin({ tsconfig: path.join(paths.context, 'tsconfig.json') })],
+    plugins: [loaders.tsCheckerPlugin({ tsconfig: path.join(paths.root, 'tsconfig.json') })],
   });

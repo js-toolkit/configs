@@ -4,7 +4,7 @@ import paths from '../paths';
 
 export default ({ outputPath, outputPublicPath }) => ({
   // The base directory (absolute path!) for resolving the `entry` option.
-  context: paths.context,
+  context: paths.root,
 
   output: {
     path: outputPath,
