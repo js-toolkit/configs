@@ -4,7 +4,7 @@ import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import * as path from 'path';
 import reactEnv from '../reactEnv';
-import paths from '../paths';
+import paths, { dirMap } from '../paths';
 import commonConfig from './common.config';
 import loaders from './loaders';
 
@@ -15,7 +15,7 @@ export default entry =>
       outputPublicPath: paths.client.output.publicPath,
     }),
     {
-      name: 'client',
+      name: dirMap.clientDir,
       target: 'web',
 
       context: paths.client.sources,
@@ -103,5 +103,5 @@ export default entry =>
         //   cachedAssets: false,
         // },
       },
-    },
+    }
   );

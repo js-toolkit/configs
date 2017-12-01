@@ -11,7 +11,7 @@ export const defaultDirMap = Object.freeze({
 
 const customDirMapPath = path.resolve(baseDir, 'dirmap.json');
 
-const dirMap = fs.existsSync(customDirMapPath)
+export const dirMap = fs.existsSync(customDirMapPath)
   ? { ...defaultDirMap, ...require(customDirMapPath) }
   : defaultDirMap;
 

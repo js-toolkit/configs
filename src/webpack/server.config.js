@@ -1,6 +1,6 @@
 import webpackMerge from 'webpack-merge';
 import webpackNodeExternals from 'webpack-node-externals';
-import paths from '../paths';
+import paths, { dirMap } from '../paths';
 import commonConfig from './common.config';
 import loaders from './loaders';
 
@@ -11,7 +11,7 @@ export default entry =>
       outputPublicPath: paths.server.output.publicPath,
     }),
     {
-      name: 'server',
+      name: dirMap.serverDir,
       target: 'node',
 
       context: paths.server.root,
@@ -44,5 +44,5 @@ export default entry =>
           },
         ],
       },
-    },
+    }
   );
