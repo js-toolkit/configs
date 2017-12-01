@@ -1,5 +1,5 @@
 export { default as paths } from './paths';
 export { default as reactEnv } from './reactEnv';
 
-export const webpack = require('./webpack');
-export const css = require('./css');
+export const webpackConfigs = require('./webpack');
+export const cssConfigs = require('./css');
