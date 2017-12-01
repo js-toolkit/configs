@@ -2,7 +2,8 @@
   "name": "@vzh/configs",
   "version": "0.3.4",
   "description": "Default configurations for internal projects",
-  "main": "./lib",
+  "main": "./lib/index.js",
+  "files": ["./lib"],
   "scripts": {
     "clean": "rimraf lib/",
     "build": "babel src --out-dir lib/ --copy-files",
