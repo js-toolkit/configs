@@ -1,0 +1,10 @@
+{
+  "extends": "./src/ts/common.tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "outDir": "./dist",
+    "allowJs": true,
+    "lib": ["es2016"]
+  },
+  "files": ["./src/index.ts"]
+}

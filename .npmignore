@@ -3,7 +3,6 @@
 .awcache/
 .idea/
 src/
-lib/
 .babelrc
 .eslintrc.json
 .gitignore

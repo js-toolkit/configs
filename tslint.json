@@ -1,0 +1,3 @@
+{
+  "extends": ["./src/ts/common.tslint.json"]
+}
