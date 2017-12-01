@@ -1,6 +1,6 @@
 {
   "name": "@vzh/configs",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "description": "Default configurations for internal projects",
   "main": "./lib/index.js",
   "files": [
