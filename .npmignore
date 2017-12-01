@@ -5,8 +5,8 @@
 src/
 .babelrc
 .eslintrc.json
-tsconfig.json
-tslint.json
 .gitignore
 .npmignore
+tsconfig.json
+tslint.json
 yarn.lock
