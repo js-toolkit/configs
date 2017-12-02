@@ -1,6 +1,6 @@
 {
   "name": "@vzh/configs",
-  "version": "0.10.2",
+  "version": "0.10.3",
   "description": "Default configurations for internal projects",
   "main": "./",
   "scripts": {
