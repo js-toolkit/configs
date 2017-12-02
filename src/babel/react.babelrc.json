@@ -1,5 +1,5 @@
 {
-  "extends": "./common.babelrc",
+  "extends": "./common.babelrc.json",
   "presets": [
     ["env", { "modules": false }],
     "react"
