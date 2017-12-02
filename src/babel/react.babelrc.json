@@ -1,10 +1,12 @@
 {
-  "extends": "./common.babelrc.json",
   "presets": [
     ["env", { "modules": false }],
     "react"
   ],
   "plugins": [
+    "transform-object-rest-spread",
+    "transform-decorators",
+    "transform-class-properties",
     "react-hot-loader/babel",
     "transform-react-constant-elements",
     "transform-react-inline-elements"
