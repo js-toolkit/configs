@@ -22,7 +22,7 @@ export default entry =>
       entry,
 
       resolve: {
-        modules: [paths.nodeModules.path, paths.client.sources, paths.root],
+        modules: [paths.nodeModules.root, paths.client.sources, paths.root],
       },
 
       // recordsOutputPath: path.join(paths.output.path, 'webpack.client.stats.json'),
@@ -31,7 +31,7 @@ export default entry =>
         rules: [
           {
             test: /\.jsx?$/,
-            include: [paths.client.sources, paths.shared.root],
+            include: [paths.client.sources, paths.shared.sources],
             use: loaders.babel(),
           },
           {
@@ -44,7 +44,7 @@ export default entry =>
           },
           {
             test: /\.css$/,
-            include: [paths.nodeModules.path],
+            include: [paths.nodeModules.root],
             use: loaders.cssNodeModules(),
           },
           {
@@ -54,7 +54,7 @@ export default entry =>
           },
           {
             test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2|otf)$/,
-            include: [paths.nodeModules.path],
+            include: [paths.nodeModules.root],
             use: loaders.assetsNodeModules(),
           },
         ],

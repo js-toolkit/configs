@@ -9,7 +9,7 @@ export default (entry, tsconfigPath = path.join(paths.server.root, 'tsconfig.jso
       rules: [
         {
           test: /\.tsx?$/,
-          include: [paths.server.sources, paths.shared.root],
+          include: [paths.server.sources, paths.shared.sources],
           use: loaders.ats(tsconfigPath),
         },
       ],

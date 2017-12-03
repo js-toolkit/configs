@@ -10,7 +10,7 @@ export default (entry, tsconfigPath = path.join(paths.root, 'tsconfig.json')) =>
       rules: [
         {
           test: /\.tsx?$/,
-          include: [paths.server.sources, paths.client.sources, paths.shared.root],
+          include: [paths.server.sources, paths.client.sources, paths.shared.sources],
           use: loaders.ts({
             tsconfig: tsconfigPath,
             forkedChecks: true,

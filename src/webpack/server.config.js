@@ -23,7 +23,7 @@ export default entry =>
       },
 
       resolve: {
-        modules: [paths.nodeModules.path, paths.server.sources, paths.root],
+        modules: [paths.nodeModules.root, paths.server.sources, paths.root],
       },
 
       // http://jlongster.com/Backend-Apps-with-Webpack--Part-I
@@ -39,7 +39,7 @@ export default entry =>
         rules: [
           {
             test: /\.jsx?$/,
-            include: [paths.server.sources, paths.shared.root],
+            include: [paths.server.sources, paths.shared.sources],
             use: loaders.babel(),
           },
         ],

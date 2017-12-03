@@ -8,14 +8,14 @@ import loaders from './loaders';
 export default entry =>
   webpackMerge(serverConfig(entry), {
     resolve: {
-      modules: [paths.nodeModules.path, paths.server.sources, paths.client.sources, paths.root],
+      modules: [paths.nodeModules.root, paths.server.sources, paths.client.sources, paths.root],
     },
 
     module: {
       rules: [
         {
           test: /\.jsx?$/,
-          include: [paths.server.sources, paths.client.sources, paths.shared.root],
+          include: [paths.server.sources, paths.client.sources, paths.shared.sources],
           use: loaders.babel(),
         },
         {
@@ -25,7 +25,7 @@ export default entry =>
         },
         {
           test: /\.css$/,
-          include: [paths.nodeModules.path],
+          include: [paths.nodeModules.root],
           use: loaders.cssNodeModules({ ssr: true }),
         },
         {
@@ -35,7 +35,7 @@ export default entry =>
         },
         {
           test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2|otf)$/,
-          include: [paths.nodeModules.path],
+          include: [paths.nodeModules.root],
           use: loaders.assetsNodeModules({ ssr: true }),
         },
       ],
