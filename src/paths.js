@@ -26,7 +26,7 @@ export default Object.freeze({
     root: path.resolve(baseDir, dirMap.client.root),
     sources: path.resolve(baseDir, dirMap.client.root, dirMap.client.sources),
     assets: path.resolve(baseDir, dirMap.client.root, dirMap.client.assets),
-    staticContent: path.resolve(baseDir, dirMap.client.root, dirMap.client.public),
+    staticContent: path.resolve(baseDir, dirMap.client.root, dirMap.client.staticContent),
 
     output: {
       path: path.resolve(baseDir, dirMap.output.root, dirMap.client.output.root),
