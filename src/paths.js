@@ -1,5 +1,6 @@
 import path from 'path';
 import fs from 'fs';
+import deepmerge from 'deepmerge';
 import defaultDirMap from './dirmap';
 
 const baseDir = process.cwd();
@@ -7,7 +8,7 @@ const baseDir = process.cwd();
 const customDirMapPath = path.resolve(baseDir, 'dirmap.json');
 
 export const dirMap = fs.existsSync(customDirMapPath)
-  ? { ...defaultDirMap, ...require(customDirMapPath) }
+  ? deepmerge(defaultDirMap, require(customDirMapPath))
   : defaultDirMap;
 
 export default Object.freeze({
