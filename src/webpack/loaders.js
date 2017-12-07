@@ -56,13 +56,12 @@ export default {
     },
   }),
 
-  css: ({ ssr, context } = {}) => [
+  css: ({ ssr, context, localIdentName = '[name]__[local]--[hash:5]' } = {}) => [
     {
       loader: ssr ? 'css-loader/locals' : 'css-loader',
       options: {
         modules: true,
-        // localIdentName: '[name]__[local]--[hash:base64:5]',
-        localIdentName: '[name]__[local]--[hash:5]',
+        localIdentName,
         context, // https://github.com/webpack-contrib/css-loader/issues/267
         importLoaders: 1,
       },
@@ -70,7 +69,7 @@ export default {
     'postcss-loader', // https://github.com/postcss/postcss-import/issues/224
   ],
 
-  cssNodeModules: ({ ssr } = {}) => [
+  cssNodeModules: ({ ssr, localIdentName = '[local]' } = {}) => [
     ...(ssr
       ? []
       : reactEnv.ifDevMode(
@@ -91,7 +90,7 @@ export default {
                 publicPath: paths.client.output.publicPath,
               },
             },
-          ],
+          ]
         )),
     {
       loader: ssr ? 'css-loader/locals' : 'css-loader',
@@ -99,7 +98,7 @@ export default {
         modules: true,
         camelCase: false,
         sourceMap: false,
-        localIdentName: '[local]',
+        localIdentName,
       },
     },
   ],
