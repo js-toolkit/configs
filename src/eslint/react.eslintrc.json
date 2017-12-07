@@ -3,5 +3,8 @@
   "plugins": ["react", "jsx-a11y", "css-modules"],
   "env": {
     "browser": true
+  },
+  "rules": {
+  	"react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }]
   }
 }
