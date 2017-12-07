@@ -2,12 +2,13 @@ import webpack from 'webpack';
 import webpackMerge from 'webpack-merge';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import path from 'path';
+import deepMerge from 'deepmerge';
 import reactEnv from '../reactEnv';
 import paths, { dirMap } from '../paths';
 import commonConfig from './common.config';
 import loaders from './loaders';
 
-export default entry =>
+export default ({ entry, rules = [] }) =>
   webpackMerge(
     commonConfig({
       outputPath: paths.client.output.path,
@@ -28,36 +29,39 @@ export default entry =>
       // recordsOutputPath: path.join(paths.output.path, 'webpack.client.stats.json'),
 
       module: {
-        rules: [
-          {
-            test: /\.jsx?$/,
-            include: [paths.client.sources, paths.shared.sources],
-            use: loaders.babel(),
-          },
-          {
-            test: /\.css$/,
-            include: [paths.client.sources],
-            use: ExtractTextPlugin.extract({
-              fallback: 'style-loader',
-              use: loaders.css(),
-            }),
-          },
-          {
-            test: /\.css$/,
-            include: [paths.nodeModules.root],
-            use: loaders.cssNodeModules(),
-          },
-          {
-            test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2|otf)$/,
-            include: [paths.client.assets],
-            use: loaders.assets(),
-          },
-          {
-            test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2|otf)$/,
-            include: [paths.nodeModules.root],
-            use: loaders.assetsNodeModules(),
-          },
-        ],
+        rules: deepMerge(
+          [
+            {
+              test: /\.jsx?$/,
+              include: [paths.client.sources, paths.shared.sources],
+              use: loaders.babel(),
+            },
+            {
+              test: /\.css$/,
+              include: [paths.client.sources],
+              use: ExtractTextPlugin.extract({
+                fallback: 'style-loader',
+                use: loaders.css(),
+              }),
+            },
+            {
+              test: /\.css$/,
+              include: [paths.nodeModules.root],
+              use: loaders.cssNodeModules(),
+            },
+            {
+              test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2|otf)$/,
+              include: [paths.client.assets],
+              use: loaders.assets(),
+            },
+            {
+              test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2|otf)$/,
+              include: [paths.nodeModules.root],
+              use: loaders.assetsNodeModules(),
+            },
+          ],
+          rules
+        ),
       },
 
       plugins: [
