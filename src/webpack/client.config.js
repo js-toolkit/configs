@@ -2,14 +2,49 @@ import webpack from 'webpack';
 import webpackMerge from 'webpack-merge';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import path from 'path';
-import deepMerge from 'deepmerge';
 import reactEnv from '../reactEnv';
 import paths, { dirMap } from '../paths';
 import commonConfig from './common.config';
 import loaders from './loaders';
 
-export default ({ entry, rules = [] }) =>
-  webpackMerge(
+export const defaultRules = {
+  jsRule: {
+    test: /\.jsx?$/,
+    include: [paths.client.sources, paths.shared.sources],
+    use: loaders.babel(),
+  },
+  cssRule: {
+    test: /\.css$/,
+    include: [paths.client.sources],
+    use: ExtractTextPlugin.extract({
+      fallback: 'style-loader',
+      use: loaders.css(),
+    }),
+  },
+  cssNodeModulesRule: {
+    test: /\.css$/,
+    include: [paths.nodeModules.root],
+    use: loaders.cssNodeModules(),
+  },
+  assetsRule: {
+    test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2|otf)$/,
+    include: [paths.client.assets],
+    use: loaders.assets(),
+  },
+  assetsNodeModulesRule: {
+    test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2|otf)$/,
+    include: [paths.nodeModules.root],
+    use: loaders.assetsNodeModules(),
+  },
+};
+
+export default ({ entry, rules }) => {
+  // Merge and replace rules
+  const moduleRules = webpackMerge.strategy(
+    Object.getOwnPropertyNames(defaultRules).reduce((obj, name) => ({ ...obj, [name]: 'replace' }))
+  )(defaultRules, rules);
+
+  return webpackMerge(
     commonConfig({
       outputPath: paths.client.output.path,
       outputPublicPath: paths.client.output.publicPath,
@@ -29,38 +64,8 @@ export default ({ entry, rules = [] }) =>
       // recordsOutputPath: path.join(paths.output.path, 'webpack.client.stats.json'),
 
       module: {
-        rules: deepMerge(
-          [
-            {
-              test: /\.jsx?$/,
-              include: [paths.client.sources, paths.shared.sources],
-              use: loaders.babel(),
-            },
-            {
-              test: /\.css$/,
-              include: [paths.client.sources],
-              use: ExtractTextPlugin.extract({
-                fallback: 'style-loader',
-                use: loaders.css(),
-              }),
-            },
-            {
-              test: /\.css$/,
-              include: [paths.nodeModules.root],
-              use: loaders.cssNodeModules(),
-            },
-            {
-              test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2|otf)$/,
-              include: [paths.client.assets],
-              use: loaders.assets(),
-            },
-            {
-              test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2|otf)$/,
-              include: [paths.nodeModules.root],
-              use: loaders.assetsNodeModules(),
-            },
-          ],
-          rules
+        rules: Object.getOwnPropertyNames(moduleRules).map(
+          name => (moduleRules[name] ? moduleRules[name] : {})
         ),
       },
 
@@ -102,3 +107,4 @@ export default ({ entry, rules = [] }) =>
       },
     }
   );
+};

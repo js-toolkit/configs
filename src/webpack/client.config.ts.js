@@ -4,23 +4,24 @@ import paths from '../paths';
 import clientConfig from './client.config';
 import loaders from './loaders';
 
-export default ({
-  entry,
-  rules = [],
-  tsconfigPath = path.join(paths.client.root, 'tsconfig.json'),
-}) => {
-  const tsRules = [
-    {
-      test: /\.tsx?$/,
-      include: [paths.client.sources, paths.shared.sources],
-      use: loaders.ts({
-        tsconfig: tsconfigPath,
-        forkedChecks: true,
-      }),
-    },
-  ].concat(rules);
+export const defaultRules = {
+  tsRule: {
+    test: /\.tsx?$/,
+    include: [paths.client.sources, paths.shared.sources],
+    use: loaders.ts({
+      tsconfig: tsconfigPath,
+      forkedChecks: true,
+    }),
+  },
+};
 
-  return webpackMerge(clientConfig({ entry, tsRules }), {
+export default ({ entry, rules, tsconfigPath = path.join(paths.client.root, 'tsconfig.json') }) => {
+  // Merge and replace rules
+  const moduleRules = webpackMerge.strategy(
+    Object.getOwnPropertyNames(defaultRules).reduce((obj, name) => ({ ...obj, [name]: 'replace' }))
+  )(defaultRules, rules);
+
+  return webpackMerge(clientConfig({ entry, rules: moduleRules }), {
     plugins: [loaders.tsCheckerPlugin({ tsconfig: tsconfigPath })],
   });
 };
