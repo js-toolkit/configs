@@ -69,7 +69,7 @@ export default {
     'postcss-loader', // https://github.com/postcss/postcss-import/issues/224
   ],
 
-  cssNodeModules: ({ ssr, localIdentName = '[local]' } = {}) => [
+  cssNodeModules: ({ ssr, localIdentName = '[local]', postcss } = {}) => [
     ...(ssr
       ? []
       : reactEnv.ifDevMode(
@@ -99,8 +99,10 @@ export default {
         camelCase: false,
         sourceMap: false,
         localIdentName,
+        importLoaders: postcss ? 1 : undefined,
       },
     },
+    ...(postcss ? ['postcss-loader'] : []),
   ],
 
   assets: ({ ssr } = {}) => ({
