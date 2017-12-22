@@ -4,14 +4,11 @@
     "moduleResolution": "node",
     "target": "es2015",
     "sourceMap": true,
-    "suppressImplicitAnyIndexErrors": true,
-    "strictNullChecks": true,
     "experimentalDecorators": true,
+    "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noImplicitAny": true,
     "noImplicitReturns": true,
-    "noImplicitThis": false,
     "jsx": "react"
   },
   "exclude": ["node_modules"]
