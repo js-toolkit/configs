@@ -5,6 +5,7 @@
     "target": "es2015",
     "sourceMap": true,
     "experimentalDecorators": true,
+    "suppressImplicitAnyIndexErrors": true,
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
