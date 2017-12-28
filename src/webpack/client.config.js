@@ -19,7 +19,7 @@ export const defaultRules = {
     include: [paths.client.sources],
     use: ExtractTextPlugin.extract({
       fallback: 'style-loader',
-      use: loaders.css(),
+      use: loaders.css({ minimize: reactEnv.prod }),
     }),
   },
   cssNodeModulesRule: {
@@ -28,7 +28,7 @@ export const defaultRules = {
     // use: loaders.cssNodeModules(),
     use: ExtractTextPlugin.extract({
       fallback: 'style-loader',
-      use: loaders.css({ pattern: '[local]', prodPattern: '[local]' }),
+      use: loaders.css({ pattern: '[local]', prodPattern: '[local]', minimize: reactEnv.prod }),
     }),
   },
   assetsRule: {
