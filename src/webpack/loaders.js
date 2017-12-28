@@ -56,14 +56,15 @@ export default {
     },
   }),
 
-  css: ({ ssr, context, pattern = '[name]__[local]--[hash:5]', prodPattern = '[hash:5]' } = {}) => [
+  css: ({ ssr, pattern = '[name]__[local]--[hash:5]', prodPattern = '[hash:5]', ...rest } = {}) => [
     {
       loader: ssr ? 'css-loader/locals' : 'css-loader',
       options: {
         modules: true,
         localIdentName: reactEnv.ifDevMode(pattern, prodPattern),
-        context, // https://github.com/webpack-contrib/css-loader/issues/267
+        //context, // https://github.com/webpack-contrib/css-loader/issues/267
         importLoaders: 1,
+        ...rest,
       },
     },
     'postcss-loader', // https://github.com/postcss/postcss-import/issues/224
