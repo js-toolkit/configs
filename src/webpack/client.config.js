@@ -32,7 +32,13 @@ export const defaultRules = {
     // use: loaders.cssNodeModules(),
     use: ExtractTextPlugin.extract({
       fallback: 'style-loader',
-      use: loaders.css({ pattern: '[local]', prodPattern: '[local]', minimize: reactEnv.prod }),
+      use: loaders.css({
+        pattern: '[local]',
+        prodPattern: '[local]',
+        minimize: reactEnv.ifDevMode(false, {
+          preset: ['default', { discardComments: { removeAll: true } }],
+        }),
+      }),
     }),
   },
   assetsRule: {
