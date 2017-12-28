@@ -1,6 +1,7 @@
 import webpack from 'webpack';
 import webpackMerge from 'webpack-merge';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
+import UglifyJsPlugin from 'uglifyjs-webpack-plugin';
 import path from 'path';
 import reactEnv from '../reactEnv';
 import paths, { dirMap } from '../paths';
@@ -24,7 +25,11 @@ export const defaultRules = {
   cssNodeModulesRule: {
     test: /\.css$/,
     include: [paths.nodeModules.root],
-    use: loaders.cssNodeModules(),
+    // use: loaders.cssNodeModules(),
+    use: ExtractTextPlugin.extract({
+      fallback: 'style-loader',
+      use: loaders.css({ pattern: '[local]', prodPattern: '[local]' }),
+    }),
   },
   assetsRule: {
     test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2|otf)$/,
@@ -72,9 +77,8 @@ export default ({ entry, rules }) => {
       plugins: [
         // To extract a common code to single separate file.
         new webpack.optimize.CommonsChunkPlugin({
-          name: 'vendor', // Add link to this file in html before other JS files, it has a common code.
-          minChunks: module =>
-            module.context && module.context.indexOf(paths.nodeModules.dirname) !== -1,
+          name: 'vendor', // Add link to this file in html before other JS/CSS files, it has a common code.
+          minChunks: ({ context }) => context && context.indexOf(paths.nodeModules.dirname) >= 0, // Only from node_modules.
         }),
         // Saves received text to the file, for example css from style-loader and css-loader.
         new ExtractTextPlugin({
@@ -82,8 +86,18 @@ export default ({ entry, rules }) => {
           disable: reactEnv.dev,
           allChunks: true,
         }),
-        // Enable HMR
-        new webpack.HotModuleReplacementPlugin(),
+        // Provide env variables to code.
+        new webpack.DefinePlugin(reactEnv.stringified),
+        ...reactEnv.ifDevMode(
+          [
+            // Enable HMR in development.
+            new webpack.HotModuleReplacementPlugin(),
+          ],
+          [
+            // Minificate code in production.
+            new UglifyJsPlugin(),
+          ]
+        ),
       ],
 
       devServer: {
@@ -91,6 +105,7 @@ export default ({ entry, rules }) => {
         contentBase: paths.client.staticContent,
         publicPath: paths.client.output.publicPath,
         historyApiFallback: true, // For react subpages handling with webpack-dev-server
+        host: '0.0.0.0',
         port: 9000,
         hotOnly: true,
         noInfo: false,

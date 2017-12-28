@@ -56,12 +56,12 @@ export default {
     },
   }),
 
-  css: ({ ssr, context, localIdentName = '[name]__[local]--[hash:5]' } = {}) => [
+  css: ({ ssr, context, pattern = '[name]__[local]--[hash:5]', prodPattern = '[hash:5]' } = {}) => [
     {
       loader: ssr ? 'css-loader/locals' : 'css-loader',
       options: {
         modules: true,
-        localIdentName,
+        localIdentName: reactEnv.ifDevMode(pattern, prodPattern),
         context, // https://github.com/webpack-contrib/css-loader/issues/267
         importLoaders: 1,
       },
