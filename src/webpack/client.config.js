@@ -19,7 +19,11 @@ export const defaultRules = {
     include: [paths.client.sources],
     use: ExtractTextPlugin.extract({
       fallback: 'style-loader',
-      use: loaders.css({ minimize: reactEnv.prod }),
+      use: loaders.css({
+        minimize: reactEnv.ifDevMode(false, {
+          preset: ['default', { discardComments: { removeAll: true } }],
+        }),
+      }),
     }),
   },
   cssNodeModulesRule: {
