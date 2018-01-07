@@ -3,9 +3,11 @@
     "tslint:latest",
     "tslint-eslint-rules",
     "tslint-consistent-codestyle",
+    "tslint-plugin-prettier",
     "tslint-config-prettier"
   ],
   "rules": {
+    "prettier": true,
     "no-console": [false],
     "ordered-imports": false,
     "member-access": false,
