@@ -2,7 +2,7 @@ import reactEnv from '../reactEnv';
 import paths from '../paths';
 
 export default {
-  ts: ({ tsconfig, forkedChecks }) => [
+  ts: ({ tsconfig, forkedChecks, ...rest }) => [
     ...(forkedChecks && reactEnv.prod
       ? [
           // useful without watch mode, because on every edit (compilation) thread-loader fork process and increase total time of build
@@ -21,6 +21,7 @@ export default {
         configFile: tsconfig,
         transpileOnly: forkedChecks,
         happyPackMode: forkedChecks, // use happyPackMode mode to speed-up compilation and reduce errors reported to webpack
+        ...rest,
       },
     },
   ],
@@ -34,12 +35,13 @@ export default {
     });
   },
 
-  ats: ({ tsconfig }) => ({
+  ats: ({ tsconfig, ...rest }) => ({
     loader: 'awesome-typescript-loader',
     options: {
       configFileName: tsconfig,
       useBabel: false, // Also sets "target": "es201*" in tsconfig.json
       useCache: false,
+      ...rest,
     },
   }),
 
@@ -49,10 +51,11 @@ export default {
     return new CheckerPlugin();
   },
 
-  babel: () => ({
+  babel: ({ ...rest }) => ({
     loader: 'babel-loader',
     options: {
       cacheDirectory: true,
+      ...rest,
     },
   }),
 
