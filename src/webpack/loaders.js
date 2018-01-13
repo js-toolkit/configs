@@ -40,7 +40,7 @@ export default {
     options: {
       configFileName: tsconfig,
       useBabel: false, // Also sets "target": "es201*" in tsconfig.json
-      useCache: false,
+      useCache: true,
       ...rest,
     },
   }),
