@@ -13,7 +13,8 @@ export default ({ outputPath, outputPublicPath }) => ({
     filename: `${paths.client.output.js}/[name].js`,
   },
 
-  devtool: reactEnv.ifDevMode('inline-source-map', ''), // https://github.com/commissure/redbox-react#sourcemaps-with-webpack
+  // http://cheng.logdown.com/posts/2016/03/25/679045
+  devtool: reactEnv.ifDevMode('cheap-module-eval-source-map', ''),
 
   plugins: [
     // In order for the specified environment variables to be available in the JS code.
