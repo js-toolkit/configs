@@ -5,6 +5,8 @@ import loaders from './loaders';
 import clientConfig from './client.config';
 import { defaultRules } from './client.config.ts';
 
+export { defaultRules };
+
 export default ({ entry, rules, tsconfigPath = path.join(paths.client.root, 'tsconfig.json') }) => {
   const { tsRule, ...rest } = defaultRules;
 
@@ -18,7 +20,10 @@ export default ({ entry, rules, tsconfigPath = path.join(paths.client.root, 'tsc
 
   // Merge and replace rules
   const moduleRules = webpackMerge.strategy(
-    Object.getOwnPropertyNames(defaultRules).reduce((obj, name) => ({ ...obj, [name]: 'replace' }))
+    Object.getOwnPropertyNames(useDefaultRules).reduce((obj, name) => ({
+      ...obj,
+      [name]: 'replace',
+    }))
   )(useDefaultRules, rules);
 
   return webpackMerge(clientConfig({ entry, rules: moduleRules }), {
