@@ -9,7 +9,7 @@ export default ({ entry, rules, tsconfigPath = path.join(paths.client.root, 'tsc
     tsRule: {
       test: /\.tsx?$/,
       include: [paths.client.sources, paths.shared.sources],
-      use: loaders.ats({ tsconfig: tsconfigPath }),
+      use: ['react-hot-loader/webpack', loaders.ats({ tsconfig: tsconfigPath })],
     },
   };
 

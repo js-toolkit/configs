@@ -9,10 +9,13 @@ export default ({ entry, rules, tsconfigPath = path.join(paths.client.root, 'tsc
     tsRule: {
       test: /\.tsx?$/,
       include: [paths.client.sources, paths.shared.sources],
-      use: loaders.ts({
-        tsconfig: tsconfigPath,
-        forkedChecks: true,
-      }),
+      use: [
+        'react-hot-loader/webpack',
+        ...loaders.ts({
+          tsconfig: tsconfigPath,
+          forkedChecks: true,
+        }),
+      ],
     },
   };
 
