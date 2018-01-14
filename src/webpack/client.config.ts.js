@@ -27,10 +27,13 @@ export default ({ entry, rules, tsconfigPath = path.join(paths.client.root, 'tsc
 
   // Merge and replace rules
   const moduleRules = webpackMerge.strategy(
-    Object.getOwnPropertyNames(useDefaultRules).reduce((obj, name) => ({
-      ...obj,
-      [name]: 'replace',
-    }))
+    Object.getOwnPropertyNames(useDefaultRules).reduce(
+      (obj, name) => ({
+        ...obj,
+        [name]: 'replace',
+      }),
+      {}
+    )
   )(useDefaultRules, rules);
 
   return webpackMerge(clientConfig({ entry, rules: moduleRules }), {
