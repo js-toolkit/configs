@@ -11,7 +11,7 @@ export const defaultRules = {
   },
 };
 
-export default (entry, rules, tsconfigPath = path.join(paths.root, 'tsconfig.json')) => {
+export default ({ entry, rules, tsconfigPath = path.join(paths.root, 'tsconfig.json') }) => {
   const { tsRule, ...rest } = defaultRules;
 
   const useDefaultRules = {
