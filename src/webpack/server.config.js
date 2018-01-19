@@ -4,8 +4,24 @@ import paths, { dirMap } from '../paths';
 import commonConfig from './common.config';
 import loaders from './loaders';
 
-export default entry =>
-  webpackMerge(
+export const defaultRules = {
+  jsRule: {
+    test: /\.jsx?$/,
+    include: [paths.server.sources, paths.shared.sources],
+    use: loaders.babel(),
+  },
+};
+
+export default ({ entry, rules }) => {
+  // Merge and replace rules
+  const moduleRules = webpackMerge.strategy(
+    Object.getOwnPropertyNames(defaultRules).reduce(
+      (obj, name) => ({ ...obj, [name]: 'replace' }),
+      {}
+    )
+  )(defaultRules, rules);
+
+  return webpackMerge(
     commonConfig({
       outputPath: paths.server.output.path,
       outputPublicPath: paths.server.output.publicPath,
@@ -36,13 +52,10 @@ export default entry =>
       // },
 
       module: {
-        rules: [
-          {
-            test: /\.jsx?$/,
-            include: [paths.server.sources, paths.shared.sources],
-            use: loaders.babel(),
-          },
-        ],
+        rules: Object.getOwnPropertyNames(moduleRules).map(
+          name => (moduleRules[name] ? moduleRules[name] : {})
+        ),
       },
     }
   );
+};
