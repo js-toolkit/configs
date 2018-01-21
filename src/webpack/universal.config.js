@@ -16,28 +16,22 @@ export const defaultRules = {
   cssRule: {
     test: /\.css$/,
     include: [paths.client.sources],
-    use: ExtractTextPlugin.extract({
-      fallback: 'style-loader',
-      use: loaders.css({
-        ssr: true,
-        minimize: reactEnv.ifDevMode(false, {
-          preset: ['default', { discardComments: { removeAll: true } }],
-        }),
+    use: loaders.css({
+      ssr: true,
+      minimize: reactEnv.ifDevMode(false, {
+        preset: ['default', { discardComments: { removeAll: true } }],
       }),
     }),
   },
   cssNodeModulesRule: {
     test: /\.css$/,
     include: [paths.nodeModules.root],
-    use: ExtractTextPlugin.extract({
-      fallback: 'style-loader',
-      use: loaders.css({
-        ssr: true,
-        pattern: '[local]',
-        prodPattern: '[local]',
-        minimize: reactEnv.ifDevMode(false, {
-          preset: ['default', { discardComments: { removeAll: true } }],
-        }),
+    use: loaders.css({
+      ssr: true,
+      pattern: '[local]',
+      prodPattern: '[local]',
+      minimize: reactEnv.ifDevMode(false, {
+        preset: ['default', { discardComments: { removeAll: true } }],
       }),
     }),
   },

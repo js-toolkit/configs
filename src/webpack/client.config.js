@@ -98,8 +98,6 @@ export default ({ entry, rules }) => {
           disable: reactEnv.dev,
           allChunks: true,
         }),
-        // Provide env variables to code.
-        new webpack.DefinePlugin(reactEnv.stringified),
         ...reactEnv.ifDevMode(
           [
             // Enable HMR in development.
