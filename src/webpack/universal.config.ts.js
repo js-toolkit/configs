@@ -21,7 +21,7 @@ export default ({ entry, rules, tsconfigPath = path.join(paths.root, 'tsconfig.j
       use: loaders.ts({
         tsconfig: tsconfigPath,
         forkedChecks: true,
-        afterLoaders: reactEnv.ifDevMode(
+        /*afterLoaders: reactEnv.ifDevMode(
           [
             {
               // Necessary for RHL4.
@@ -30,7 +30,7 @@ export default ({ entry, rules, tsconfigPath = path.join(paths.root, 'tsconfig.j
             },
           ],
           []
-        ),
+        ),*/
       }),
     },
     ...rest,

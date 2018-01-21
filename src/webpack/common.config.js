@@ -19,8 +19,6 @@ export default ({ outputPath, outputPublicPath }) => ({
   plugins: [
     // In order for the specified environment variables to be available in the JS code.
     new webpack.EnvironmentPlugin(reactEnv.raw),
-    // Provide env variables to code.
-    new webpack.DefinePlugin(reactEnv.stringified),
     // Keeps hashes consistent between compilations
     new webpack.optimize.OccurrenceOrderPlugin(),
     // Prints more readable module names in the browser console on HMR updates.
