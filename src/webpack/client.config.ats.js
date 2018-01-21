@@ -15,15 +15,16 @@ export default ({ entry, rules, tsconfigPath = path.join(paths.client.root, 'tsc
     tsRule: {
       ...tsRule,
       use: [
-        ...(reactEnv.prod
-          ? []
-          : [
-              {
-                // Necessary for RHL4.
-                // Not working with RHL3 and DateRangePicker.
-                loader: 'babel-loader',
-              },
-            ]),
+        ...reactEnv.ifDevMode(
+          [
+            {
+              // Necessary for RHL4.
+              // Not working with RHL3 and DateRangePicker.
+              loader: 'babel-loader',
+            },
+          ],
+          []
+        ),
         loaders.ats({ tsconfig: tsconfigPath }),
       ],
     },

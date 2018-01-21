@@ -20,15 +20,16 @@ export default ({ entry, rules, tsconfigPath = path.join(paths.server.root, 'tsc
       use: loaders.ts({
         tsconfig: tsconfigPath,
         forkedChecks: true,
-        afterLoaders: reactEnv.prod
-          ? []
-          : [
-              {
-                // Necessary for RHL4.
-                // Not working with RHL3 and DateRangePicker.
-                loader: 'babel-loader',
-              },
-            ],
+        afterLoaders: reactEnv.ifDevMode(
+          [
+            {
+              // Necessary for RHL4.
+              // Not working with RHL3 and DateRangePicker.
+              loader: 'babel-loader',
+            },
+          ],
+          []
+        ),
       }),
     },
     ...rest,
