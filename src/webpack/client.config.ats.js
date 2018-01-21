@@ -13,7 +13,18 @@ export default ({ entry, rules, tsconfigPath = path.join(paths.client.root, 'tsc
   const useDefaultRules = {
     tsRule: {
       ...tsRule,
-      use: [loaders.ats({ tsconfig: tsconfigPath })],
+      use: [
+        ...(reactEnv.prod
+          ? []
+          : [
+              {
+                // Necessary for RHL4.
+                // Not working with RHL3 and DateRangePicker.
+                loader: 'babel-loader',
+              },
+            ]),
+        loaders.ats({ tsconfig: tsconfigPath }),
+      ],
     },
     ...rest,
   };
