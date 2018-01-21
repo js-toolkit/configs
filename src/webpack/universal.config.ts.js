@@ -1,6 +1,7 @@
 import webpackMerge from 'webpack-merge';
 import path from 'path';
 import paths from '../paths';
+import reactEnv from '../reactEnv';
 import universalConfig from './universal.config';
 import loaders from './loaders';
 

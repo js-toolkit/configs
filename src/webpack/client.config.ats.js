@@ -1,6 +1,7 @@
 import webpackMerge from 'webpack-merge';
 import * as path from 'path';
 import paths from '../paths';
+import reactEnv from '../reactEnv';
 import loaders from './loaders';
 import clientConfig from './client.config';
 import { defaultRules } from './client.config.ts';
