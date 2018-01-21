@@ -2,10 +2,11 @@ import reactEnv from '../reactEnv';
 import paths from '../paths';
 
 export default {
-  ts: ({ tsconfig, forkedChecks, ...rest }) => [
+  ts: ({ tsconfig, forkedChecks, afterLoaders, ...rest }) => [
     ...(forkedChecks && reactEnv.prod
       ? [
-          // useful without watch mode, because on every edit (compilation) thread-loader fork process and increase total time of build
+          // Must be placen on front of other loaders.
+          // Useful without watch mode, because on every edit (compilation) thread-loader fork process and increase total time of build
           {
             loader: 'thread-loader',
             options: {
@@ -15,6 +16,9 @@ export default {
           },
         ]
       : []),
+
+    ...(afterLoaders ? afterLoaders : []),
+
     {
       loader: 'ts-loader',
       options: {
