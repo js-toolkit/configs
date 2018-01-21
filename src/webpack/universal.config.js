@@ -10,7 +10,7 @@ import loaders from './loaders';
 export const defaultRules = {
   jsRule: {
     test: /\.jsx?$/,
-    include: [paths.server.sources, paths.client.sources, paths.shared.sources],
+    include: [paths.server.sources, paths.client.sources, paths.shared.sources, paths.root],
     use: loaders.babel(),
   },
   cssRule: {
