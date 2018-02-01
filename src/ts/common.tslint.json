@@ -16,6 +16,7 @@
     "no-unused-expression": [true, "allow-fast-null-checks"],
     "no-string-literal": false,
     "no-submodule-imports": false,
-    "no-implicit-dependencies": false
+    "no-implicit-dependencies": false,
+    "object-literal-sort-keys": false
   }
 }
