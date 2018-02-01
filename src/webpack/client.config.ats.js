@@ -15,7 +15,7 @@ export default ({ entry, rules, tsconfigPath = path.join(paths.client.root, 'tsc
     tsRule: {
       ...tsRule,
       use: [
-        /*...reactEnv.ifDevMode(
+        ...reactEnv.ifDevMode(
           [
             {
               // Necessary for RHL4.
@@ -24,7 +24,7 @@ export default ({ entry, rules, tsconfigPath = path.join(paths.client.root, 'tsc
             },
           ],
           []
-        ),*/
+        ),
         loaders.ats({ tsconfig: tsconfigPath }),
       ],
     },
