@@ -1,7 +1,7 @@
 import reactEnv from '../reactEnv';
 import paths from '../paths';
 
-const loaders = {
+export default {
   ts({ tsconfig, forkedChecks, afterLoaders, ...rest }) {
     return [
       ...(forkedChecks && reactEnv.prod
