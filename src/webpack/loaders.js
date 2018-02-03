@@ -51,7 +51,7 @@ export default {
       tsconfig,
       forkedChecks,
       afterLoaders: [
-        afterLoaders,
+        ...(afterLoaders || []),
         ...reactEnv.ifDevMode([{ loader: 'react-hot-loader/webpack' }], []),
       ],
       ...rest,
