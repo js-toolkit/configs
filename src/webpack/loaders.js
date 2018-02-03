@@ -101,12 +101,12 @@ export default {
     return new CheckerPlugin();
   },
 
-  babel({ ...rest }) {
+  babel(options) {
     return {
       loader: 'babel-loader',
       options: {
         cacheDirectory: true,
-        ...rest,
+        ...options,
       },
     };
   },
