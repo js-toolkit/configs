@@ -18,20 +18,7 @@ export default ({ entry, rules, tsconfigPath = path.join(paths.root, 'tsconfig.j
   const useDefaultRules = {
     tsRule: {
       ...tsRule,
-      use: loaders.ts({
-        tsconfig: tsconfigPath,
-        forkedChecks: true,
-        /*afterLoaders: reactEnv.ifDevMode(
-          [
-            {
-              // Necessary for RHL4.
-              // Not working with RHL3 and DateRangePicker.
-              loader: 'babel-loader',
-            },
-          ],
-          []
-        ),*/
-      }),
+      use: loaders.ts({ tsconfig: tsconfigPath, forkedChecks: true }),
     },
     ...rest,
   };

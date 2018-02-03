@@ -30,6 +30,30 @@ export default {
     },
   ],
 
+  tsRHL4: ({ tsconfig, forkedChecks, afterLoaders, ...rest }) =>
+    this.ts({
+      tsconfig,
+      forkedChecks,
+      afterLoaders: [
+        afterLoaders,
+        // Necessary for RHL4.
+        // Not working with RHL3 and DateRangePicker.
+        ...reactEnv.ifDevMode([{ loader: 'babel-loader' }], []),
+      ],
+      ...rest,
+    }),
+
+  tsRHL3: ({ tsconfig, forkedChecks, afterLoaders, ...rest }) =>
+    this.ts({
+      tsconfig,
+      forkedChecks,
+      afterLoaders: [
+        afterLoaders,
+        ...reactEnv.ifDevMode([{ loader: 'react-hot-loader/webpack' }], []),
+      ],
+      ...rest,
+    }),
+
   /** In order to runs typescript type checker on a separate process. */
   tsCheckerPlugin: ({ tsconfig }) => {
     const Plugin = require('fork-ts-checker-webpack-plugin');
@@ -48,6 +72,18 @@ export default {
       ...rest,
     },
   }),
+
+  atsRHL4: ({ tsconfig, ...rest }) => [
+    // Necessary for RHL4.
+    // Not working with RHL3 and DateRangePicker.
+    ...reactEnv.ifDevMode([{ loader: 'babel-loader' }], []),
+    this.ats({ tsconfig, ...rest }),
+  ],
+
+  atsRHL3: ({ tsconfig, afterLoaders, ...rest }) => [
+    ...reactEnv.ifDevMode([{ loader: 'react-hot-loader/webpack' }], []),
+    this.ats({ tsconfig, ...rest }),
+  ],
 
   /** In order to runs typescript type checker on a separate process. */
   atsCheckerPlugin: () => {
