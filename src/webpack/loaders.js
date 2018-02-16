@@ -18,7 +18,7 @@ export default {
           ]
         : []),
 
-      ...(afterLoaders ? afterLoaders : []),
+      ...(afterLoaders || []),
 
       {
         loader: 'ts-loader',
@@ -37,7 +37,7 @@ export default {
       tsconfig,
       forkedChecks,
       afterLoaders: [
-        afterLoaders,
+        ...(afterLoaders || []),
         // Necessary for RHL4.
         // Not working with RHL3 and DateRangePicker.
         ...reactEnv.ifDevMode([{ loader: 'babel-loader' }], []),
