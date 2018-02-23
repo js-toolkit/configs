@@ -17,6 +17,7 @@
     "no-string-literal": false,
     "no-submodule-imports": false,
     "no-implicit-dependencies": false,
-    "object-literal-sort-keys": false
+    "object-literal-sort-keys": false,
+    "curly": [true, "ignore-same-line"]
   }
 }
