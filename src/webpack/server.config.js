@@ -27,7 +27,7 @@ export default ({ entry, rules }) => {
       outputPublicPath: paths.server.output.publicPath,
     }),
     {
-      name: dirMap.serverDir,
+      name: dirMap.server.root,
       target: 'node',
 
       context: paths.server.root,

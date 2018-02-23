@@ -67,7 +67,7 @@ export default ({ entry, rules }) => {
       outputPublicPath: paths.client.output.publicPath,
     }),
     {
-      name: dirMap.clientDir,
+      name: dirMap.client.root,
       target: 'web',
 
       context: paths.client.sources,
