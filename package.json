@@ -20,15 +20,13 @@
   ],
   "devDependencies": {
     "babel-cli": "^6.26.0",
-    "babel-plugin-transform-class-properties": "^6.24.1",
-    "babel-plugin-transform-decorators": "^6.24.1",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.6.1",
+    "babel-preset-stage-2": "^6.24.1",
     "rimraf": "^2.6.2"
   },
   "dependencies": {
     "webpack": ">= 3.10.0",
-    "webpack-merge": ">= 4.1.1",
+    "webpack-merge": ">= 4.1.2",
     "webpack-node-externals": ">= 1.6.0"
   }
 }
