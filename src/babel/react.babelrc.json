@@ -1,12 +1,11 @@
 {
   "presets": [
     ["env", { "modules": false }],
+    "stage-2",
     "react"
   ],
   "plugins": [
-    "transform-object-rest-spread",
-    "transform-decorators",
-    "transform-class-properties",
+    "transform-decorators-legacy",
     "react-hot-loader/babel"
   ]
 }
