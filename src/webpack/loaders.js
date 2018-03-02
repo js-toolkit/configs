@@ -25,7 +25,7 @@ export default {
         options: {
           configFile: tsconfig,
           transpileOnly: forkedChecks,
-          happyPackMode: forkedChecks, // use happyPackMode mode to speed-up compilation and reduce errors reported to webpack
+          happyPackMode: forkedChecks && reactEnv.prod, // use happyPackMode mode to speed-up compilation and reduce errors reported to webpack
           ...rest,
         },
       },
@@ -59,11 +59,13 @@ export default {
   },
 
   /** In order to runs typescript type checker on a separate process. */
-  tsCheckerPlugin({ tsconfig }) {
+  tsCheckerPlugin({ tsconfig, ...rest }) {
     const Plugin = require('fork-ts-checker-webpack-plugin');
     return new Plugin({
       tsconfig,
-      checkSyntacticErrors: true,
+      checkSyntacticErrors: reactEnv.prod,
+      memoryLimit: 1024,
+      ...rest,
     });
   },
 
