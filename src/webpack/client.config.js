@@ -88,10 +88,11 @@ export default ({ entry, rules }) => {
 
       plugins: [
         // To extract a common code to single separate file.
-        new webpack.optimize.CommonsChunkPlugin({
-          name: 'vendor', // Add link to this file in html before other JS/CSS files, it has a common code.
-          minChunks: ({ context }) => context && context.indexOf(paths.nodeModules.dirname) >= 0, // Only from node_modules.
-        }),
+        // Deprecated with webpack 4
+        // new webpack.optimize.CommonsChunkPlugin({
+        //   name: 'vendor', // Add link to this file in html before other JS/CSS files, it has a common code.
+        //   minChunks: ({ context }) => context && context.indexOf(paths.nodeModules.dirname) >= 0, // Only from node_modules.
+        // }),
         // Saves received text to the file, for example css from style-loader and css-loader.
         new ExtractTextPlugin({
           filename: `${paths.client.output.styles}/[name].css`,
