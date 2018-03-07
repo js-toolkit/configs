@@ -12,13 +12,18 @@ export const defaultRules = {
   },
 };
 
-export default ({ entry, rules, tsconfigPath = path.join(paths.client.root, 'tsconfig.json') }) => {
+export default ({
+  entry,
+  rules,
+  rhl = true,
+  tsconfigPath = path.join(paths.client.root, 'tsconfig.json'),
+}) => {
   const { tsRule, ...rest } = defaultRules;
 
   const useDefaultRules = {
     tsRule: {
       ...tsRule,
-      use: loaders.tsRHL4({ tsconfig: tsconfigPath, forkedChecks: true }),
+      use: (rhl ? loaders.tsRHL4 : loaders.ts)({ tsconfig: tsconfigPath, forkedChecks: true }),
     },
     ...rest,
   };

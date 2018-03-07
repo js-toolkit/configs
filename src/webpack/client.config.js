@@ -106,7 +106,7 @@ export default ({ entry, rules }) => {
           ],
           [
             // Minificate code in production.
-            new UglifyJsPlugin(),
+            // new UglifyJsPlugin(), // Deprecated in webpack 4
           ]
         ),
       ],

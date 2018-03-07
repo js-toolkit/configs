@@ -8,13 +8,18 @@ import { defaultRules } from './client.config.ts';
 
 export { defaultRules };
 
-export default ({ entry, rules, tsconfigPath = path.join(paths.client.root, 'tsconfig.json') }) => {
+export default ({
+  entry,
+  rules,
+  rhl = true,
+  tsconfigPath = path.join(paths.client.root, 'tsconfig.json'),
+}) => {
   const { tsRule, ...rest } = defaultRules;
 
   const useDefaultRules = {
     tsRule: {
       ...tsRule,
-      use: loaders.atsRHL4({ tsconfig: tsconfigPath }),
+      use: (rhl ? loaders.tsRHL4 : loaders.ts)({ tsconfig: tsconfigPath }),
     },
     ...rest,
   };
