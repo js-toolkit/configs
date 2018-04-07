@@ -22,10 +22,7 @@ export default ({ entry, rules, tsconfigPath = path.join(paths.root, 'tsconfig.j
   // Merge and replace rules
   const moduleRules = webpackMerge.strategy(
     Object.getOwnPropertyNames(useDefaultRules).reduce(
-      (obj, name) => ({
-        ...obj,
-        [name]: 'replace',
-      }),
+      (obj, name) => ({ ...obj, [name]: 'replace' }),
       {}
     )
   )(useDefaultRules, rules);

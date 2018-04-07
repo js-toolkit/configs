@@ -27,10 +27,7 @@ export default ({
   // Merge and replace rules
   const moduleRules = webpackMerge.strategy(
     Object.getOwnPropertyNames(useDefaultRules).reduce(
-      (obj, name) => ({
-        ...obj,
-        [name]: 'replace',
-      }),
+      (obj, name) => ({ ...obj, [name]: 'replace' }),
       {}
     )
   )(useDefaultRules, rules);

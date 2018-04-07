@@ -5,17 +5,16 @@ import UglifyJsPlugin from 'uglifyjs-webpack-plugin';
 import reactEnv from '../reactEnv';
 import paths from '../paths';
 import serverConfig from './server.config';
+import { defaultRules as jsDefaultRules } from './client.config';
 import loaders from './loaders';
 
 export const defaultRules = {
   jsRule: {
-    test: /\.jsx?$/,
-    include: [paths.server.sources, paths.client.sources, paths.shared.sources, paths.root],
-    use: loaders.babel(),
+    ...jsDefaultRules.jsRule,
+    include: [...jsDefaultRules.jsRule.include, paths.server.sources, paths.root],
   },
   cssRule: {
-    test: /\.css$/,
-    include: [paths.client.sources],
+    ...jsDefaultRules.cssRule,
     use: loaders.css({
       ssr: true,
       minimize: reactEnv.ifDevMode(false, {
@@ -24,8 +23,7 @@ export const defaultRules = {
     }),
   },
   cssNodeModulesRule: {
-    test: /\.css$/,
-    include: [paths.nodeModules.root],
+    ...jsDefaultRules.cssNodeModulesRule,
     use: loaders.css({
       ssr: true,
       pattern: '[local]',
@@ -36,14 +34,8 @@ export const defaultRules = {
     }),
   },
   assetsRule: {
-    test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2|otf)$/,
-    include: [paths.client.assets],
+    ...jsDefaultRules.assetsRule,
     use: loaders.assets({ ssr: true }),
-  },
-  assetsNodeModulesRule: {
-    test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2|otf)$/,
-    include: [paths.nodeModules.root],
-    use: loaders.assetsNodeModules({ ssr: true }),
   },
 };
 

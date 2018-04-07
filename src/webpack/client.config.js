@@ -42,14 +42,14 @@ export const defaultRules = {
   },
   assetsRule: {
     test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2|otf)$/,
-    include: [paths.client.assets],
+    include: [paths.client.assets, paths.nodeModules.root],
     use: loaders.assets(),
   },
-  assetsNodeModulesRule: {
-    test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2|otf)$/,
-    include: [paths.nodeModules.root],
-    use: loaders.assetsNodeModules(),
-  },
+  // assetsNodeModulesRule: {
+  //   test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2|otf)$/,
+  //   include: [paths.nodeModules.root],
+  //   use: loaders.assetsNodeModules(),
+  // },
 };
 
 export default ({ entry, rules }) => {
