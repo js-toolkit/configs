@@ -48,7 +48,7 @@ export default ({ entry, rules }) => {
 
   return webpackMerge(serverConfig({ entry, rules: moduleRules }), {
     resolve: {
-      modules: [paths.nodeModules.root, paths.server.sources, paths.client.sources, paths.root],
+      modules: [paths.client.sources],
     },
 
     plugins: [

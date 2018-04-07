@@ -31,5 +31,6 @@ export default ({ outputPath, outputPublicPath }) => ({
 
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
+    modules: [paths.nodeModules.root, paths.root],
   },
 });

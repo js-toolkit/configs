@@ -74,7 +74,7 @@ export default ({ entry, rules }) => {
       entry,
 
       resolve: {
-        modules: [paths.nodeModules.root, paths.client.sources, paths.root],
+        modules: [paths.client.sources],
       },
 
       // recordsOutputPath: path.join(paths.output.path, 'webpack.client.stats.json'),
