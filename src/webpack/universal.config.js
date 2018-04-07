@@ -46,15 +46,9 @@ export default ({ entry, rules }) => {
     )
   )(defaultRules, rules);
 
-  return webpackMerge(serverConfig({ entry, rules }), {
+  return webpackMerge(serverConfig({ entry, rules: moduleRules }), {
     resolve: {
       modules: [paths.nodeModules.root, paths.server.sources, paths.client.sources, paths.root],
-    },
-
-    module: {
-      rules: Object.getOwnPropertyNames(moduleRules).map(
-        name => (moduleRules[name] ? moduleRules[name] : {})
-      ),
     },
 
     plugins: [

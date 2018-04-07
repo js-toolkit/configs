@@ -2,13 +2,12 @@ import webpackMerge from 'webpack-merge';
 import webpackNodeExternals from 'webpack-node-externals';
 import paths, { dirMap } from '../paths';
 import commonConfig from './common.config';
-import loaders from './loaders';
+import { defaultRules as jsDefaultRules } from './client.config';
 
 export const defaultRules = {
   jsRule: {
-    test: /\.jsx?$/,
+    ...jsDefaultRules.jsRule,
     include: [paths.server.sources, paths.shared.sources],
-    use: loaders.babel(),
   },
 };
 
