@@ -14,7 +14,7 @@ export default ({ outputPath, outputPublicPath }) => ({
   },
 
   mode: reactEnv.raw.NODE_ENV,
-  
+
   // http://cheng.logdown.com/posts/2016/03/25/679045
   devtool: reactEnv.ifDevMode('cheap-module-eval-source-map', false),
 

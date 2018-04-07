@@ -1,6 +1,5 @@
 import webpackMerge from 'webpack-merge';
 import paths from '../paths';
-import reactEnv from '../reactEnv';
 import serverConfig from './server.config';
 import loaders from './loaders';
 

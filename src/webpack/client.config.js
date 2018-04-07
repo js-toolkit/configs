@@ -1,7 +1,6 @@
 import webpack from 'webpack';
 import webpackMerge from 'webpack-merge';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
-import UglifyJsPlugin from 'uglifyjs-webpack-plugin';
 import reactEnv from '../reactEnv';
 import paths, { dirMap } from '../paths';
 import commonConfig from './common.config';
