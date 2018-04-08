@@ -1,3 +1,4 @@
+import path from 'path';
 import webpackMerge from 'webpack-merge';
 import paths from '../paths';
 import serverConfig from './server.config';

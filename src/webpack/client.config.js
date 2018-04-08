@@ -80,9 +80,7 @@ export default ({ entry, rules }) => {
       // recordsOutputPath: path.join(paths.output.path, 'webpack.client.stats.json'),
 
       module: {
-        rules: Object.getOwnPropertyNames(moduleRules).map(
-          name => (moduleRules[name] ? moduleRules[name] : {})
-        ),
+        rules: Object.getOwnPropertyNames(moduleRules).map(name => moduleRules[name] || {}),
       },
 
       plugins: [

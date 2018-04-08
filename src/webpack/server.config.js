@@ -51,9 +51,7 @@ export default ({ entry, rules }) => {
       // },
 
       module: {
-        rules: Object.getOwnPropertyNames(moduleRules).map(
-          name => (moduleRules[name] ? moduleRules[name] : {})
-        ),
+        rules: Object.getOwnPropertyNames(moduleRules).map(name => moduleRules[name] || {}),
       },
     }
   );
