@@ -8,6 +8,7 @@
   },
   "rules": {
     "no-console": "off",
+    "no-unused-expressions": ["error", { "allowShortCircuit": true }],
     "import/no-extraneous-dependencies": ["error", { "devDependencies": true }]
   }
 }
