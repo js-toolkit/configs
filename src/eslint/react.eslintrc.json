@@ -3,7 +3,8 @@
     "./common.eslintrc.json",
     "airbnb",
     "plugin:prettier/recommended",
-    "plugin:css-modules/recommended"
+    "plugin:css-modules/recommended",
+    "./base.rules.eslintrc.json"
   ],
   "plugins": ["react", "jsx-a11y", "css-modules"],
   "env": {
