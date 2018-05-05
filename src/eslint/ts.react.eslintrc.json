@@ -1,3 +1,3 @@
 {
-  "extends": ["./react.eslintrc.json", "./ts.base.rules.eslintrc.json"]
+  "extends": ["./react.eslintrc.json", "./ts.common.eslintrc.json"]
 }

@@ -1,12 +1,6 @@
 {
-  "extends": [
-    "./common.eslintrc.json",
-    "airbnb",
-    "plugin:prettier/recommended",
-    "plugin:css-modules/recommended",
-    "./base.rules.eslintrc.json"
-  ],
-  "plugins": ["react", "jsx-a11y", "css-modules"],
+  "extends": ["airbnb", "plugin:css-modules/recommended", "./common.eslintrc.json"],
+  "plugins": ["css-modules"],
   "env": {
     "browser": true,
     "node": false

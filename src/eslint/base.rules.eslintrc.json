@@ -1,14 +1,6 @@
 {
-  "parser": "babel-eslint",
-  "extends": ["airbnb-base", "plugin:prettier/recommended"],
-  "plugins": ["import", "prettier"],
-  "env": {
-    "node": true,
-    "es6": true
-  },
   "rules": {
     "no-console": "off",
-    "no-unused-expressions": ["error", { "allowShortCircuit": true }],
-    "import/no-extraneous-dependencies": ["error", { "devDependencies": true }]
+    "no-unused-expressions": ["error", { "allowShortCircuit": true }]
   }
 }

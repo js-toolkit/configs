@@ -1,3 +1,12 @@
 {
-  "extends": ["./common.eslintrc.json", "./ts.base.rules.eslintrc.json"]
+  "parser": "typescript-eslint-parser",
+  "extends": ["./common.eslintrc.json", "./ts.base.rules.eslintrc.json"],
+  "rules": {
+    "import/no-unresolved": "off",
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      { "js": "never", "jsx": "never", "ts": "never", "tsx": "never" }
+    ]
+  }
 }
