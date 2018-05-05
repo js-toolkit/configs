@@ -1,4 +1,3 @@
 {
-  "extends": ["./react.rules.eslintrc.json"],
-  "parser": "typescript-eslint-parser"
+  "extends": ["./react.rules.eslintrc.json", "./ts.base.rules.eslintrc.json"]
 }
