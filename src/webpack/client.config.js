@@ -75,6 +75,12 @@ export default ({ entry, rules }) => {
 
       resolve: {
         modules: [paths.client.sources],
+        resolve: {
+          alias: {
+            // for universal projects
+            shared: paths.shared.sources,
+          },
+        },
       },
 
       // recordsOutputPath: path.join(paths.output.path, 'webpack.client.stats.json'),

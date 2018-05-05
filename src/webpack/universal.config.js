@@ -49,6 +49,9 @@ export default ({ entry, rules }) => {
   return webpackMerge(serverConfig({ entry, rules: moduleRules }), {
     resolve: {
       modules: [paths.client.sources],
+      alias: {
+        shared: paths.shared.sources,
+      },
     },
 
     plugins: [
