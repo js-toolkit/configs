@@ -51,6 +51,7 @@ export default ({ entry, rules }) => {
       modules: [paths.client.sources],
       alias: {
         shared: paths.shared.sources,
+        server: paths.server.sources,
       },
     },
 
