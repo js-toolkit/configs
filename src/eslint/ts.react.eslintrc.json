@@ -1,0 +1,4 @@
+{
+  "extends": ["./react.rules.eslintrc.json"],
+  "parser": "typescript-eslint-parser"
+}
