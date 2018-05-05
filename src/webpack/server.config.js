@@ -29,7 +29,7 @@ export default ({ entry, rules }) => {
       name: dirMap.server.root,
       target: 'node',
 
-      context: paths.server.root,
+      context: paths.server.sources,
 
       entry,
 
