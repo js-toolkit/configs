@@ -50,8 +50,9 @@ export default ({ entry, rules }) => {
     resolve: {
       modules: [paths.client.sources],
       alias: {
-        shared: paths.shared.sources,
         server: paths.server.sources,
+        shared: paths.shared.sources,
+        client: paths.client.sources,
       },
     },
 
