@@ -75,11 +75,9 @@ export default ({ entry, rules }) => {
 
       resolve: {
         modules: [paths.client.sources],
-        resolve: {
-          alias: {
-            // for universal projects
-            shared: paths.shared.sources,
-          },
+        alias: {
+          // for universal projects
+          shared: paths.shared.sources,
         },
       },
 
