@@ -21,7 +21,7 @@ export default Object.freeze({
 
   server: {
     root: 'server',
-    sources: '',
+    sources: 'src',
     output: {
       root: 'server',
       publicPath: '/',
@@ -30,6 +30,6 @@ export default Object.freeze({
 
   shared: {
     root: 'shared',
-    sources: '',
+    sources: 'src',
   },
 });
