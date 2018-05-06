@@ -1,4 +1,5 @@
 import webpackMerge from 'webpack-merge';
+import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
 import path from 'path';
 import paths from '../paths';
 import universalConfig from './universal.config';
@@ -36,6 +37,10 @@ export default ({
   )(useDefaultRules, rules);
 
   return webpackMerge(universalConfig({ entry, rules: moduleRules, nodeExternalsOptions }), {
+    resolve: {
+      plugins: [new TsconfigPathsPlugin({ configFile: tsconfigPath })],
+    },
+
     plugins: [loaders.tsCheckerPlugin({ tsconfig: tsconfigPath })],
   });
 };

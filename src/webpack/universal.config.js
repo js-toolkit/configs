@@ -9,12 +9,12 @@ import loaders from './loaders';
 export const defaultRules = {
   jsRule: {
     ...jsDefaultRules.jsRule,
-    include: [...jsDefaultRules.jsRule.include, paths.server.sources, paths.root],
+    include: [...jsDefaultRules.jsRule.include, paths.server.sources],
   },
   cssRule: {
     ...jsDefaultRules.cssRule,
     use: loaders.css({
-      ssr: true,
+      ssr: reactEnv.ssr,
       minimize: reactEnv.ifDevMode(false, {
         preset: ['default', { discardComments: { removeAll: true } }],
       }),
@@ -23,7 +23,7 @@ export const defaultRules = {
   cssNodeModulesRule: {
     ...jsDefaultRules.cssNodeModulesRule,
     use: loaders.css({
-      ssr: true,
+      ssr: reactEnv.ssr,
       pattern: '[local]',
       prodPattern: '[local]',
       minimize: reactEnv.ifDevMode(false, {
@@ -33,7 +33,7 @@ export const defaultRules = {
   },
   assetsRule: {
     ...jsDefaultRules.assetsRule,
-    use: loaders.assets({ ssr: true }),
+    use: loaders.assets({ ssr: reactEnv.ssr }),
   },
 };
 
