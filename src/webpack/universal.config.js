@@ -37,7 +37,7 @@ export const defaultRules = {
   },
 };
 
-export default ({ entry, rules }) => {
+export default ({ entry, rules, nodeExternalsOptions }) => {
   // Merge and replace rules
   const moduleRules = webpackMerge.strategy(
     Object.getOwnPropertyNames(defaultRules).reduce(
@@ -46,7 +46,7 @@ export default ({ entry, rules }) => {
     )
   )(defaultRules, rules);
 
-  return webpackMerge(serverConfig({ entry, rules: moduleRules }), {
+  return webpackMerge(serverConfig({ entry, rules: moduleRules, nodeExternalsOptions }), {
     resolve: {
       modules: [paths.client.sources],
       alias: {
@@ -57,7 +57,8 @@ export default ({ entry, rules }) => {
     },
 
     plugins: [
-      // Don't watch on client files when ssr is turned off.
+      // Don't watch on client files when ssr is turned off because client by self make hot update
+      // and server not needs in updated files because server not render react components.
       ...(reactEnv.ssr ? [] : [new webpack.WatchIgnorePlugin([paths.client.root])]),
     ],
   });

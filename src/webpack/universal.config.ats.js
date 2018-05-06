@@ -7,7 +7,12 @@ import { defaultRules } from './universal.config.ts';
 
 export { defaultRules };
 
-export default ({ entry, rules, tsconfigPath = path.join(paths.root, 'tsconfig.json') }) => {
+export default ({
+  entry,
+  rules,
+  tsconfigPath = path.join(paths.root, 'tsconfig.json'),
+  nodeExternalsOptions,
+}) => {
   const { tsRule, ...rest } = defaultRules;
 
   const useDefaultRules = {
@@ -26,7 +31,7 @@ export default ({ entry, rules, tsconfigPath = path.join(paths.root, 'tsconfig.j
     )
   )(useDefaultRules, rules);
 
-  return webpackMerge(universalConfig({ entry, rules: moduleRules }), {
+  return webpackMerge(universalConfig({ entry, rules: moduleRules, nodeExternalsOptions }), {
     plugins: [loaders.atsCheckerPlugin()],
   });
 };

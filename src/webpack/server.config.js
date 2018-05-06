@@ -11,7 +11,7 @@ export const defaultRules = {
   },
 };
 
-export default ({ entry, rules }) => {
+export default ({ entry, rules, nodeExternalsOptions }) => {
   // Merge and replace rules
   const moduleRules = webpackMerge.strategy(
     Object.getOwnPropertyNames(defaultRules).reduce(
@@ -42,7 +42,7 @@ export default ({ entry, rules }) => {
       },
 
       // http://jlongster.com/Backend-Apps-with-Webpack--Part-I
-      externals: webpackNodeExternals(),
+      externals: webpackNodeExternals(nodeExternalsOptions),
 
       stats: 'errors-only',
       // stats: {

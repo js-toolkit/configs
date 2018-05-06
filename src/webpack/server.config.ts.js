@@ -11,7 +11,12 @@ export const defaultRules = {
   },
 };
 
-export default ({ entry, rules, tsconfigPath = path.join(paths.server.root, 'tsconfig.json') }) => {
+export default ({
+  entry,
+  rules,
+  tsconfigPath = path.join(paths.server.root, 'tsconfig.json'),
+  nodeExternalsOptions,
+}) => {
   const { tsRule, ...rest } = defaultRules;
 
   const useDefaultRules = {
@@ -30,7 +35,7 @@ export default ({ entry, rules, tsconfigPath = path.join(paths.server.root, 'tsc
     )
   )(useDefaultRules, rules);
 
-  return webpackMerge(serverConfig({ entry, rules: moduleRules }), {
+  return webpackMerge(serverConfig({ entry, rules: moduleRules, nodeExternalsOptions }), {
     plugins: [loaders.tsCheckerPlugin({ tsconfig: tsconfigPath })],
   });
 };
