@@ -47,6 +47,9 @@ export default ({ entry, rules, nodeExternalsOptions }) => {
   )(defaultRules, rules);
 
   return webpackMerge(serverConfig({ entry, rules: moduleRules, nodeExternalsOptions }), {
+    name: 'universal',
+    context: paths.root,
+
     resolve: {
       modules: [paths.client.sources],
       alias: {
