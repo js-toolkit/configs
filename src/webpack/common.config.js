@@ -20,7 +20,8 @@ export default ({ outputPath, outputPublicPath }) => ({
 
   plugins: [
     // In order for the specified environment variables to be available in the JS code.
-    new webpack.EnvironmentPlugin(reactEnv.raw),
+    // EnvironmentPlugin not working on client side with ssr because environment variables not passed to webpackDevMiddleware?
+    new webpack.DefinePlugin(reactEnv.raw),
     // Keeps hashes consistent between compilations
     // new webpack.optimize.OccurrenceOrderPlugin(), // Deprecated in webpack 4.
     // Prints more readable module names in the browser console on HMR updates.
