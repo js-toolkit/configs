@@ -120,7 +120,7 @@ export default {
         options: {
           modules: true,
           localIdentName: reactEnv.ifDevMode(pattern, prodPattern),
-          //context, // https://github.com/webpack-contrib/css-loader/issues/267
+          context: paths.root, // https://github.com/webpack-contrib/css-loader/issues/267
           importLoaders: 1,
           ...rest,
         },
