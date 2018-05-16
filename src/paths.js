@@ -39,7 +39,8 @@ export default Object.freeze({
       // and used forked? process with express server
       // then for url-loader (fonts) must be equals to path suffix if path is subdir of output path.
       // publicPath: `/${dirMap.client.root}/`,
-      publicPath: dirMap.client.output.publicPath,
+      //
+      // publicPath: dirMap.client.output.publicPath,
     },
   },
 
@@ -49,7 +50,7 @@ export default Object.freeze({
 
     output: {
       path: path.resolve(baseDir, dirMap.output.root, dirMap.server.output.root),
-      publicPath: dirMap.server.output.publicPath,
+      // publicPath: dirMap.server.output.publicPath,
     },
   },
 

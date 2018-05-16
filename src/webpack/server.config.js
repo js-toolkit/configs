@@ -23,7 +23,7 @@ export default ({ entry, rules, nodeExternalsOptions }) => {
   return webpackMerge(
     commonConfig({
       outputPath: paths.server.output.path,
-      outputPublicPath: paths.server.output.publicPath,
+      outputPublicPath: dirMap.server.output.publicPath,
     }),
     {
       name: dirMap.server.root,

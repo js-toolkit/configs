@@ -1,5 +1,5 @@
 import reactEnv from '../reactEnv';
-import paths from '../paths';
+import paths, { dirMap } from '../paths';
 
 export default {
   ts({ tsconfig, forkedChecks, afterLoaders, ...rest }) {
@@ -148,7 +148,7 @@ export default {
               {
                 loader: 'extract-loader',
                 options: {
-                  publicPath: paths.client.output.publicPath,
+                  publicPath: dirMap.client.output.publicPath,
                 },
               },
             ]

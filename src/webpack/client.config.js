@@ -63,7 +63,7 @@ export default ({ entry, rules }) => {
   return webpackMerge(
     commonConfig({
       outputPath: paths.client.output.path,
-      outputPublicPath: paths.client.output.publicPath,
+      outputPublicPath: dirMap.client.output.publicPath,
     }),
     {
       name: dirMap.client.root,
@@ -115,7 +115,7 @@ export default ({ entry, rules }) => {
       devServer: {
         // Static content which not processed by webpack and loadable from disk.
         contentBase: paths.client.staticContent,
-        publicPath: paths.client.output.publicPath,
+        publicPath: dirMap.client.output.publicPath,
         historyApiFallback: true, // For react subpages handling with webpack-dev-server
         host: '0.0.0.0',
         port: 9000,
