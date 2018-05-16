@@ -31,10 +31,10 @@ export default Object.freeze({
 
     output: {
       path: path.resolve(baseDir, dirMap.output.root, dirMap.client.output.root),
-      js: dirMap.client.output.js,
-      styles: dirMap.client.output.styles,
-      assets: dirMap.client.output.assets,
-      external: dirMap.client.output.external,
+      // js: dirMap.client.output.js,
+      // styles: dirMap.client.output.styles,
+      // assets: dirMap.client.output.assets,
+      // external: dirMap.client.output.external,
       // If multiple webpack configurations (i.e. client and server)
       // and used forked? process with express server
       // then for url-loader (fonts) must be equals to path suffix if path is subdir of output path.

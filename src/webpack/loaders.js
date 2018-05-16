@@ -142,7 +142,7 @@ export default {
                 loader: 'file-loader',
                 options: {
                   regExp: 'node_modules(?:/|\\\\)(.*)',
-                  name: `${paths.client.output.external}/[1]`,
+                  name: `${dirMap.client.output.external}/[1]`,
                 },
               },
               {
@@ -175,7 +175,7 @@ export default {
       options: {
         emitFile: !ssr,
         limit: 1024,
-        name: `${paths.client.output.assets}/[name].[ext]?[hash:base64:5]`, // Virtual hash for HRM during development.
+        name: `${dirMap.client.output.assets}/[name].[ext]?[hash:base64:5]`, // Virtual hash for HRM during development.
       },
     };
   },
@@ -186,7 +186,7 @@ export default {
       options: {
         emitFile: !ssr,
         regExp: 'node_modules(?:/|\\\\)(.*)',
-        name: `${paths.client.output.external}/[1]`,
+        name: `${dirMap.client.output.external}/[1]`,
       },
     };
   },
