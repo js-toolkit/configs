@@ -1,6 +1,6 @@
 {
-  "extends": ["airbnb", "plugin:css-modules/recommended", "./common.eslintrc.json"],
-  "plugins": ["css-modules"],
+  "extends": ["airbnb", /* "plugin:css-modules/recommended", */ "./common.eslintrc.json"],
+  // "plugins": ["css-modules"],
   "env": {
     "browser": true,
     "node": false
