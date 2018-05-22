@@ -14,7 +14,7 @@ export const defaultRules = {
   cssRule: {
     ...jsDefaultRules.cssRule,
     use: loaders.css({
-      ssr: reactEnv.ssr,
+      ssr: true, // process css in server side always as ssr
       minimize: reactEnv.ifDevMode(false, {
         preset: ['default', { discardComments: { removeAll: true } }],
       }),
@@ -23,7 +23,7 @@ export const defaultRules = {
   cssNodeModulesRule: {
     ...jsDefaultRules.cssNodeModulesRule,
     use: loaders.css({
-      ssr: reactEnv.ssr,
+      ssr: true, // process css in server side always as ssr
       pattern: '[local]',
       prodPattern: '[local]',
       minimize: reactEnv.ifDevMode(false, {
@@ -33,7 +33,7 @@ export const defaultRules = {
   },
   assetsRule: {
     ...jsDefaultRules.assetsRule,
-    use: loaders.assets({ ssr: reactEnv.ssr }),
+    use: loaders.assets({ ssr: true }),
   },
 };
 
