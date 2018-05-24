@@ -1,12 +1,12 @@
 // Grab NODE_ENV and REACT_APP_* environment variables and prepare them to be
 // injected into the application via DefinePlugin in Webpack configuration.
 // const REACT_APP = /^REACT_APP_/i;
-const REACT_APP = /^APP_/i;
+const APP = /^APP_/i;
 
 export function getReactEnvironment() {
   // Object with keys and their default values so we can feed into Webpack EnvironmentPlugin
   const raw = Object.keys(process.env)
-    .filter(key => REACT_APP.test(key))
+    .filter(key => APP.test(key))
     .reduce((env, key) => ({ ...env, [key]: process.env[key] }), {
       // Useful for determining whether we’re running in production mode.
       // Most importantly, it switches React into the correct mode.
@@ -25,7 +25,7 @@ export function getReactEnvironment() {
     raw,
     stringified,
     get ssr() {
-      return this.raw.REACT_APP_SSR === 'true';
+      return this.raw.APP_SSR === 'true';
     },
     get dev() {
       return this.raw.NODE_ENV === 'development';
@@ -40,7 +40,7 @@ export function getReactEnvironment() {
       return this.prod ? prodModeValue : elseValue;
     },
     ifDevServer(devServerValue, elseValue) {
-      return this.raw.REACT_APP_DEV_SERVER ? devServerValue : elseValue;
+      return this.raw.APP_DEV_SERVER ? devServerValue : elseValue;
     },
   };
 }
