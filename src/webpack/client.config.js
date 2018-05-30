@@ -50,6 +50,7 @@ export default ({ entry, rules }) => {
     commonConfig({
       outputPath: paths.client.output.path,
       outputPublicPath: dirMap.client.output.publicPath,
+      hash: true,
     }),
     {
       name: dirMap.client.root,
@@ -87,7 +88,7 @@ export default ({ entry, rules }) => {
           ],
           [
             new MiniCssExtractPlugin({
-              filename: `${dirMap.client.output.styles}/[name].css`,
+              filename: `${dirMap.client.output.styles}/[name].css?[hash:5]`,
             }),
             // Minificate code in production.
             // new UglifyJsPlugin(), // Deprecated in webpack 4

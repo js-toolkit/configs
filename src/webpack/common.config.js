@@ -2,7 +2,7 @@ import webpack from 'webpack';
 import reactEnv from '../reactEnv';
 import paths, { dirMap } from '../paths';
 
-export default ({ outputPath, outputPublicPath }) => ({
+export default ({ outputPath, outputPublicPath, hash }) => ({
   // The base directory (absolute path!) for resolving the `entry` option.
   context: paths.root,
 
@@ -10,7 +10,7 @@ export default ({ outputPath, outputPublicPath }) => ({
     path: outputPath,
     publicPath: outputPublicPath,
     pathinfo: reactEnv.ifDevMode(true, false),
-    filename: `${dirMap.client.output.js}/[name].js`,
+    filename: `${dirMap.client.output.js}/[name].js${hash ? '?[hash:5]' : ''}`,
   },
 
   mode: reactEnv.raw.NODE_ENV,
