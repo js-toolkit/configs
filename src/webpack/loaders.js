@@ -122,7 +122,6 @@ export default {
           localIdentName: reactEnv.ifDevMode(pattern, prodPattern),
           context: paths.root, // https://github.com/webpack-contrib/css-loader/issues/267
           importLoaders: 1,
-          import: false, // use postcss-import
           minimize: reactEnv.ifDevMode(false, {
             preset: ['default', { discardComments: { removeAll: true } }],
           }),
