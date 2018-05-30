@@ -88,7 +88,7 @@ export default ({ entry, rules }) => {
           ],
           [
             new MiniCssExtractPlugin({
-              filename: `${dirMap.client.output.styles}/[name].css?[hash:5]`,
+              filename: `${dirMap.client.output.styles}/[name].css?[contenthash:5]`,
             }),
             // Minificate code in production.
             // new UglifyJsPlugin(), // Deprecated in webpack 4
