@@ -8,7 +8,7 @@ const baseDir = process.cwd();
 const customDirMapPath = path.resolve(baseDir, 'dirmap.json');
 
 export const dirMap = fs.existsSync(customDirMapPath)
-  ? webpackMerge(defaultDirMap, require(customDirMapPath))
+  ? webpackMerge(defaultDirMap, JSON.parse(fs.readFileSync(customDirMapPath).toString()))
   : defaultDirMap;
 
 export default Object.freeze({
