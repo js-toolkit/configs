@@ -13,23 +13,13 @@ export const defaultRules = {
   },
   cssRule: {
     ...jsDefaultRules.cssRule,
-    use: loaders.css({
-      ssr: true, // process css in server side always as ssr
-      minimize: reactEnv.ifDevMode(false, {
-        preset: ['default', { discardComments: { removeAll: true } }],
-      }),
-    }),
+    // process css in server side always as ssr
+    use: loaders.css({ ssr: true }),
   },
   cssNodeModulesRule: {
     ...jsDefaultRules.cssNodeModulesRule,
-    use: loaders.css({
-      ssr: true, // process css in server side always as ssr
-      pattern: '[local]',
-      prodPattern: '[local]',
-      minimize: reactEnv.ifDevMode(false, {
-        preset: ['default', { discardComments: { removeAll: true } }],
-      }),
-    }),
+    // process css in server side always as ssr
+    use: loaders.css({ ssr: true, pattern: '[local]', prodPattern: '[local]' }),
   },
   assetsRule: {
     ...jsDefaultRules.assetsRule,

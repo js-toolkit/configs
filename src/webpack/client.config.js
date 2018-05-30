@@ -1,6 +1,6 @@
 import webpack from 'webpack';
 import webpackMerge from 'webpack-merge';
-import ExtractTextPlugin from 'extract-text-webpack-plugin';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import reactEnv from '../reactEnv';
 import paths, { dirMap } from '../paths';
 import commonConfig from './common.config';
@@ -15,29 +15,15 @@ export const defaultRules = {
   cssRule: {
     test: /\.css$/,
     include: [paths.client.sources],
-    use: ExtractTextPlugin.extract({
-      fallback: 'style-loader',
-      use: loaders.css({
-        minimize: reactEnv.ifDevMode(false, {
-          preset: ['default', { discardComments: { removeAll: true } }],
-        }),
-      }),
-    }),
+    use: [reactEnv.ifDevMode('style-loader', MiniCssExtractPlugin.loader), ...loaders.css()],
   },
   cssNodeModulesRule: {
     test: /\.css$/,
     include: [paths.nodeModules.root],
-    // use: loaders.cssNodeModules(),
-    use: ExtractTextPlugin.extract({
-      fallback: 'style-loader',
-      use: loaders.css({
-        pattern: '[local]',
-        prodPattern: '[local]',
-        minimize: reactEnv.ifDevMode(false, {
-          preset: ['default', { discardComments: { removeAll: true } }],
-        }),
-      }),
-    }),
+    use: [
+      reactEnv.ifDevMode('style-loader', MiniCssExtractPlugin.loader),
+      ...loaders.css({ pattern: '[local]', prodPattern: '[local]' }),
+    ],
   },
   assetsRule: {
     test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2|otf)$/,
@@ -94,18 +80,15 @@ export default ({ entry, rules }) => {
         //   name: 'vendor', // Add link to this file in html before other JS/CSS files, it has a common code.
         //   minChunks: ({ context }) => context && context.indexOf(paths.nodeModules.dirname) >= 0, // Only from node_modules.
         // }),
-        // Saves received text to the file, for example css from style-loader and css-loader.
-        new ExtractTextPlugin({
-          filename: `${dirMap.client.output.styles}/[name].css`,
-          disable: reactEnv.dev,
-          allChunks: true,
-        }),
         ...reactEnv.ifDevMode(
           [
             // Enable HMR in development.
             new webpack.HotModuleReplacementPlugin(),
           ],
           [
+            new MiniCssExtractPlugin({
+              filename: `${dirMap.client.output.styles}/[name].css`,
+            }),
             // Minificate code in production.
             // new UglifyJsPlugin(), // Deprecated in webpack 4
           ]
