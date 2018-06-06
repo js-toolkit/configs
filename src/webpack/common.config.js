@@ -13,7 +13,7 @@ export default ({ outputPath, outputPublicPath, hash }) => ({
     filename: `${dirMap.client.output.js}/[name].js${hash ? '?[hash:5]' : ''}`,
   },
 
-  mode: appEnv.NODE_ENV,
+  mode: appEnv.raw.NODE_ENV,
 
   // http://cheng.logdown.com/posts/2016/03/25/679045
   devtool: appEnv.ifDevMode('cheap-module-eval-source-map', false),

@@ -21,16 +21,16 @@ export function getAppEnvironment() {
   };
 
   return {
-    ...raw,
+    raw,
     stringified,
     get ssr() {
-      return this.APP_SSR === 'true';
+      return this.raw.APP_SSR === 'true';
     },
     get dev() {
-      return this.NODE_ENV === 'development';
+      return this.raw.NODE_ENV === 'development';
     },
     get prod() {
-      return this.NODE_ENV === 'production';
+      return this.raw.NODE_ENV === 'production';
     },
     ifDevMode(devModeValue, elseValue) {
       return this.dev ? devModeValue : elseValue;
@@ -39,7 +39,7 @@ export function getAppEnvironment() {
       return this.prod ? prodModeValue : elseValue;
     },
     ifDevServer(devServerValue, elseValue) {
-      return this.APP_DEV_SERVER ? devServerValue : elseValue;
+      return this.raw.APP_DEV_SERVER ? devServerValue : elseValue;
     },
   };
 }
