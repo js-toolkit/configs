@@ -1,10 +1,10 @@
-import reactEnv from '../reactEnv';
+import appEnv from '../appEnv';
 import paths, { dirMap } from '../paths';
 
 export default {
   ts({ tsconfig, forkedChecks, afterLoaders, ...rest }) {
     return [
-      ...(forkedChecks && reactEnv.prod
+      ...(forkedChecks && appEnv.prod
         ? [
             // Must be placen on front of other loaders.
             // Useful without watch mode, because on every edit (compilation) thread-loader fork process and increase total time of build
@@ -25,7 +25,7 @@ export default {
         options: {
           configFile: tsconfig,
           transpileOnly: forkedChecks,
-          happyPackMode: forkedChecks && reactEnv.prod, // use happyPackMode mode to speed-up compilation and reduce errors reported to webpack
+          happyPackMode: forkedChecks && appEnv.prod, // use happyPackMode mode to speed-up compilation and reduce errors reported to webpack
           ...rest,
         },
       },
@@ -40,7 +40,7 @@ export default {
         ...(afterLoaders || []),
         // Necessary for RHL4.
         // Not working with RHL3 and DateRangePicker.
-        ...reactEnv.ifDevMode([{ loader: 'babel-loader' }], []),
+        ...appEnv.ifDevMode([{ loader: 'babel-loader' }], []),
       ],
       ...rest,
     });
@@ -52,7 +52,7 @@ export default {
       forkedChecks,
       afterLoaders: [
         ...(afterLoaders || []),
-        ...reactEnv.ifDevMode([{ loader: 'react-hot-loader/webpack' }], []),
+        ...appEnv.ifDevMode([{ loader: 'react-hot-loader/webpack' }], []),
       ],
       ...rest,
     });
@@ -63,7 +63,7 @@ export default {
     const Plugin = require('fork-ts-checker-webpack-plugin');
     return new Plugin({
       tsconfig,
-      checkSyntacticErrors: reactEnv.prod,
+      checkSyntacticErrors: appEnv.prod,
       memoryLimit: 1024,
       ...rest,
     });
@@ -85,14 +85,14 @@ export default {
     return [
       // Necessary for RHL4.
       // Not working with RHL3 and DateRangePicker.
-      ...reactEnv.ifDevMode([{ loader: 'babel-loader' }], []),
+      ...appEnv.ifDevMode([{ loader: 'babel-loader' }], []),
       this.ats({ tsconfig, ...rest }),
     ];
   },
 
   atsRHL3({ tsconfig, ...rest }) {
     return [
-      ...reactEnv.ifDevMode([{ loader: 'react-hot-loader/webpack' }], []),
+      ...appEnv.ifDevMode([{ loader: 'react-hot-loader/webpack' }], []),
       this.ats({ tsconfig, ...rest }),
     ];
   },
@@ -119,10 +119,10 @@ export default {
         loader: ssr ? 'css-loader/locals' : 'css-loader',
         options: {
           modules: true,
-          localIdentName: reactEnv.ifDevMode(pattern, prodPattern),
+          localIdentName: appEnv.ifDevMode(pattern, prodPattern),
           context: paths.root, // https://github.com/webpack-contrib/css-loader/issues/267
           importLoaders: 1,
-          minimize: reactEnv.ifDevMode(false, {
+          minimize: appEnv.ifDevMode(false, {
             preset: ['default', { discardComments: { removeAll: true } }],
           }),
           ...rest,
@@ -136,7 +136,7 @@ export default {
     return [
       ...(ssr
         ? []
-        : reactEnv.ifDevMode(
+        : appEnv.ifDevMode(
             [{ loader: 'style-loader' }],
             // In production mode extract processed css and save result to file.
             [

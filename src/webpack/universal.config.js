@@ -1,6 +1,6 @@
 import webpack from 'webpack';
 import webpackMerge from 'webpack-merge';
-import reactEnv from '../reactEnv';
+import appEnv from '../appEnv';
 import paths from '../paths';
 import serverConfig from './server.config';
 import { defaultRules as jsDefaultRules } from './client.config';
@@ -52,7 +52,7 @@ export default ({ entry, rules, nodeExternalsOptions }) => {
     plugins: [
       // Don't watch on client files when ssr is turned off because client by self make hot update
       // and server not needs in updated files because server not render react components.
-      ...(reactEnv.ssr ? [] : [new webpack.WatchIgnorePlugin([paths.client.root])]),
+      ...(appEnv.ssr ? [] : [new webpack.WatchIgnorePlugin([paths.client.root])]),
     ],
   });
 };

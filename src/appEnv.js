@@ -1,9 +1,8 @@
-// Grab NODE_ENV and REACT_APP_* environment variables and prepare them to be
+// Grab NODE_ENV and APP_* environment variables and prepare them to be
 // injected into the application via DefinePlugin in Webpack configuration.
-// const REACT_APP = /^REACT_APP_/i;
 const APP = /^APP_/i;
 
-export function getReactEnvironment() {
+export function getAppEnvironment() {
   // Object with keys and their default values so we can feed into Webpack EnvironmentPlugin
   const raw = Object.keys(process.env)
     .filter(key => APP.test(key))
@@ -22,16 +21,16 @@ export function getReactEnvironment() {
   };
 
   return {
-    raw,
+    ...raw,
     stringified,
     get ssr() {
-      return this.raw.APP_SSR === 'true';
+      return this.APP_SSR === 'true';
     },
     get dev() {
-      return this.raw.NODE_ENV === 'development';
+      return this.NODE_ENV === 'development';
     },
     get prod() {
-      return this.raw.NODE_ENV === 'production';
+      return this.NODE_ENV === 'production';
     },
     ifDevMode(devModeValue, elseValue) {
       return this.dev ? devModeValue : elseValue;
@@ -40,9 +39,9 @@ export function getReactEnvironment() {
       return this.prod ? prodModeValue : elseValue;
     },
     ifDevServer(devServerValue, elseValue) {
-      return this.raw.APP_DEV_SERVER ? devServerValue : elseValue;
+      return this.APP_DEV_SERVER ? devServerValue : elseValue;
     },
   };
 }
 
-export default getReactEnvironment();
+export default getAppEnvironment();

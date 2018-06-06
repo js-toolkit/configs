@@ -1,5 +1,5 @@
 import webpack from 'webpack';
-import reactEnv from '../reactEnv';
+import appEnv from '../appEnv';
 import paths, { dirMap } from '../paths';
 
 export default ({ outputPath, outputPublicPath, hash }) => ({
@@ -9,19 +9,19 @@ export default ({ outputPath, outputPublicPath, hash }) => ({
   output: {
     path: outputPath,
     publicPath: outputPublicPath,
-    pathinfo: reactEnv.ifDevMode(true, false),
+    pathinfo: appEnv.ifDevMode(true, false),
     filename: `${dirMap.client.output.js}/[name].js${hash ? '?[hash:5]' : ''}`,
   },
 
-  mode: reactEnv.raw.NODE_ENV,
+  mode: appEnv.NODE_ENV,
 
   // http://cheng.logdown.com/posts/2016/03/25/679045
-  devtool: reactEnv.ifDevMode('cheap-module-eval-source-map', false),
+  devtool: appEnv.ifDevMode('cheap-module-eval-source-map', false),
 
   plugins: [
     // In order for the specified environment variables to be available in the JS code.
     // EnvironmentPlugin not working on client side with ssr because environment variables not passed to webpackDevMiddleware?
-    new webpack.DefinePlugin(reactEnv.stringified),
+    new webpack.DefinePlugin(appEnv.stringified),
     // Keeps hashes consistent between compilations
     // new webpack.optimize.OccurrenceOrderPlugin(), // Deprecated in webpack 4.
     // Prints more readable module names in the browser console on HMR updates.

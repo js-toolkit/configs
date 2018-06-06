@@ -1,7 +1,7 @@
 import webpack from 'webpack';
 import webpackMerge from 'webpack-merge';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
-import reactEnv from '../reactEnv';
+import appEnv from '../appEnv';
 import paths, { dirMap } from '../paths';
 import commonConfig from './common.config';
 import loaders from './loaders';
@@ -15,13 +15,13 @@ export const defaultRules = {
   cssRule: {
     test: /\.css$/,
     include: [paths.client.sources],
-    use: [reactEnv.ifDevMode('style-loader', MiniCssExtractPlugin.loader), ...loaders.css()],
+    use: [appEnv.ifDevMode('style-loader', MiniCssExtractPlugin.loader), ...loaders.css()],
   },
   cssNodeModulesRule: {
     test: /\.css$/,
     include: [paths.nodeModules.root],
     use: [
-      reactEnv.ifDevMode('style-loader', MiniCssExtractPlugin.loader),
+      appEnv.ifDevMode('style-loader', MiniCssExtractPlugin.loader),
       ...loaders.css({ pattern: '[local]', prodPattern: '[local]' }),
     ],
   },
@@ -81,7 +81,7 @@ export default ({ entry, rules }) => {
         //   name: 'vendor', // Add link to this file in html before other JS/CSS files, it has a common code.
         //   minChunks: ({ context }) => context && context.indexOf(paths.nodeModules.dirname) >= 0, // Only from node_modules.
         // }),
-        ...reactEnv.ifDevMode(
+        ...appEnv.ifDevMode(
           [
             // Enable HMR in development.
             new webpack.HotModuleReplacementPlugin(),
