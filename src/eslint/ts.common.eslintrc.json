@@ -1,6 +1,7 @@
 {
   "parser": "typescript-eslint-parser",
   "extends": ["./common.eslintrc.json", "./ts.base.rules.eslintrc.json"],
+  "plugins": ["typescript"],
   "rules": {
     "import/no-unresolved": "off",
     "import/extensions": [
