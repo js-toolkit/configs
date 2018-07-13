@@ -1,6 +1,6 @@
 import appEnv from '../appEnv';
 
-export default ({ importPath }) => ({
+export default ({ importPath } = {}) => ({
   plugins: {
     'postcss-import': importPath ? { path: importPath } : false,
     'postcss-icss-values': {},
