@@ -177,8 +177,9 @@ export default {
       // to the file-loader with all specified parameters and it copies the files.
       loader: 'url-loader',
       options: {
-        emitFile: !ssr,
         limit: 1024,
+        fallback: 'file-loader',
+        emitFile: !ssr,
         name: `${dirMap.client.output.assets}/[name].[ext]?[hash:base64:5]`, // Virtual hash for HRM during development.
       },
     };
