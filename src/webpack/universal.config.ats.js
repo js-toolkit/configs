@@ -2,8 +2,9 @@ import webpackMerge from 'webpack-merge';
 import path from 'path';
 import paths from '../paths';
 import universalConfig from './universal.config';
-import loaders from './loaders';
 import { defaultRules } from './universal.config.ts';
+import commonConfigTs from './common.config.ts';
+import loaders from './loaders';
 
 export { defaultRules };
 
@@ -31,7 +32,9 @@ export default ({
     )
   )(useDefaultRules, rules);
 
-  return webpackMerge(universalConfig({ entry, rules: moduleRules, nodeExternalsOptions }), {
-    plugins: [loaders.atsCheckerPlugin()],
-  });
+  return webpackMerge(
+    commonConfigTs(),
+    universalConfig({ entry, rules: moduleRules, nodeExternalsOptions }),
+    { plugins: [loaders.atsCheckerPlugin()] }
+  );
 };

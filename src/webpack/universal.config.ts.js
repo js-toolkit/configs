@@ -3,6 +3,7 @@ import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
 import path from 'path';
 import paths from '../paths';
 import universalConfig from './universal.config';
+import commonConfigTs from './common.config.ts';
 import loaders from './loaders';
 
 export const defaultRules = {
@@ -36,11 +37,15 @@ export default ({
     )
   )(useDefaultRules, rules);
 
-  return webpackMerge(universalConfig({ entry, rules: moduleRules, nodeExternalsOptions }), {
-    resolve: {
-      plugins: [new TsconfigPathsPlugin({ configFile: tsconfigPath })],
-    },
+  return webpackMerge(
+    commonConfigTs(),
+    universalConfig({ entry, rules: moduleRules, nodeExternalsOptions }),
+    {
+      resolve: {
+        plugins: [new TsconfigPathsPlugin({ configFile: tsconfigPath })],
+      },
 
-    plugins: [loaders.tsCheckerPlugin({ tsconfig: tsconfigPath })],
-  });
+      plugins: [loaders.tsCheckerPlugin({ tsconfig: tsconfigPath })],
+    }
+  );
 };

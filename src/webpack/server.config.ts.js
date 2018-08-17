@@ -2,6 +2,7 @@ import path from 'path';
 import webpackMerge from 'webpack-merge';
 import paths from '../paths';
 import serverConfig from './server.config';
+import commonConfigTs from './common.config.ts';
 import loaders from './loaders';
 
 export const defaultRules = {
@@ -35,7 +36,9 @@ export default ({
     )
   )(useDefaultRules, rules);
 
-  return webpackMerge(serverConfig({ entry, rules: moduleRules, nodeExternalsOptions }), {
-    plugins: [loaders.tsCheckerPlugin({ tsconfig: tsconfigPath })],
-  });
+  return webpackMerge(
+    commonConfigTs(),
+    serverConfig({ entry, rules: moduleRules, nodeExternalsOptions }),
+    { plugins: [loaders.tsCheckerPlugin({ tsconfig: tsconfigPath })] }
+  );
 };
