@@ -4,12 +4,24 @@ import paths from '../paths';
 import clientConfig from './client.config';
 import loaders from './loaders';
 
-export const defaultRules = {
+export const baseDefaultRules = {
   tsRule: {
     test: /\.tsx?$/,
     include: [paths.client.sources, paths.shared.sources],
   },
 };
+
+export function getDefaultRules({ rhl, tsconfigPath } = {}) {
+  const { tsRule, ...rest } = baseDefaultRules;
+
+  return {
+    tsRule: {
+      ...tsRule,
+      use: (rhl ? loaders.tsRHL4 : loaders.ts)({ tsconfig: tsconfigPath, forkedChecks: true }),
+    },
+    ...rest,
+  };
+}
 
 export default ({
   entry,
@@ -17,23 +29,17 @@ export default ({
   rhl = true,
   tsconfigPath = path.join(paths.client.root, 'tsconfig.json'),
 }) => {
-  const { tsRule, ...rest } = defaultRules;
+  const defaultRules = getDefaultRules({ rhl, tsconfigPath });
 
-  const useDefaultRules = {
-    tsRule: {
-      ...tsRule,
-      use: (rhl ? loaders.tsRHL4 : loaders.ts)({ tsconfig: tsconfigPath, forkedChecks: true }),
-    },
-    ...rest,
-  };
+  const customRules = typeof rules === 'function' ? rules({ rhl, tsconfigPath }) : rules;
 
   // Merge and replace rules
   const moduleRules = webpackMerge.strategy(
-    Object.getOwnPropertyNames(useDefaultRules).reduce(
+    Object.getOwnPropertyNames(defaultRules).reduce(
       (obj, name) => ({ ...obj, [name]: 'replace' }),
       {}
     )
-  )(useDefaultRules, rules);
+  )(defaultRules, customRules);
 
   return webpackMerge(clientConfig({ entry, rules: moduleRules }), {
     plugins: [loaders.tsCheckerPlugin({ tsconfig: tsconfigPath })],
