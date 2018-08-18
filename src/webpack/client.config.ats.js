@@ -1,37 +1,24 @@
 import webpackMerge from 'webpack-merge';
-import * as path from 'path';
 import paths from '../paths';
 import loaders from './loaders';
 import clientConfig from './client.config';
-import { defaultRules } from './client.config.ts';
+import { baseDefaultRules } from './client.config.ts';
+import commonConfigTs from './common.config.ts';
+import { getAtsRule, mergeAndReplaceRules } from './utils';
 
-export { defaultRules };
+export default ({ entry, rules, rhl = true, tsconfig = paths.client.tsconfig }) => {
+  const { tsRule, ...rest } = baseDefaultRules;
 
-export default ({
-  entry,
-  rules,
-  rhl = true,
-  tsconfigPath = path.join(paths.client.root, 'tsconfig.json'),
-}) => {
-  const { tsRule, ...rest } = defaultRules;
-
-  const useDefaultRules = {
-    tsRule: {
-      ...tsRule,
-      use: (rhl ? loaders.tsRHL4 : loaders.ts)({ tsconfig: tsconfigPath }),
-    },
+  const defaultRules = {
+    tsRule: getAtsRule({ tsRule, rhl, tsconfig }),
     ...rest,
   };
 
-  // Merge and replace rules
-  const moduleRules = webpackMerge.strategy(
-    Object.getOwnPropertyNames(useDefaultRules).reduce(
-      (obj, name) => ({ ...obj, [name]: 'replace' }),
-      {}
-    )
-  )(useDefaultRules, rules);
+  const customRules = typeof rules === 'function' ? rules({ rhl, tsconfig }) : rules;
 
-  return webpackMerge(clientConfig({ entry, rules: moduleRules }), {
+  const moduleRules = mergeAndReplaceRules(defaultRules, customRules);
+
+  return webpackMerge(clientConfig({ entry, rules: moduleRules }), commonConfigTs(), {
     plugins: [loaders.atsCheckerPlugin()],
   });
 };

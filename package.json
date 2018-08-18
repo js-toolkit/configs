@@ -7,6 +7,7 @@
     "clean": "rimraf lib/",
     "build": "npm run clean && babel src/ --out-dir lib/ --copy-files && cp -t ./lib/ package.json LICENSE",
     "build-to-project": "npm run clean && babel src/ --out-dir '../project-langlearn/node_modules/@vzh/configs/' --copy-files",
+    "build-to-reflexy": "npm run clean && babel src/ --out-dir '../reflexy/node_modules/@vzh/configs/' --copy-files",
     "build-to-js-collections": "npm run clean && babel src/ --out-dir '../js-collections/node_modules/@vzh/configs/' --copy-files",
     "build-to-tabix": "npm run clean && babel src/ --out-dir '../tabixio/tabix/node_modules/@vzh/configs/' --copy-files",
     "patch-publish": "npm version patch && npm run build && npm publish ./lib --access public && git push --follow-tags",

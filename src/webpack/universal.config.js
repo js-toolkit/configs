@@ -5,6 +5,7 @@ import paths from '../paths';
 import serverConfig from './server.config';
 import { defaultRules as jsDefaultRules } from './client.config';
 import loaders from './loaders';
+import { mergeAndReplaceRules } from './utils';
 
 export const defaultRules = {
   jsRule: {
@@ -28,13 +29,7 @@ export const defaultRules = {
 };
 
 export default ({ entry, rules, nodeExternalsOptions }) => {
-  // Merge and replace rules
-  const moduleRules = webpackMerge.strategy(
-    Object.getOwnPropertyNames(defaultRules).reduce(
-      (obj, name) => ({ ...obj, [name]: 'replace' }),
-      {}
-    )
-  )(defaultRules, rules);
+  const moduleRules = mergeAndReplaceRules(defaultRules, rules);
 
   return webpackMerge(serverConfig({ entry, rules: moduleRules, nodeExternalsOptions }), {
     name: 'universal',

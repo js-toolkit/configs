@@ -9,6 +9,8 @@ export default Object.freeze({
     assets: 'src/assets',
     staticContent: 'public',
 
+    tsconfig: 'tsconfig.json',
+
     output: {
       root: 'client',
       js: 'js',
@@ -22,6 +24,9 @@ export default Object.freeze({
   server: {
     root: 'server',
     sources: 'src',
+
+    tsconfig: 'tsconfig.json',
+
     output: {
       root: 'server',
       publicPath: '/',
@@ -31,5 +36,6 @@ export default Object.freeze({
   shared: {
     root: 'shared',
     sources: 'src',
+    tsconfig: 'tsconfig.json',
   },
 });

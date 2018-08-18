@@ -29,6 +29,8 @@ export default Object.freeze({
     assets: path.resolve(baseDir, dirMap.client.root, dirMap.client.assets),
     staticContent: path.resolve(baseDir, dirMap.client.root, dirMap.client.staticContent),
 
+    tsconfig: path.resolve(baseDir, dirMap.client.root, dirMap.client.tsconfig),
+
     output: {
       path: path.resolve(baseDir, dirMap.output.root, dirMap.client.output.root),
       // js: dirMap.client.output.js,
@@ -48,6 +50,8 @@ export default Object.freeze({
     root: path.resolve(baseDir, dirMap.server.root),
     sources: path.resolve(baseDir, dirMap.server.root, dirMap.server.sources),
 
+    tsconfig: path.resolve(baseDir, dirMap.server.root, dirMap.server.tsconfig),
+
     output: {
       path: path.resolve(baseDir, dirMap.output.root, dirMap.server.output.root),
       // publicPath: dirMap.server.output.publicPath,
@@ -57,5 +61,6 @@ export default Object.freeze({
   shared: {
     root: path.resolve(baseDir, dirMap.shared.root),
     sources: path.resolve(baseDir, dirMap.shared.root, dirMap.shared.sources),
+    tsconfig: path.resolve(baseDir, dirMap.shared.root, dirMap.shared.tsconfig),
   },
 });

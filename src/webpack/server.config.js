@@ -3,6 +3,7 @@ import webpackNodeExternals from 'webpack-node-externals';
 import paths, { dirMap } from '../paths';
 import commonConfig from './common.config';
 import { defaultRules as jsDefaultRules } from './client.config';
+import { mergeAndReplaceRules } from './utils';
 
 export const defaultRules = {
   jsRule: {
@@ -12,13 +13,7 @@ export const defaultRules = {
 };
 
 export default ({ entry, rules, nodeExternalsOptions }) => {
-  // Merge and replace rules
-  const moduleRules = webpackMerge.strategy(
-    Object.getOwnPropertyNames(defaultRules).reduce(
-      (obj, name) => ({ ...obj, [name]: 'replace' }),
-      {}
-    )
-  )(defaultRules, rules);
+  const moduleRules = mergeAndReplaceRules(defaultRules, rules);
 
   return webpackMerge(
     commonConfig({
