@@ -2,14 +2,22 @@
 // injected into the application via DefinePlugin in Webpack configuration.
 const APP = /^APP_/i;
 
+export type NodeEnv = 'development' | 'production';
+
+export interface RawAppEnv {
+  NODE_ENV: NodeEnv;
+  APP_SSR?: string;
+  [P: string]: string | undefined;
+}
+
 export function getAppEnvironment() {
   // Object with keys and their default values so we can feed into Webpack EnvironmentPlugin
-  const raw = Object.keys(process.env)
+  const raw: RawAppEnv = Object.keys(process.env)
     .filter(key => APP.test(key))
     .reduce((env, key) => ({ ...env, [key]: process.env[key] }), {
       // Useful for determining whether we’re running in production mode.
       // Most importantly, it switches React into the correct mode.
-      NODE_ENV: process.env.NODE_ENV || 'development',
+      NODE_ENV: (process.env.NODE_ENV as NodeEnv) || 'development',
     });
 
   // Stringify all values so we can feed into Webpack DefinePlugin
@@ -23,22 +31,28 @@ export function getAppEnvironment() {
   return {
     raw,
     stringified,
+
     get ssr() {
       return this.raw.APP_SSR === 'true';
     },
+
     get dev() {
       return this.raw.NODE_ENV === 'development';
     },
+
     get prod() {
       return this.raw.NODE_ENV === 'production';
     },
-    ifDevMode(devModeValue, elseValue) {
+
+    ifDevMode<T>(devModeValue: T, elseValue: T) {
       return this.dev ? devModeValue : elseValue;
     },
-    ifProdMode(prodModeValue, elseValue) {
+
+    ifProdMode<T>(prodModeValue: T, elseValue: T) {
       return this.prod ? prodModeValue : elseValue;
     },
-    ifDevServer(devServerValue, elseValue) {
+
+    ifDevServer<T>(devServerValue: T, elseValue: T) {
       return this.raw.APP_DEV_SERVER ? devServerValue : elseValue;
     },
   };

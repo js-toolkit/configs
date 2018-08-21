@@ -1,3 +1,0 @@
-{
-  "extends": "./src/babel/common.babelrc.json"
-}

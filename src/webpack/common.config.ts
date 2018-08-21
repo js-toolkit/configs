@@ -1,8 +1,14 @@
-import webpack from 'webpack';
+import webpack, { Options, Configuration } from 'webpack';
 import appEnv from '../appEnv';
 import paths, { dirMap } from '../paths';
 
-export default ({ outputPath, outputPublicPath, hash }) => ({
+export interface CommonConfigOptions {
+  outputPath: string;
+  outputPublicPath: string;
+  hash?: boolean;
+}
+
+export default ({ outputPath, outputPublicPath, hash }: CommonConfigOptions): Configuration => ({
   // The base directory (absolute path!) for resolving the `entry` option.
   context: paths.root,
 
@@ -16,7 +22,7 @@ export default ({ outputPath, outputPublicPath, hash }) => ({
   mode: appEnv.raw.NODE_ENV,
 
   // http://cheng.logdown.com/posts/2016/03/25/679045
-  devtool: appEnv.ifDevMode('cheap-module-eval-source-map', false),
+  devtool: appEnv.ifDevMode<Options.Devtool>('cheap-module-eval-source-map', false),
 
   plugins: [
     // In order for the specified environment variables to be available in the JS code.

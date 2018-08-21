@@ -1,8 +1,18 @@
+import { Loader } from 'webpack';
 import appEnv from '../appEnv';
 import paths, { dirMap } from '../paths';
 
+export interface BaseTsOptions {
+  tsconfig: string;
+}
+
+export interface TsOptions extends BaseTsOptions {
+  forkedChecks?: boolean;
+  afterLoaders?: Loader[];
+}
+
 export default {
-  ts({ tsconfig, forkedChecks, afterLoaders, ...rest }) {
+  ts({ tsconfig, forkedChecks, afterLoaders, ...rest }: TsOptions) {
     return [
       ...(forkedChecks && appEnv.prod
         ? [
@@ -32,7 +42,7 @@ export default {
     ];
   },
 
-  tsRHL4({ tsconfig, forkedChecks, afterLoaders, ...rest }) {
+  tsRHL4({ tsconfig, forkedChecks, afterLoaders, ...rest }: TsOptions) {
     return this.ts({
       tsconfig,
       forkedChecks,
@@ -46,7 +56,7 @@ export default {
     });
   },
 
-  tsRHL3({ tsconfig, forkedChecks, afterLoaders, ...rest }) {
+  tsRHL3({ tsconfig, forkedChecks, afterLoaders, ...rest }: TsOptions) {
     return this.ts({
       tsconfig,
       forkedChecks,
@@ -59,7 +69,7 @@ export default {
   },
 
   /** In order to runs typescript type checker on a separate process. */
-  tsCheckerPlugin({ tsconfig, ...rest }) {
+  tsCheckerPlugin({ tsconfig, ...rest }: BaseTsOptions) {
     const Plugin = require('fork-ts-checker-webpack-plugin');
     return new Plugin({
       tsconfig,
@@ -69,7 +79,7 @@ export default {
     });
   },
 
-  ats({ tsconfig, ...rest }) {
+  ats({ tsconfig, ...rest }: BaseTsOptions) {
     return {
       loader: 'awesome-typescript-loader',
       options: {
@@ -81,7 +91,7 @@ export default {
     };
   },
 
-  atsRHL4({ tsconfig, ...rest }) {
+  atsRHL4({ tsconfig, ...rest }: BaseTsOptions) {
     return [
       // Necessary for RHL4.
       // Not working with RHL3 and DateRangePicker.
@@ -90,7 +100,7 @@ export default {
     ];
   },
 
-  atsRHL3({ tsconfig, ...rest }) {
+  atsRHL3({ tsconfig, ...rest }: BaseTsOptions) {
     return [
       ...appEnv.ifDevMode([{ loader: 'react-hot-loader/webpack' }], []),
       this.ats({ tsconfig, ...rest }),
@@ -103,7 +113,7 @@ export default {
     return new CheckerPlugin();
   },
 
-  babel(options) {
+  babel(options?: Record<PropertyKey, any>) {
     return {
       loader: 'babel-loader',
       options: {
@@ -113,7 +123,12 @@ export default {
     };
   },
 
-  css({ ssr, pattern = '[name]__[local]--[hash:5]', prodPattern = '[hash:5]', ...rest } = {}) {
+  css({
+    ssr = false,
+    pattern = '[name]__[local]--[hash:5]',
+    prodPattern = '[hash:5]',
+    ...rest
+  } = {}) {
     return [
       {
         loader: ssr ? 'css-loader/locals' : 'css-loader',
@@ -133,11 +148,11 @@ export default {
     ];
   },
 
-  cssNodeModules({ ssr, localIdentName = '[local]', postcss } = {}) {
+  cssNodeModules({ ssr = false, localIdentName = '[local]', postcss = false } = {}) {
     return [
       ...(ssr
         ? []
-        : appEnv.ifDevMode(
+        : appEnv.ifDevMode<Loader[]>(
             [{ loader: 'style-loader' }],
             // In production mode extract processed css and save result to file.
             [
@@ -171,7 +186,7 @@ export default {
     ];
   },
 
-  assets({ ssr } = {}) {
+  assets({ ssr = false } = {}) {
     return {
       // Embeds resources as DataUrl, or if the file size exceeds options.limit then redirects
       // to the file-loader with all specified parameters and it copies the files.
@@ -185,7 +200,7 @@ export default {
     };
   },
 
-  assetsNodeModules({ ssr } = {}) {
+  assetsNodeModules({ ssr = false } = {}) {
     return {
       loader: 'file-loader',
       options: {

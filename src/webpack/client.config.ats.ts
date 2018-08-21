@@ -1,12 +1,18 @@
 import webpackMerge from 'webpack-merge';
+import { Configuration } from 'webpack';
 import paths from '../paths';
 import loaders from './loaders';
 import clientConfig from './client.config';
-import { baseDefaultRules } from './client.config.ts';
+import { baseDefaultRules, ConfigOptions } from './client.config.ts';
 import commonConfigTs from './common.config.ts';
 import { getAtsRule, mergeAndReplaceRules } from './utils';
 
-export default ({ entry, rules, rhl = true, tsconfig = paths.client.tsconfig }) => {
+export default ({
+  entry,
+  rules,
+  rhl = true,
+  tsconfig = paths.client.tsconfig,
+}: ConfigOptions): Configuration => {
   const { tsRule, ...rest } = baseDefaultRules;
 
   const defaultRules = {
@@ -14,9 +20,9 @@ export default ({ entry, rules, rhl = true, tsconfig = paths.client.tsconfig }) 
     ...rest,
   };
 
-  const customRules = typeof rules === 'function' ? rules({ rhl, tsconfig }) : rules;
+  // const customRules = typeof rules === 'function' ? rules({ rhl, tsconfig }) : rules;
 
-  const moduleRules = mergeAndReplaceRules(defaultRules, customRules);
+  const moduleRules = mergeAndReplaceRules(defaultRules, rules);
 
   return webpackMerge(clientConfig({ entry, rules: moduleRules }), commonConfigTs(), {
     plugins: [loaders.atsCheckerPlugin()],

@@ -1,12 +1,19 @@
 import webpackMerge from 'webpack-merge';
+import { Configuration } from 'webpack';
 import paths from '../paths';
+import commonConfigTs from './common.config.ts';
+import { ConfigOptions } from './server.config.ts';
 import universalConfig from './universal.config';
 import { baseDefaultRules } from './universal.config.ts';
-import commonConfigTs from './common.config.ts';
 import loaders from './loaders';
 import { getAtsRule, mergeAndReplaceRules } from './utils';
 
-export default ({ entry, rules, tsconfig = paths.server.tsconfig, nodeExternalsOptions }) => {
+export default ({
+  entry,
+  rules,
+  tsconfig = paths.server.tsconfig,
+  nodeExternalsOptions,
+}: ConfigOptions): Configuration => {
   const { tsRule, ...rest } = baseDefaultRules;
 
   const defaultRules = {

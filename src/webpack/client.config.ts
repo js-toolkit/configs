@@ -1,4 +1,4 @@
-import webpack from 'webpack';
+import webpack, { Configuration, RuleSetRule } from 'webpack';
 import webpackMerge from 'webpack-merge';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import appEnv from '../appEnv';
@@ -7,7 +7,10 @@ import commonConfig from './common.config';
 import loaders from './loaders';
 import { mergeAndReplaceRules } from './utils';
 
-export const defaultRules = {
+export const defaultRules: Record<
+  'jsRule' | 'cssRule' | 'cssNodeModulesRule' | 'assetsRule',
+  RuleSetRule
+> = {
   jsRule: {
     test: /\.jsx?$/,
     include: [paths.client.sources, paths.shared.sources],
@@ -38,7 +41,13 @@ export const defaultRules = {
   // },
 };
 
-export default ({ entry, rules }) => {
+export type DefaultClientJsRules = typeof defaultRules;
+
+export interface ConfigOptions extends Pick<Configuration, 'entry'> {
+  rules: Record<string, RuleSetRule>;
+}
+
+export default ({ entry, rules }: ConfigOptions): Configuration => {
   const moduleRules = mergeAndReplaceRules(defaultRules, rules);
 
   return webpackMerge(

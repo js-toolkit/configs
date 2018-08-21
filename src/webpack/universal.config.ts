@@ -1,16 +1,16 @@
-import webpack from 'webpack';
+import webpack, { Configuration } from 'webpack';
 import webpackMerge from 'webpack-merge';
 import appEnv from '../appEnv';
 import paths from '../paths';
-import serverConfig from './server.config';
-import { defaultRules as jsDefaultRules } from './client.config';
+import serverConfig, { ConfigOptions } from './server.config';
+import { defaultRules as jsDefaultRules, DefaultClientJsRules } from './client.config';
 import loaders from './loaders';
 import { mergeAndReplaceRules } from './utils';
 
-export const defaultRules = {
+export const defaultRules: DefaultClientJsRules = {
   jsRule: {
     ...jsDefaultRules.jsRule,
-    include: [...jsDefaultRules.jsRule.include, paths.server.sources],
+    include: [...(jsDefaultRules.jsRule.include as any), paths.server.sources],
   },
   cssRule: {
     ...jsDefaultRules.cssRule,
@@ -28,7 +28,7 @@ export const defaultRules = {
   },
 };
 
-export default ({ entry, rules, nodeExternalsOptions }) => {
+export default ({ entry, rules, nodeExternalsOptions }: ConfigOptions): Configuration => {
   const moduleRules = mergeAndReplaceRules(defaultRules, rules);
 
   return webpackMerge(serverConfig({ entry, rules: moduleRules, nodeExternalsOptions }), {

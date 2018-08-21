@@ -3,12 +3,15 @@ import fs from 'fs';
 import webpackMerge from 'webpack-merge';
 import defaultDirMap from './dirmap';
 
+export type DirMapConfig = typeof defaultDirMap;
+
 const baseDir = process.cwd();
 
 const customDirMapPath = path.resolve(baseDir, 'dirmap.json');
+const customDirMap = JSON.parse(fs.readFileSync(customDirMapPath).toString());
 
-export const dirMap = fs.existsSync(customDirMapPath)
-  ? webpackMerge(defaultDirMap, JSON.parse(fs.readFileSync(customDirMapPath).toString()))
+export const dirMap: DirMapConfig = fs.existsSync(customDirMapPath)
+  ? (webpackMerge(defaultDirMap as any, customDirMap) as any)
   : defaultDirMap;
 
 export default Object.freeze({

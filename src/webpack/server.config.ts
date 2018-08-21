@@ -1,8 +1,12 @@
 import webpackMerge from 'webpack-merge';
 import webpackNodeExternals from 'webpack-node-externals';
+import { Configuration } from 'webpack';
 import paths, { dirMap } from '../paths';
 import commonConfig from './common.config';
-import { defaultRules as jsDefaultRules } from './client.config';
+import {
+  defaultRules as jsDefaultRules,
+  ConfigOptions as BaseConfigOptions,
+} from './client.config';
 import { mergeAndReplaceRules } from './utils';
 
 export const defaultRules = {
@@ -12,7 +16,11 @@ export const defaultRules = {
   },
 };
 
-export default ({ entry, rules, nodeExternalsOptions }) => {
+export interface ConfigOptions extends BaseConfigOptions {
+  nodeExternalsOptions?: webpackNodeExternals.Options;
+}
+
+export default ({ entry, rules, nodeExternalsOptions }: ConfigOptions): Configuration => {
   const moduleRules = mergeAndReplaceRules(defaultRules, rules);
 
   return webpackMerge(

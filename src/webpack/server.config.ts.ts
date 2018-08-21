@@ -1,8 +1,9 @@
 import webpackMerge from 'webpack-merge';
+import { Configuration } from 'webpack';
 import paths from '../paths';
-import serverConfig from './server.config';
 import commonConfigTs from './common.config.ts';
-import loaders from './loaders';
+import serverConfig, { ConfigOptions as BaseConfigOptions } from './server.config';
+import loaders, { BaseTsOptions } from './loaders';
 import { getTsRule, mergeAndReplaceRules } from './utils';
 
 export const baseDefaultRules = {
@@ -12,7 +13,14 @@ export const baseDefaultRules = {
   },
 };
 
-export default ({ entry, rules, tsconfig = paths.server.tsconfig, nodeExternalsOptions }) => {
+export interface ConfigOptions extends BaseTsOptions, BaseConfigOptions {}
+
+export default ({
+  entry,
+  rules,
+  tsconfig = paths.server.tsconfig,
+  nodeExternalsOptions,
+}: ConfigOptions): Configuration => {
   const { tsRule, ...rest } = baseDefaultRules;
 
   const defaultRules = {

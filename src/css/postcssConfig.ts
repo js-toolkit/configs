@@ -1,9 +1,14 @@
 import appEnv from '../appEnv';
 import paths from '../paths';
 
+interface Args {
+  importPath?: string[] | string;
+  presetEnv?: any;
+}
+
 const defaultImportPath = [paths.client.sources];
 
-export default ({ importPath = defaultImportPath, presetEnv } = {}) => ({
+export default ({ importPath = defaultImportPath, presetEnv }: Args = {}) => ({
   sourceMap: appEnv.dev,
   plugins: {
     'postcss-import': importPath ? { path: importPath } : false,
@@ -18,7 +23,7 @@ export default ({ importPath = defaultImportPath, presetEnv } = {}) => ({
         ...(presetEnv ? presetEnv.features : undefined),
       },
     },
-    cssnano: appEnv.ifDevMode(false, {
+    cssnano: appEnv.ifDevMode<any>(false, {
       // Need install cssnano cssnano-preset-default
       preset: ['default', { discardComments: { removeAll: true } }],
     }),
