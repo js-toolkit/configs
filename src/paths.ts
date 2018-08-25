@@ -8,10 +8,13 @@ export type DirMapConfig = typeof defaultDirMap;
 const baseDir = process.cwd();
 
 const customDirMapPath = path.resolve(baseDir, 'dirmap.json');
-const customDirMap = JSON.parse(fs.readFileSync(customDirMapPath).toString());
+
+function loadCustomDirMap(filePath: string) {
+  return JSON.parse(fs.readFileSync(filePath).toString());
+}
 
 export const dirMap: DirMapConfig = fs.existsSync(customDirMapPath)
-  ? (webpackMerge(defaultDirMap as any, customDirMap) as any)
+  ? (webpackMerge(defaultDirMap as any, loadCustomDirMap(customDirMapPath)) as any)
   : defaultDirMap;
 
 export default Object.freeze({
