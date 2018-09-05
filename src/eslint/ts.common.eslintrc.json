@@ -8,6 +8,9 @@
       "error",
       "ignorePackages",
       { "js": "never", "jsx": "never", "ts": "never", "tsx": "never" }
-    ]
+    ],
+    "no-inner-declarations": ["off", "functions"],
+    "no-useless-constructor": "off",
+    "no-empty-function": ["error", { "allow": ["constructors"] }]
   }
 }
