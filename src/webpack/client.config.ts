@@ -26,7 +26,7 @@ export const defaultRules: Record<
     include: [paths.nodeModules.root],
     use: [
       appEnv.ifDevMode('style-loader', MiniCssExtractPlugin.loader),
-      ...loaders.css({ pattern: '[local]', prodPattern: '[local]' }),
+      ...loaders.css({ pattern: '[local]', prodPattern: '[local]', postcss: false }),
     ],
   },
   assetsRule: {

@@ -127,6 +127,7 @@ export default {
     ssr = false,
     pattern = '[name]__[local]--[hash:5]',
     prodPattern = '[hash:5]',
+    postcss = true,
     ...rest
   } = {}) {
     return [
@@ -144,7 +145,7 @@ export default {
           ...rest,
         },
       },
-      'postcss-loader', // https://github.com/postcss/postcss-import/issues/224
+      ...(postcss ? ['postcss-loader'] : []), // https://github.com/postcss/postcss-import/issues/224
     ];
   },
 
