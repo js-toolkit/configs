@@ -2,6 +2,10 @@
   "rules": {
     "no-undef": "off",
     "no-unused-vars": "off",
-    "no-restricted-globals": "off"
+    "no-restricted-globals": "off",
+    "no-redeclare": "off",
+    "no-inner-declarations": ["off", "functions"],
+    "no-useless-constructor": "off",
+    "no-empty-function": ["error", { "allow": ["constructors"] }]
   }
 }
