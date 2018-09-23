@@ -1,3 +1,4 @@
+import path from 'path';
 import webpack, { Options, Configuration } from 'webpack';
 import appEnv from '../appEnv';
 import paths, { dirMap } from '../paths';
@@ -16,8 +17,8 @@ export default ({ outputPath, outputPublicPath, hash }: CommonConfigOptions): Co
     path: outputPath,
     publicPath: outputPublicPath,
     pathinfo: appEnv.ifDevMode(true, false),
-    filename: `${dirMap.client.output.js}/[name].js${hash ? '?[hash:5]' : ''}`,
-    // chunkFilename: `${dirMap.client.output.js}/[id].js${hash ? '?[chunkhash]' : ''}`,
+    filename: path.join(dirMap.client.output.js, `[name].js${hash ? '?[hash:5]' : ''}`),
+    // chunkFilename: path.join(dirMap.client.output.js, `[id].js${hash ? '?[chunkhash]' : ''}`),
   },
 
   mode: appEnv.raw.NODE_ENV,
