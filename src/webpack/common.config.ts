@@ -17,6 +17,7 @@ export default ({ outputPath, outputPublicPath, hash }: CommonConfigOptions): Co
     publicPath: outputPublicPath,
     pathinfo: appEnv.ifDevMode(true, false),
     filename: `${dirMap.client.output.js}/[name].js${hash ? '?[hash:5]' : ''}`,
+    // chunkFilename: `${dirMap.client.output.js}/[id].js${hash ? '?[chunkhash]' : ''}`,
   },
 
   mode: appEnv.raw.NODE_ENV,

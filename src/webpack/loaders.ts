@@ -149,7 +149,18 @@ export default {
     ];
   },
 
-  cssNodeModules({ ssr = false, localIdentName = '[local]', postcss = false } = {}) {
+  cssNodeModules({ ssr = false, postcss = true, ...rest } = {}) {
+    return this.css({
+      ssr,
+      postcss,
+      pattern: '[local]',
+      prodPattern: '[local]',
+      modules: false,
+      ...rest,
+    } as any);
+  },
+
+  cssNodeModulesCopy({ ssr = false, localIdentName = '[local]', postcss = false } = {}) {
     return [
       ...(ssr
         ? []

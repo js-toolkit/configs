@@ -14,13 +14,13 @@ export const defaultRules: DefaultClientJsRules = {
   },
   cssRule: {
     ...jsDefaultRules.cssRule,
-    // process css in server side always as ssr
+    // process css in server side always in ssr mode
     use: loaders.css({ ssr: true }),
   },
   cssNodeModulesRule: {
     ...jsDefaultRules.cssNodeModulesRule,
-    // process css in server side always as ssr
-    use: loaders.css({ ssr: true, pattern: '[local]', prodPattern: '[local]' }),
+    // process css in server side always in ssr mode
+    use: loaders.cssNodeModules({ ssr: true }),
   },
   assetsRule: {
     ...jsDefaultRules.assetsRule,
