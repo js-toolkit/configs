@@ -1,6 +1,8 @@
 {
   "extends": ["./react.eslintrc.json", "./ts.common.eslintrc.json"],
   "rules": {
-    "react/jsx-filename-extension": ["error", { "extensions": [".ts", ".tsx"] }]
+    "react/sort-comp": "off",
+    "react/jsx-filename-extension": ["error", { "extensions": [".ts", ".tsx"] }],
+    "react/destructuring-assignment": ["on", "always", { "ignoreClassFields": true }]    
   }
 }

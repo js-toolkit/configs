@@ -3,6 +3,8 @@
   "parser": "typescript-eslint-parser",
   "plugins": ["typescript"],
   "rules": {
+    "class-methods-use-this": "off",
+    "no-use-before-define": "off",
     "import/no-unresolved": "off",
     "import/extensions": [
       "error",
