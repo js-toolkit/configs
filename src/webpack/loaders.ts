@@ -155,7 +155,7 @@ export default {
       postcss,
       pattern: '[local]',
       prodPattern: '[local]',
-      modules: false,
+      modules: true, // Need modules for bundle css which requiring from js files in node_modules, for example reflexy.
       ...rest,
     } as any);
   },
