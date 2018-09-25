@@ -137,7 +137,7 @@ export default {
           modules: true,
           localIdentName: appEnv.ifDevMode(pattern, prodPattern),
           context: paths.root, // https://github.com/webpack-contrib/css-loader/issues/267
-          importLoaders: 1,
+          importLoaders: postcss ? 1 : undefined,
           // !!! Removed in v1.0.0 in favor of postcss-loader cssnano plugin.
           // minimize: appEnv.ifDevMode(false, {
           //   preset: ['default', { discardComments: { removeAll: true } }],
