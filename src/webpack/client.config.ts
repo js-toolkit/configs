@@ -79,12 +79,6 @@ export default ({ entry, rules }: ConfigOptions): Configuration => {
       },
 
       plugins: [
-        // To extract a common code to single separate file.
-        // Deprecated with webpack 4
-        // new webpack.optimize.CommonsChunkPlugin({
-        //   name: 'vendor', // Add link to this file in html before other JS/CSS files, it has a common code.
-        //   minChunks: ({ context }) => context && context.indexOf(paths.nodeModules.dirname) >= 0, // Only from node_modules.
-        // }),
         ...appEnv.ifDevMode(
           [
             // Enable HMR in development.
@@ -94,8 +88,6 @@ export default ({ entry, rules }: ConfigOptions): Configuration => {
             new MiniCssExtractPlugin({
               filename: `${dirMap.client.output.styles}/[name].css?[contenthash:5]`,
             }),
-            // Minificate code in production.
-            // new UglifyJsPlugin(), // Deprecated in webpack 4
           ]
         ),
       ],

@@ -138,10 +138,6 @@ export default {
           localIdentName: appEnv.ifDevMode(pattern, prodPattern),
           context: paths.root, // https://github.com/webpack-contrib/css-loader/issues/267
           importLoaders: postcss ? 1 : undefined,
-          // !!! Removed in v1.0.0 in favor of postcss-loader cssnano plugin.
-          // minimize: appEnv.ifDevMode(false, {
-          //   preset: ['default', { discardComments: { removeAll: true } }],
-          // }),
           ...rest,
         },
       },
@@ -149,7 +145,7 @@ export default {
     ];
   },
 
-  cssNodeModules({ ssr = false, postcss = true, ...rest } = {}) {
+  cssNodeModules({ ssr = false, postcss = false, ...rest } = {}) {
     return this.css({
       ssr,
       postcss,
