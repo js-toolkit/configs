@@ -124,7 +124,6 @@ export default {
   },
 
   /**
-   * Use css-loader for handle @import clause instead of postcss-import.
    * Problem of duplication css classes when use composes with css file from node_modules directory.
    * 1. It can occur when use different loaders for source and composes files.
    *    Solution: use the same loaders for source and composes files.

@@ -1,18 +1,18 @@
 import appEnv from '../appEnv';
-// import paths from '../paths';
+import paths from '../paths';
 
 interface Props {
-  // importPath?: string[] | string;
+  importPath?: string[] | string;
   presetEnv?: Record<string, any>;
 }
 
-// const defaultImportPath = [paths.client.sources];
+const defaultImportPath = [paths.client.sources];
 
-export default ({ /* importPath = defaultImportPath, */ presetEnv }: Props = {}) => ({
+export default ({ importPath = defaultImportPath, presetEnv }: Props = {}) => ({
   sourceMap: appEnv.dev,
   plugins: {
-    // !!! Handle imports by css-loader instead.
-    // 'postcss-import': importPath ? { path: importPath } : false, // https://github.com/postcss/postcss-import/issues/224
+    // Primarily use to override imported styles: import css file before css-loader process it and then process merged css by css-loader.
+    'postcss-import': importPath ? { path: importPath } : false, // https://github.com/postcss/postcss-import/issues/224
     'postcss-icss-values': {},
     'postcss-nested': {},
     'postcss-preset-env': {
