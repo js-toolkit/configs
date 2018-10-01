@@ -1,17 +1,17 @@
 import appEnv from '../appEnv';
-// import paths from '../paths';
+import paths from '../paths';
 
 interface Args {
   importPath?: string[] | string;
   presetEnv?: any;
 }
 
-// const defaultImportPath = [paths.client.sources];
+const defaultImportPath = [paths.client.sources];
 
-export default ({ /* importPath = defaultImportPath, */ presetEnv }: Args = {}) => ({
+export default ({ importPath = defaultImportPath, presetEnv }: Args = {}) => ({
   sourceMap: appEnv.dev,
   plugins: {
-    // 'postcss-import': importPath ? { path: importPath } : false,
+    'postcss-import': importPath ? { path: importPath } : false,
     'postcss-icss-values': {},
     'postcss-nested': {},
     'postcss-preset-env': {
