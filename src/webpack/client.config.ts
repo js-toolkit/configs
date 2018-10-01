@@ -34,11 +34,6 @@ export const defaultRules: Record<
     include: [paths.client.assets, paths.nodeModules.root],
     use: loaders.assets(),
   },
-  // assetsNodeModulesRule: {
-  //   test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2|otf)$/,
-  //   include: [paths.nodeModules.root],
-  //   use: loaders.assetsNodeModules(),
-  // },
 };
 
 export type DefaultClientJsRules = typeof defaultRules;
@@ -93,8 +88,7 @@ export default ({ entry, rules }: ConfigOptions): Configuration => {
       ],
 
       devServer: {
-        // Static content which not processed by webpack and loadable from disk.
-        contentBase: paths.client.staticContent,
+        contentBase: paths.client.staticContent, // Static content which not processed by webpack and loadable from disk.
         publicPath: dirMap.client.output.publicPath,
         historyApiFallback: true, // For react subpages handling with webpack-dev-server
         host: '0.0.0.0',
@@ -102,15 +96,6 @@ export default ({ entry, rules }: ConfigOptions): Configuration => {
         hotOnly: true,
         noInfo: false,
         stats: 'minimal',
-        // stats: {
-        //   colors: true,
-        //   errors: true,
-        //   warnings: true,
-        //   modules: false,
-        //   assets: false,
-        //   cached: false,
-        //   cachedAssets: false,
-        // },
       },
     }
   );

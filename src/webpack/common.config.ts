@@ -30,12 +30,6 @@ export default ({ outputPath, outputPublicPath, hash }: CommonConfigOptions): Co
     // In order for the specified environment variables to be available in the JS code.
     // EnvironmentPlugin not working on client side with ssr because environment variables not passed to webpackDevMiddleware?
     new webpack.DefinePlugin(appEnv.stringified),
-    // Keeps hashes consistent between compilations
-    // new webpack.optimize.OccurrenceOrderPlugin(), // Deprecated in webpack 4.
-    // Prints more readable module names in the browser console on HMR updates.
-    // new webpack.NamedModulesPlugin(), // Deprecated in webpack 4.
-    // In order for don't emit files if errors occurred.
-    // new webpack.NoEmitOnErrorsPlugin(),
   ],
 
   resolve: {

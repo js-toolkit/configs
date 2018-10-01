@@ -20,8 +20,6 @@ export default ({
     ...rest,
   };
 
-  // const customRules = typeof rules === 'function' ? rules({ rhl, tsconfig }) : rules;
-
   const moduleRules = mergeAndReplaceRules(defaultRules, rules);
 
   return webpackMerge(clientConfig({ entry, rules: moduleRules }), commonConfigTs(), {

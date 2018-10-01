@@ -58,4 +58,6 @@ export function getAppEnvironment() {
   };
 }
 
-export default getAppEnvironment();
+const appEnv = getAppEnvironment();
+
+export default appEnv;

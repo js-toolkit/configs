@@ -24,6 +24,7 @@ export default ({ importPath = defaultImportPath, presetEnv }: Props = {}) => ({
         ...(presetEnv ? presetEnv.features : undefined),
       },
     },
+    // There are problems with css calc() function which uses icss values. ICSS values processed by css-loader later.
     // cssnano: appEnv.ifDevMode<any>(false, {
     //   // Need install cssnano cssnano-preset-default
     //   preset: ['default', { discardComments: { removeAll: true } }],
