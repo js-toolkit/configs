@@ -1,7 +1,7 @@
 import commonConfig = require('./common.eslintrc');
 
 module.exports = {
-  extends: ['./common.eslintrc.js', './ts.base.rules.eslintrc.json'],
+  extends: ['./common.eslintrc.js', './ts.base.rules.json'],
 
   parser: 'typescript-eslint-parser',
 
