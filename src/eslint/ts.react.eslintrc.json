@@ -1,6 +1,15 @@
 {
-  "extends": ["./react.eslintrc.json", "./ts.common.eslintrc.json"],
-  "rules": {
-    "react/jsx-filename-extension": ["error", { "extensions": [".ts", ".tsx"] }]
+  "extends": ["./react.eslintrc.json", "./ts.common.eslintrc.json", "./ts.react.rules.json"],
+
+  "settings": {
+    "import/parsers": {
+      "typescript-eslint-parser": [".ts", ".tsx"]
+    },
+
+    "import/resolver": {
+      "node": {
+        "extensions": [".ts", ".tsx"]
+      }
+    }
   }
 }

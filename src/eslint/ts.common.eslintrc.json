@@ -1,13 +1,18 @@
 {
-  "extends": ["./common.eslintrc.json", "./ts.base.rules.eslintrc.json"],
+  "extends": ["./common.eslintrc.json", "./ts.base.rules.json"],
+
   "parser": "typescript-eslint-parser",
+
   "plugins": ["typescript"],
-  "rules": {
-    "import/no-unresolved": "off",
-    "import/extensions": [
-      "error",
-      "ignorePackages",
-      { "js": "never", "jsx": "never", "ts": "never", "tsx": "never" }
-    ]
+
+  "settings": {
+    "import/parsers": {
+      "typescript-eslint-parser": [".ts"]
+    },
+    "import/resolver": {
+      "node": {
+        "extensions": [".ts"]
+      }
+    }
   }
 }
