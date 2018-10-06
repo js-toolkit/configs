@@ -1,5 +1,5 @@
 import commonConfig = require('./ts.common.eslintrc');
-import reactConfig = require('./react.eslintrc');
+import reactJsConfig = require('./react.eslintrc');
 
 module.exports = {
   extends: ['./react.eslintrc.js', './ts.common.eslintrc.js', './ts.react.rules.json'],
@@ -14,10 +14,14 @@ module.exports = {
     },
 
     'import/resolver': {
-      ...(reactConfig as any).settings['import/resolver'],
+      ...(reactJsConfig as any).settings['import/resolver'],
       node: {
-        ...(reactConfig as any).settings['import/resolver'].node,
-        extensions: ['.ts', '.tsx'],
+        ...(reactJsConfig as any).settings['import/resolver'].node,
+        extensions: [
+          ...(reactJsConfig as any).settings['import/resolver'].node.extensions,
+          ...(commonConfig as any).settings['import/resolver'].node.extensions,
+          '.tsx',
+        ],
       },
     },
   },

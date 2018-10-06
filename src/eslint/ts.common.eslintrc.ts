@@ -1,22 +1,20 @@
-import commonConfig = require('./common.eslintrc');
+import commonJsConfig = require('./common.eslintrc');
+import commonJson = require('./ts.common.eslintrc.json');
 
 module.exports = {
-  extends: ['./common.eslintrc.js', './ts.base.rules.json'],
-
-  parser: 'typescript-eslint-parser',
-
-  plugins: ['typescript'],
+  extends: ['./ts.common.eslintrc.json', './ts.base.rules.json'],
 
   settings: {
-    'import/parsers': {
-      'typescript-eslint-parser': ['.ts'],
-    },
+    'import/parsers': commonJson.settings['import/parsers'],
 
     'import/resolver': {
-      ...(commonConfig as any).settings['import/resolver'],
+      ...(commonJsConfig as any).settings['import/resolver'],
       node: {
-        ...(commonConfig as any).settings['import/resolver'].node,
-        extensions: ['.ts'],
+        ...(commonJsConfig as any).settings['import/resolver'].node,
+        extensions: [
+          ...(commonJsConfig as any).settings['import/resolver'].node.extensions,
+          ...commonJson.settings['import/resolver'].node.extensions,
+        ],
       },
     },
   },

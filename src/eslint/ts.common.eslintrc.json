@@ -9,6 +9,7 @@
     "import/parsers": {
       "typescript-eslint-parser": [".ts"]
     },
+
     "import/resolver": {
       "node": {
         "extensions": [".ts"]

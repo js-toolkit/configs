@@ -12,7 +12,7 @@ module.exports = {
       ...(commonConfig as any).settings['import/resolver'],
       node: {
         ...(commonConfig as any).settings['import/resolver'].node,
-        extensions: ['.js', '.jsx'],
+        extensions: [...(commonConfig as any).settings['import/resolver'].node.extensions, '.jsx'],
       },
     },
   },
