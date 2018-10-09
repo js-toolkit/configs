@@ -9,7 +9,8 @@
   "defaultSeverity": "error",
   "rules": {
     "comment-empty-line-before": null,
-    "comment-whitespace-inside": null
+    "comment-whitespace-inside": null,
+    "no-descending-specificity": null
   },
   "ignoreFiles": ["node_modules/**", "dist/**"]
 }
