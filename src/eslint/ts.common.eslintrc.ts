@@ -5,6 +5,8 @@ module.exports = {
   extends: ['./ts.common.eslintrc.json', './ts.base.rules.json'],
 
   settings: {
+    ...(commonJsConfig as any).settings,
+
     'import/parsers': commonJson.settings['import/parsers'],
 
     'import/resolver': {
