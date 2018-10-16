@@ -1,31 +1,33 @@
-import commonJson from './common.eslintrc.json';
-import { dirMap } from '../paths';
+import paths from '../paths';
 
 module.exports = {
-  extends: ['./common.eslintrc.json'],
+  extends: ['airbnb-base', 'plugin:prettier/recommended', require.resolve('./base.rules.json')],
+
+  parser: 'babel-eslint',
+
+  plugins: ['import', 'prettier'],
+
+  env: {
+    node: true,
+    es6: true,
+  },
 
   settings: {
-    ...commonJson.settings,
-
     'import/resolver': {
-      ...commonJson.settings['import/resolver'],
       node: {
-        ...commonJson.settings['import/resolver'].node,
+        extensions: ['.js'],
+
         moduleDirectory: [
           'node_modules',
-          dirMap.client.sources,
-          dirMap.server.sources,
-          dirMap.shared.sources,
+          paths.client.sources,
+          paths.server.sources,
+          paths.shared.sources,
         ],
       },
     },
   },
 
-  // rules: {
-  //   'import/extensions': [
-  //     'error',
-  //     'ignorePackages',
-  //     { js: 'never', jsx: 'never', ts: 'never', tsx: 'never' },
-  //   ],
-  // },
+  rules: {
+    'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
+  },
 };

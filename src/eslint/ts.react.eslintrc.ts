@@ -1,27 +1,18 @@
-import commonConfig = require('./ts.common.eslintrc');
-import reactJsConfig = require('./react.eslintrc');
-
 module.exports = {
-  extends: ['./react.eslintrc.js', './ts.common.eslintrc.js', './ts.react.rules.json'],
+  extends: [
+    require.resolve('./react.eslintrc.js'),
+    require.resolve('./ts.common.eslintrc.js'),
+    require.resolve('./ts.react.rules.json'),
+  ],
 
   settings: {
     'import/parsers': {
-      ...(commonConfig as any).settings['import/parsers'],
-      'typescript-eslint-parser': [
-        ...(commonConfig as any).settings['import/parsers']['typescript-eslint-parser'],
-        '.tsx',
-      ],
+      'typescript-eslint-parser': ['.ts', '.tsx'],
     },
 
     'import/resolver': {
-      ...(reactJsConfig as any).settings['import/resolver'],
       node: {
-        ...(reactJsConfig as any).settings['import/resolver'].node,
-        extensions: [
-          ...(reactJsConfig as any).settings['import/resolver'].node.extensions,
-          ...(commonConfig as any).settings['import/resolver'].node.extensions,
-          '.tsx',
-        ],
+        extensions: ['.js', '.ts', '.tsx'],
       },
     },
   },
