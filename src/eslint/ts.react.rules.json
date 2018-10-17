@@ -1,5 +1,6 @@
 {
   "rules": {
-    "react/jsx-filename-extension": ["error", { "extensions": [".ts", ".tsx"] }]
+    "react/jsx-filename-extension": ["error", { "extensions": [".ts", ".tsx"] }],
+    "react/jsx-wrap-multilines": "off"
   }
 }

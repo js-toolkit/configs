@@ -1,11 +1,10 @@
 import paths from '../paths';
 
 module.exports = {
+  // import and prettier plugins are already added by airbnb-base and plugin:prettier/recommended
   extends: ['airbnb-base', 'plugin:prettier/recommended', require.resolve('./base.rules.json')],
 
   parser: 'babel-eslint',
-
-  plugins: ['import', 'prettier'],
 
   env: {
     node: true,
@@ -14,6 +13,10 @@ module.exports = {
 
   settings: {
     'import/resolver': {
+      // webpack: {
+      //   config: 'webpack.config.babel.js',
+      // },
+
       node: {
         extensions: ['.js'],
 
