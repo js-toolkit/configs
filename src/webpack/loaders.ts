@@ -143,6 +143,7 @@ export default {
           localIdentName: appEnv.ifDevMode(pattern, prodPattern),
           context: paths.root, // https://github.com/webpack-contrib/css-loader/issues/267
           importLoaders: postcss ? 1 : undefined,
+          sourceMap: appEnv.dev,
           ...rest,
         },
       },
