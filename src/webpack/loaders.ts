@@ -156,7 +156,10 @@ export default {
       postcss,
       pattern: '[local]',
       prodPattern: '[local]',
-      modules: true, // Need modules for bundle css which requiring from js files in node_modules, for example reflexy.
+      // In some cases has problems when build with modules because webpack requiring urls as modules.
+      // In this case you need define resolve.extensions in webpack config for those files.
+      // For example, font urls in katex.css.
+      modules: false,
       ...rest,
     } as any);
   },
