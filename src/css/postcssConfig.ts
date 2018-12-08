@@ -13,7 +13,7 @@ export default ({ importPath = defaultImportPath, presetEnv }: Props = {}) => ({
   plugins: {
     // Primarily use to override imported styles: import css file before css-loader process it and then process merged css by css-loader.
     'postcss-import': importPath ? { path: importPath } : false, // https://github.com/postcss/postcss-import/issues/224
-    'postcss-icss-values': {},
+    'postcss-icss-values': {}, // import values with css-loader not postcss-import
     'postcss-nested': {},
     'postcss-preset-env': {
       stage: 2,

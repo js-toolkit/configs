@@ -137,13 +137,14 @@ export default {
   } = {}) {
     return [
       {
-        loader: ssr ? 'css-loader/locals' : 'css-loader',
+        loader: 'css-loader',
         options: {
           modules: true,
           localIdentName: appEnv.ifDevMode(pattern, prodPattern),
           context: paths.root, // https://github.com/webpack-contrib/css-loader/issues/267
           importLoaders: postcss ? 1 : undefined,
           sourceMap: appEnv.dev,
+          exportOnlyLocals: ssr,
           ...rest,
         },
       },
@@ -190,11 +191,12 @@ export default {
             ]
           )),
       {
-        loader: ssr ? 'css-loader/locals' : 'css-loader',
+        loader: 'css-loader',
         options: {
           modules: true,
           camelCase: false,
           sourceMap: false,
+          exportOnlyLocals: ssr,
           localIdentName,
           importLoaders: postcss ? 1 : undefined,
         },
