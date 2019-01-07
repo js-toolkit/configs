@@ -1,4 +1,4 @@
-import { Omit } from 'typelevel-ts';
+import { Omit } from '@vzh/ts-types';
 import webpackMerge from 'webpack-merge';
 import { RuleSetRule, Configuration } from 'webpack';
 import paths from '../paths';

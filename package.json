@@ -45,11 +45,13 @@
     "prettier": "^1.15.3",
     "rimraf": "^2.6.2",
     "tsconfig-paths-webpack-plugin": "^3.2.0",
-    "typelevel-ts": "^0.3.5",
     "typescript": "^3.2.2",
     "typescript-eslint-parser": "^21.0.2",
     "webpack": "^4.28.2",
     "webpack-merge": "^4.1.5",
     "webpack-node-externals": "^1.7.2"
+  },
+  "dependencies": {
+    "@vzh/ts-types": "^0.1.2"
   }
 }

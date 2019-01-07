@@ -232,6 +232,11 @@
     "@types/uglify-js" "*"
     source-map "^0.6.0"
 
+"@vzh/ts-types@^0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@vzh/ts-types/-/ts-types-0.1.2.tgz#ff35871e952accddac96b0fd22255e13c913925f"
+  integrity sha512-2LnsjOhZ/NpMJO75yAWqjjQB29eIOEfwgp89Ybu2GibBoZhBaV5eP66F9b2fn567beg0v4V3Ya062GjJ34DoCA==
+
 "@webassemblyjs/ast@1.7.11":
   version "1.7.11"
   resolved "https://registry.yarnpkg.com/@webassemblyjs/ast/-/ast-1.7.11.tgz#b988582cafbb2b095e8b556526f30c90d057cace"
@@ -3739,11 +3744,6 @@ typedarray@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
-
-typelevel-ts@^0.3.5:
-  version "0.3.5"
-  resolved "https://registry.yarnpkg.com/typelevel-ts/-/typelevel-ts-0.3.5.tgz#9f242c193fa6c5489d2342c642ab8912a065af9d"
-  integrity sha512-VZKF0ak5RNgrPkpI2uJJL0WBqNcj67+hzYzD6SwoxzrgvgjP24gskqniXd62UY5rrJCxd3q/iChtxKcHC6fRvA==
 
 typescript-eslint-parser@^21.0.2:
   version "21.0.2"
