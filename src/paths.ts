@@ -39,6 +39,12 @@ export default Object.freeze({
 
     output: {
       path: path.resolve(baseDir, dirMap.output.root, dirMap.client.output.root),
+      jsPath: path.resolve(
+        baseDir,
+        dirMap.output.root,
+        dirMap.client.output.root,
+        dirMap.client.output.js
+      ),
     },
   },
 

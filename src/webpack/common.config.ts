@@ -1,15 +1,29 @@
 import path from 'path';
 import webpack, { Options, Configuration } from 'webpack';
 import appEnv from '../appEnv';
-import paths, { dirMap } from '../paths';
+import paths from '../paths';
+import { BaseTsOptions } from './loaders';
 
-export interface CommonConfigOptions {
+export interface CommonConfigOptions extends Partial<BaseTsOptions> {
   outputPath: string;
   outputPublicPath: string;
+  outputJsDir: string;
   hash?: boolean;
+  useTypeScript?: boolean;
 }
 
-export default ({ outputPath, outputPublicPath, hash }: CommonConfigOptions): Configuration => ({
+function getTsExtensions() {
+  return ['.ts', '.tsx', '.d.ts'];
+}
+
+export default ({
+  outputPath,
+  outputPublicPath,
+  outputJsDir,
+  hash,
+  useTypeScript,
+  tsconfig,
+}: CommonConfigOptions): Configuration => ({
   // The base directory (absolute path!) for resolving the `entry` option.
   context: paths.root,
 
@@ -17,11 +31,14 @@ export default ({ outputPath, outputPublicPath, hash }: CommonConfigOptions): Co
     path: outputPath,
     publicPath: outputPublicPath,
     pathinfo: appEnv.ifDevMode(true, false),
-    filename: path.join(dirMap.client.output.js, `[name].js${hash ? '?[hash:5]' : ''}`),
-    // chunkFilename: path.join(dirMap.client.output.js, `[id].js${hash ? '?[chunkhash]' : ''}`),
+    filename: path.join(outputJsDir, `[name].js${hash ? '?[hash:5]' : ''}`),
+    // chunkFilename: path.join(outputFilePath, `[id].js${hash ? '?[chunkhash]' : ''}`),
   },
 
   mode: appEnv.raw.NODE_ENV,
+
+  // Stop compilation early in production
+  bail: appEnv.prod,
 
   // http://cheng.logdown.com/posts/2016/03/25/679045
   devtool: appEnv.ifDevMode<Options.Devtool>('cheap-module-eval-source-map', false),
@@ -33,7 +50,12 @@ export default ({ outputPath, outputPublicPath, hash }: CommonConfigOptions): Co
   ],
 
   resolve: {
-    extensions: ['.js', '.jsx'],
+    extensions: ['.js', '.jsx', ...(useTypeScript ? getTsExtensions() : [])],
     modules: [paths.nodeModules.root, paths.root],
+    plugins: [
+      ...(useTypeScript
+        ? [new (require('tsconfig-paths-webpack-plugin'))({ configFile: tsconfig })]
+        : []),
+    ],
   },
 });

@@ -1,47 +1,105 @@
+import { Configuration, WatchIgnorePlugin } from 'webpack';
 import webpackMerge from 'webpack-merge';
 import webpackNodeExternals from 'webpack-node-externals';
-import { Configuration } from 'webpack';
+import appEnv from '../appEnv';
 import paths, { dirMap } from '../paths';
 import commonConfig from './common.config';
-import {
-  defaultRules as jsDefaultRules,
-  ConfigOptions as BaseConfigOptions,
-} from './client.config';
+import { clientDefaultRules, ClientConfigOptions } from './client.config';
 import { mergeAndReplaceRules } from './utils';
+import loaders, { GetTsLoaderOptions, GetTsCheckerPluginOptions } from './loaders';
 
-export const defaultRules = {
+export const serverDefaultRules = {
   jsRule: {
-    ...jsDefaultRules.jsRule,
+    ...clientDefaultRules.jsRule,
     include: [paths.server.sources, paths.shared.sources],
+  },
+  tsBaseRule: {
+    ...clientDefaultRules.tsBaseRule,
+    include: [paths.server.sources, paths.client.sources, paths.shared.sources],
   },
 };
 
-export interface ConfigOptions extends BaseConfigOptions {
+export const universalDefaultRules: typeof clientDefaultRules = {
+  jsRule: {
+    ...clientDefaultRules.jsRule,
+    include: [...(clientDefaultRules.jsRule.include as string[]), paths.server.sources],
+  },
+  tsBaseRule: {
+    ...serverDefaultRules.tsBaseRule,
+  },
+  cssRule: {
+    ...clientDefaultRules.cssRule,
+    // process css in server side always in ssr mode
+    use: loaders.css({ ssr: true }),
+  },
+  cssNodeModulesRule: {
+    ...clientDefaultRules.cssNodeModulesRule,
+    // process css in server side always in ssr mode
+    use: loaders.cssNodeModules({ ssr: true }),
+  },
+  assetsRule: {
+    ...clientDefaultRules.assetsRule,
+    use: loaders.assets({ ssr: true }),
+  },
+};
+
+export interface ServerConfigOptions extends ClientConfigOptions {
   nodeExternalsOptions?: webpackNodeExternals.Options;
+  isUniversal?: boolean;
 }
 
-export default ({ entry, rules, nodeExternalsOptions }: ConfigOptions): Configuration => {
-  const moduleRules = mergeAndReplaceRules(defaultRules, rules);
+export default ({
+  entry,
+  rules,
+  nodeExternalsOptions,
+  isUniversal,
+  useTypeScript,
+  tsLoaderType,
+  tsconfig = paths.server.tsconfig,
+}: ServerConfigOptions): Configuration => {
+  const { tsBaseRule, ...rest } = isUniversal ? universalDefaultRules : serverDefaultRules;
+
+  const preparedRules = useTypeScript
+    ? {
+        tsRule: {
+          ...tsBaseRule,
+          use: loaders.getTsLoader({
+            loaderType: tsLoaderType,
+            forkedChecks: true,
+            tsconfig,
+          } as GetTsLoaderOptions),
+        },
+        ...rest,
+      }
+    : { ...rest };
+
+  const moduleRules = mergeAndReplaceRules(preparedRules, rules);
 
   return webpackMerge(
     commonConfig({
       outputPath: paths.server.output.path,
       outputPublicPath: dirMap.server.output.publicPath,
+      outputJsDir: '',
+      useTypeScript,
+      tsconfig,
     }),
     {
       name: dirMap.server.root,
       target: 'node',
 
-      context: paths.server.sources,
+      context: isUniversal ? paths.root : paths.server.sources,
 
       entry,
 
-      output: {
-        filename: '[name].js', // Только так работает HMR с webpack
-      },
-
       resolve: {
-        modules: [paths.server.sources],
+        modules: [isUniversal ? paths.client.sources : paths.server.sources],
+        alias: isUniversal
+          ? {
+              server: paths.server.sources,
+              shared: paths.shared.sources,
+              client: paths.client.sources,
+            }
+          : undefined,
       },
 
       // http://jlongster.com/Backend-Apps-with-Webpack--Part-I
@@ -56,6 +114,21 @@ export default ({ entry, rules, nodeExternalsOptions }: ConfigOptions): Configur
       module: {
         rules: Object.getOwnPropertyNames(moduleRules).map(name => moduleRules[name] || {}),
       },
+
+      plugins: [
+        ...(useTypeScript
+          ? [
+              loaders.getTsCheckerPlugin({
+                loaderType: tsLoaderType,
+                tsconfig,
+              } as GetTsCheckerPluginOptions),
+            ]
+          : []),
+
+        // Don't watch on client files when ssr is turned off because client by self make hot update
+        // and server not needs in updated files because server not render react components.
+        ...(!isUniversal || appEnv.ssr ? [] : [new WatchIgnorePlugin([paths.client.root])]),
+      ],
     }
   );
 };

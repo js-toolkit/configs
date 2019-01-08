@@ -3,18 +3,27 @@ import webpackMerge from 'webpack-merge';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import appEnv from '../appEnv';
 import paths, { dirMap } from '../paths';
-import commonConfig from './common.config';
-import loaders from './loaders';
+import commonConfig, { CommonConfigOptions } from './common.config';
+import loaders, {
+  BaseTsOptions,
+  TsLoaderType,
+  GetTsCheckerPluginOptions,
+  GetTsLoaderOptions,
+} from './loaders';
 import { mergeAndReplaceRules } from './utils';
 
-export const defaultRules: Record<
-  'jsRule' | 'cssRule' | 'cssNodeModulesRule' | 'assetsRule',
+export const clientDefaultRules: Record<
+  'jsRule' | 'tsBaseRule' | 'cssRule' | 'cssNodeModulesRule' | 'assetsRule',
   RuleSetRule
 > = {
   jsRule: {
     test: /\.jsx?$/,
     include: [paths.client.sources, paths.shared.sources],
     use: loaders.babel(),
+  },
+  tsBaseRule: {
+    test: /\.tsx?$/,
+    include: [paths.client.sources, paths.shared.sources],
   },
   cssRule: {
     test: /\.css$/,
@@ -36,20 +45,49 @@ export const defaultRules: Record<
   },
 };
 
-export type DefaultClientJsRules = typeof defaultRules;
+// export type DefaultClientJsRules = typeof defaultRules;
 
-export interface ConfigOptions extends Pick<Configuration, 'entry'> {
+export interface ClientConfigOptions
+  extends Pick<Configuration, 'entry'>,
+    Pick<CommonConfigOptions, 'useTypeScript'>,
+    Partial<BaseTsOptions> {
   rules: Record<string, RuleSetRule>;
+  tsLoaderType?: TsLoaderType;
 }
 
-export default ({ entry, rules }: ConfigOptions): Configuration => {
-  const moduleRules = mergeAndReplaceRules(defaultRules, rules);
+export default ({
+  entry,
+  rules,
+  useTypeScript,
+  tsLoaderType = TsLoaderType.Default,
+  tsconfig = paths.client.tsconfig,
+}: ClientConfigOptions): Configuration => {
+  const { tsBaseRule, ...rest } = clientDefaultRules;
+
+  const preparedRules = useTypeScript
+    ? {
+        tsRule: {
+          ...tsBaseRule,
+          use: loaders.getTsLoader({
+            loaderType: tsLoaderType,
+            forkedChecks: true,
+            tsconfig,
+          } as GetTsLoaderOptions),
+        },
+        ...rest,
+      }
+    : { ...rest };
+
+  const moduleRules = mergeAndReplaceRules(preparedRules, rules);
 
   return webpackMerge(
     commonConfig({
       outputPath: paths.client.output.path,
       outputPublicPath: dirMap.client.output.publicPath,
+      outputJsDir: dirMap.client.output.js,
       hash: true,
+      useTypeScript,
+      tsconfig,
     }),
     {
       name: dirMap.client.root,
@@ -85,6 +123,14 @@ export default ({ entry, rules }: ConfigOptions): Configuration => {
             }),
           ]
         ),
+        ...(useTypeScript
+          ? [
+              loaders.getTsCheckerPlugin({
+                loaderType: tsLoaderType,
+                tsconfig,
+              } as GetTsCheckerPluginOptions),
+            ]
+          : []),
       ],
 
       devServer: {

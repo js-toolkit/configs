@@ -1,4 +1,5 @@
 import { Loader } from 'webpack';
+import { Omit } from '@vzh/ts-types';
 import appEnv from '../appEnv';
 import paths, { dirMap } from '../paths';
 
@@ -6,13 +7,57 @@ export interface BaseTsOptions {
   tsconfig: string;
 }
 
-export interface TsOptions extends BaseTsOptions {
+export enum TsLoaderType {
+  Default = '1',
+  ATL = '2',
+  Babel = '3',
+}
+
+interface GetTsLoaderOptionsBase extends BaseTsOptions {
+  loaderType: TsLoaderType;
+}
+
+interface GetTsDefaultLoaderOptions extends GetTsLoaderOptionsBase {
+  loaderType: TsLoaderType.Default;
   forkedChecks?: boolean;
   afterLoaders?: Loader[];
 }
 
+interface GetTsATLOptions extends GetTsLoaderOptionsBase {
+  loaderType: TsLoaderType.ATL;
+}
+
+interface GetTsBabelLoaderOptions extends GetTsLoaderOptionsBase, Record<PropertyKey, any> {
+  loaderType: TsLoaderType.Babel;
+}
+
+export type GetTsLoaderOptions =
+  | GetTsDefaultLoaderOptions
+  | GetTsATLOptions
+  | GetTsBabelLoaderOptions;
+
+export type GetTsCheckerPluginOptions =
+  | { loaderType: TsLoaderType.ATL }
+  | ({ loaderType: TsLoaderType.Default } & BaseTsOptions);
+
 export default {
-  ts({ tsconfig, forkedChecks, afterLoaders, ...rest }: TsOptions) {
+  getTsLoader({ loaderType, ...rest }: GetTsLoaderOptions) {
+    if (loaderType === TsLoaderType.ATL) return this.atl(rest);
+    if (loaderType === TsLoaderType.Babel) return this.babel(rest);
+    return this.ts({ ...rest });
+  },
+
+  getTsCheckerPlugin({ loaderType, ...rest }: GetTsCheckerPluginOptions) {
+    if (loaderType === TsLoaderType.ATL) return this.atlCheckerPlugin();
+    return this.tsCheckerPlugin(rest as BaseTsOptions);
+  },
+
+  ts({
+    tsconfig,
+    forkedChecks,
+    afterLoaders,
+    ...rest
+  }: Omit<GetTsDefaultLoaderOptions, 'loaderType'>) {
     return [
       ...(forkedChecks && appEnv.prod
         ? [
@@ -42,7 +87,12 @@ export default {
     ];
   },
 
-  tsRHL4({ tsconfig, forkedChecks, afterLoaders, ...rest }: TsOptions) {
+  tsRHL({
+    tsconfig,
+    forkedChecks,
+    afterLoaders,
+    ...rest
+  }: Omit<GetTsDefaultLoaderOptions, 'loaderType'>) {
     return this.ts({
       tsconfig,
       forkedChecks,
@@ -56,21 +106,9 @@ export default {
     });
   },
 
-  tsRHL3({ tsconfig, forkedChecks, afterLoaders, ...rest }: TsOptions) {
-    return this.ts({
-      tsconfig,
-      forkedChecks,
-      afterLoaders: [
-        ...(afterLoaders || []),
-        ...appEnv.ifDevMode([{ loader: 'react-hot-loader/webpack' }], []),
-      ],
-      ...rest,
-    });
-  },
-
   /** In order to runs typescript type checker on a separate process. */
   tsCheckerPlugin({ tsconfig, ...rest }: BaseTsOptions) {
-    const Plugin = require('fork-ts-checker-webpack-plugin');
+    const Plugin = require('fork-ts-checker-webpack-plugin'); // eslint-disable-line import/no-unresolved
     return new Plugin({
       tsconfig,
       checkSyntacticErrors: appEnv.prod,
@@ -79,7 +117,7 @@ export default {
     });
   },
 
-  ats({ tsconfig, ...rest }: BaseTsOptions) {
+  atl({ tsconfig, ...rest }: BaseTsOptions) {
     return {
       loader: 'awesome-typescript-loader',
       options: {
@@ -91,25 +129,17 @@ export default {
     };
   },
 
-  atsRHL4({ tsconfig, ...rest }: BaseTsOptions) {
+  atsRHL({ tsconfig, ...rest }: BaseTsOptions) {
     return [
       // Necessary for RHL4.
-      // Not working with RHL3 and DateRangePicker.
       ...appEnv.ifDevMode([{ loader: 'babel-loader' }], []),
-      this.ats({ tsconfig, ...rest }),
-    ];
-  },
-
-  atsRHL3({ tsconfig, ...rest }: BaseTsOptions) {
-    return [
-      ...appEnv.ifDevMode([{ loader: 'react-hot-loader/webpack' }], []),
-      this.ats({ tsconfig, ...rest }),
+      this.atl({ tsconfig, ...rest }),
     ];
   },
 
   /** In order to runs typescript type checker on a separate process. */
-  atsCheckerPlugin() {
-    const { CheckerPlugin } = require('awesome-typescript-loader');
+  atlCheckerPlugin() {
+    const { CheckerPlugin } = require('awesome-typescript-loader'); // eslint-disable-line import/no-unresolved
     return new CheckerPlugin();
   },
 
@@ -125,8 +155,8 @@ export default {
 
   /**
    * Problem of duplication css classes when use composes with css file from node_modules directory.
-   * 1. It can occur when use different loaders for source and composes files.
-   *    Solution: use the same loaders for source and composes files.
+   * 1. It can occur when use different loaders for source and composing files.
+   *    Solution: use the same loaders for source and composing files.
    */
   css({
     ssr = false,
