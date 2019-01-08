@@ -1,6 +1,6 @@
 {
   "name": "@vzh/configs",
-  "version": "2.21.1",
+  "version": "3.0.0",
   "description": "Default configurations for internal projects",
   "main": "./",
   "author": "Vladimir Zhukov",
