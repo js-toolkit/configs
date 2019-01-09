@@ -1,21 +1,24 @@
 import path from 'path';
-import fs from 'fs';
 import webpackMerge from 'webpack-merge';
 import defaultDirMap from './dirmap';
+
+function resolveDirMapPath(filename: string) {
+  try {
+    return require.resolve(filename, { paths: [baseDir] });
+  } catch {
+    return '';
+  }
+}
 
 export type DirMapConfig = typeof defaultDirMap;
 
 const baseDir = process.cwd();
 
-const customDirMapPath = path.resolve(baseDir, 'dirmap.js');
+const dirMapFileName = 'dirmap';
+const customDirMapPath = resolveDirMapPath(dirMapFileName);
 
-function loadCustomDirMap(filePath: string) {
-  return require(filePath);
-  // return JSON.parse(fs.readFileSync(filePath).toString());
-}
-
-export const dirMap: DirMapConfig = fs.existsSync(customDirMapPath)
-  ? (webpackMerge(defaultDirMap as any, loadCustomDirMap(customDirMapPath)) as any)
+export const dirMap: DirMapConfig = customDirMapPath
+  ? (webpackMerge(defaultDirMap as any, require(customDirMapPath) as any) as DirMapConfig) // eslint-disable-line global-require, import/no-dynamic-require
   : defaultDirMap;
 
 export const moduleFileExtensions = ['.js', '.jsx', '.ts', '.tsx', '.d.ts'];
