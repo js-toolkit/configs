@@ -8,9 +8,9 @@ export interface BaseTsOptions {
 }
 
 export enum TsLoaderType {
-  Default = '1',
-  ATL = '2',
-  Babel = '3',
+  Default = 1,
+  ATL,
+  Babel,
 }
 
 interface GetTsLoaderOptionsBase extends BaseTsOptions {
@@ -116,7 +116,7 @@ export default {
         moduleResolution: 'node',
         resolveJsonModule: true,
         isolatedModules: true,
-        async: false,
+        // async: false,
         noEmit: true,
         jsx: 'preserve',
       },
@@ -127,6 +127,8 @@ export default {
   },
 
   atl({ tsconfig, ...rest }: BaseTsOptions) {
+    console.log('*** atl');
+    
     return {
       loader: 'awesome-typescript-loader',
       options: {
@@ -148,7 +150,8 @@ export default {
 
   /** In order to runs typescript type checker on a separate process. */
   atlCheckerPlugin() {
-    const { CheckerPlugin } = require('awesome-typescript-loader'); // eslint-disable-line import/no-unresolved
+    console.log('*** atlCheckerPlugin');
+    const { CheckerPlugin } = require('awesome-typescript-loader'); // eslint-disable-line global-require, import/no-unresolved
     return new CheckerPlugin();
   },
 

@@ -6,7 +6,7 @@ import paths, { dirMap } from '../paths';
 import commonConfig from './common.config';
 import { clientDefaultRules, ClientConfigOptions } from './client.config';
 import { mergeAndReplaceRules } from './utils';
-import loaders, { GetTsLoaderOptions, GetTsCheckerPluginOptions } from './loaders';
+import loaders, { GetTsLoaderOptions, GetTsCheckerPluginOptions, TsLoaderType } from './loaders';
 
 export const serverDefaultRules = {
   jsRule: {
@@ -54,7 +54,7 @@ export default ({
   nodeExternalsOptions,
   isUniversal,
   useTypeScript,
-  tsLoaderType,
+  tsLoaderType = TsLoaderType.Default,
   tsconfig = paths.server.tsconfig,
 }: ServerConfigOptions): Configuration => {
   const { tsBaseRule, ...rest } = isUniversal ? universalDefaultRules : serverDefaultRules;
