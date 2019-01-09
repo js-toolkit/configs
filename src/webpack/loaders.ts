@@ -127,8 +127,6 @@ export default {
   },
 
   atl({ tsconfig, ...rest }: BaseTsOptions) {
-    console.log('*** atl');
-    
     return {
       loader: 'awesome-typescript-loader',
       options: {
@@ -150,7 +148,6 @@ export default {
 
   /** In order to runs typescript type checker on a separate process. */
   atlCheckerPlugin() {
-    console.log('*** atlCheckerPlugin');
     const { CheckerPlugin } = require('awesome-typescript-loader'); // eslint-disable-line global-require, import/no-unresolved
     return new CheckerPlugin();
   },

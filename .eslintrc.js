@@ -23,7 +23,6 @@ module.exports = {
   },
 
   rules: {
-    'no-console': 'off',
     'no-undef': 'off',
     'no-unused-vars': 'off',
     'no-unused-expressions': ['error', { allowShortCircuit: true }],
