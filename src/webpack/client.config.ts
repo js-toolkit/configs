@@ -1,6 +1,7 @@
 import webpack, { Configuration, RuleSetRule } from 'webpack';
 import webpackMerge from 'webpack-merge';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import WebpackManifestPlugin from 'webpack-manifest-plugin';
 import appEnv from '../appEnv';
 import paths, { dirMap } from '../paths';
 import commonConfig, { CommonConfigOptions } from './common.config';
@@ -118,11 +119,23 @@ export default ({
             new webpack.HotModuleReplacementPlugin(),
           ],
           [
+            // Extract css in production
             new MiniCssExtractPlugin({
               filename: `${dirMap.client.output.styles}/[name].css?[contenthash:5]`,
             }),
           ]
         ),
+        new WebpackManifestPlugin({
+          fileName: dirMap.client.output.assetManifest.fileName,
+          filter: (() => {
+            const template = dirMap.client.output.assetManifest.filterTemplate;
+            if (!template) return undefined;
+            const keys = Object.getOwnPropertyNames(template);
+            if (!keys.length) return undefined;
+            return (item: WebpackManifestPlugin.FileDescriptor) =>
+              keys.every(key => !(key in item) || item[key] === template[key]);
+          })(),
+        }),
         ...(useTypeScript
           ? [
               loaders.getTsCheckerPlugin({

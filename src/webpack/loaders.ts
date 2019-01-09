@@ -111,6 +111,15 @@ export default {
     const Plugin = require('fork-ts-checker-webpack-plugin'); // eslint-disable-line import/no-unresolved
     return new Plugin({
       tsconfig,
+      compilerOptions: {
+        module: 'esnext',
+        moduleResolution: 'node',
+        resolveJsonModule: true,
+        isolatedModules: true,
+        async: false,
+        noEmit: true,
+        jsx: 'preserve',
+      },
       checkSyntacticErrors: appEnv.prod,
       memoryLimit: 1024,
       ...rest,

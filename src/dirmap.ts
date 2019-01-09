@@ -18,6 +18,10 @@ export default Object.freeze({
       assets: 'assets',
       external: 'lib',
       publicPath: '/',
+      assetManifest: {
+        fileName: 'asset-manifest.json',
+        filterTemplate: {},
+      },
     },
   },
 
