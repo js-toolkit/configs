@@ -1,8 +1,3 @@
-/* eslint-disable */
-declare var __webpack_require__: typeof require;
-declare var __non_webpack_require__: typeof require;
-/* eslint-enable */
-
 // Grab NODE_ENV and APP_* environment variables and prepare them to be
 // injected into the application via DefinePlugin in Webpack configuration.
 const APP = /^APP_/i;
@@ -36,9 +31,6 @@ export function getAppEnvironment() {
   return {
     raw,
     stringified,
-
-    /** Original require function (non webpack) to correct load modules in universal projects */
-    require: typeof __webpack_require__ === 'function' ? __non_webpack_require__ : require, // eslint-disable-line camelcase
 
     get ssr() {
       return this.raw.APP_SSR === 'true';

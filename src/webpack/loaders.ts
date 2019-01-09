@@ -2,6 +2,7 @@ import { Loader } from 'webpack';
 import { Omit } from '@vzh/ts-types';
 import appEnv from '../appEnv';
 import paths, { dirMap } from '../paths';
+import nodeRequire from './nodeRequire';
 
 export interface BaseTsOptions {
   tsconfig: string;
@@ -109,7 +110,7 @@ export default {
   /** In order to runs typescript type checker on a separate process. */
   tsCheckerPlugin({ tsconfig, ...rest }: BaseTsOptions) {
     const getName = () => 'fork-ts-checker-webpack-plugin';
-    const Plugin = appEnv.require(getName());
+    const Plugin = nodeRequire(getName());
     return new Plugin({
       tsconfig,
       compilerOptions: {
@@ -150,7 +151,7 @@ export default {
   /** In order to runs typescript type checker on a separate process. */
   atlCheckerPlugin() {
     const getName = () => 'awesome-typescript-loader';
-    const { CheckerPlugin } = appEnv.require(getName());
+    const { CheckerPlugin } = nodeRequire(getName());
     return new CheckerPlugin();
   },
 
