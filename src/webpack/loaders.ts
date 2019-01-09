@@ -40,13 +40,6 @@ export type GetTsCheckerPluginOptions =
   | { loaderType: TsLoaderType.ATL }
   | ({ loaderType: TsLoaderType.Default } & BaseTsOptions);
 
-/* eslint-disable */
-declare var __webpack_require__: typeof require;
-declare var __non_webpack_require__: typeof require;
-// Keep original require function (non webpack) to correct load modules in universal projects
-const moduleRequire = typeof __webpack_require__ === 'function' ? __non_webpack_require__ : require;
-/* eslint-enable */
-
 export default {
   getTsLoader({ loaderType, ...rest }: GetTsLoaderOptions) {
     if (loaderType === TsLoaderType.ATL) return this.atl(rest);
@@ -116,7 +109,7 @@ export default {
   /** In order to runs typescript type checker on a separate process. */
   tsCheckerPlugin({ tsconfig, ...rest }: BaseTsOptions) {
     const getName = () => 'fork-ts-checker-webpack-plugin';
-    const Plugin = moduleRequire(getName());
+    const Plugin = appEnv.require(getName());
     return new Plugin({
       tsconfig,
       compilerOptions: {
@@ -157,7 +150,7 @@ export default {
   /** In order to runs typescript type checker on a separate process. */
   atlCheckerPlugin() {
     const getName = () => 'awesome-typescript-loader';
-    const { CheckerPlugin } = moduleRequire(getName());
+    const { CheckerPlugin } = appEnv.require(getName());
     return new CheckerPlugin();
   },
 
