@@ -2,9 +2,9 @@ import path from 'path';
 import webpackMerge from 'webpack-merge';
 import defaultDirMap from './dirmap';
 
-function resolveDirMapPath(filename: string) {
+function resolveDirMapPath() {
   try {
-    return require.resolve(filename, { paths: [baseDir] });
+    return require.resolve('dirmap', { paths: [baseDir] });
   } catch {
     return '';
   }
@@ -14,11 +14,10 @@ export type DirMapConfig = typeof defaultDirMap;
 
 const baseDir = process.cwd();
 
-const dirMapFileName = 'dirmap';
-const customDirMapPath = resolveDirMapPath(dirMapFileName);
+const customDirMapPath = resolveDirMapPath();
 
 export const dirMap: DirMapConfig = customDirMapPath
-  ? (webpackMerge(defaultDirMap as any, require(customDirMapPath) as any) as DirMapConfig) // eslint-disable-line global-require, import/no-dynamic-require
+  ? (webpackMerge(defaultDirMap as any, require(customDirMapPath) as any) as DirMapConfig)
   : defaultDirMap;
 
 export const moduleFileExtensions = ['.js', '.jsx', '.ts', '.tsx', '.d.ts'];
