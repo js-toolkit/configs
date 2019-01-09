@@ -33,6 +33,9 @@ module.exports = {
     'no-useless-constructor': 'off',
     'no-empty-function': ['error', { allow: ['constructors'] }],
     'class-methods-use-this': 'off',
+    'global-require': 'off',
     'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
+    'import/no-unresolved': 'off',
+    'import/no-dynamic-require': 'off',
   },
 };

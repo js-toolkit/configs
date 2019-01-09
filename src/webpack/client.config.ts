@@ -1,16 +1,11 @@
-import webpack, { Configuration, RuleSetRule } from 'webpack';
+import { Configuration, RuleSetRule } from 'webpack';
 import webpackMerge from 'webpack-merge';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import WebpackManifestPlugin from 'webpack-manifest-plugin';
 import appEnv from '../appEnv';
 import paths, { dirMap } from '../paths';
 import commonConfig, { CommonConfigOptions } from './common.config';
-import loaders, {
-  BaseTsOptions,
-  TsLoaderType,
-  GetTsCheckerPluginOptions,
-  GetTsLoaderOptions,
-} from './loaders';
+import loaders, { BaseTsOptions, TsLoaderType, GetTsLoaderOptions } from './loaders';
 import { mergeAndReplaceRules } from './utils';
 
 export const clientDefaultRules: Record<
@@ -46,14 +41,11 @@ export const clientDefaultRules: Record<
   },
 };
 
-// export type DefaultClientJsRules = typeof defaultRules;
-
 export interface ClientConfigOptions
   extends Pick<Configuration, 'entry'>,
-    Pick<CommonConfigOptions, 'useTypeScript'>,
+    Pick<CommonConfigOptions, 'useTypeScript' | 'tsLoaderType'>,
     Partial<BaseTsOptions> {
   rules: Record<string, RuleSetRule>;
-  tsLoaderType?: TsLoaderType;
 }
 
 export default ({
@@ -88,6 +80,7 @@ export default ({
       outputJsDir: dirMap.client.output.js,
       hash: true,
       useTypeScript,
+      tsLoaderType,
       tsconfig,
     }),
     {
@@ -113,18 +106,16 @@ export default ({
       },
 
       plugins: [
-        ...appEnv.ifDevMode(
+        // Extract css in production
+        ...appEnv.ifProdMode(
           [
-            // Enable HMR in development.
-            new webpack.HotModuleReplacementPlugin(),
-          ],
-          [
-            // Extract css in production
             new MiniCssExtractPlugin({
               filename: `${dirMap.client.output.styles}/[name].css?[contenthash:5]`,
             }),
-          ]
+          ],
+          []
         ),
+        // Generate asset manifest for some tools
         new WebpackManifestPlugin({
           fileName: dirMap.client.output.assetManifest.fileName,
           filter: (() => {
@@ -136,14 +127,6 @@ export default ({
               keys.every(key => !(key in item) || item[key] === template[key]);
           })(),
         }),
-        ...(useTypeScript
-          ? [
-              loaders.getTsCheckerPlugin({
-                loaderType: tsLoaderType,
-                tsconfig,
-              } as GetTsCheckerPluginOptions),
-            ]
-          : []),
       ],
 
       devServer: {

@@ -6,7 +6,7 @@ import paths, { dirMap } from '../paths';
 import commonConfig from './common.config';
 import { clientDefaultRules, ClientConfigOptions } from './client.config';
 import { mergeAndReplaceRules } from './utils';
-import loaders, { GetTsLoaderOptions, GetTsCheckerPluginOptions, TsLoaderType } from './loaders';
+import loaders, { GetTsLoaderOptions, TsLoaderType } from './loaders';
 
 export const serverDefaultRules = {
   jsRule: {
@@ -15,7 +15,7 @@ export const serverDefaultRules = {
   },
   tsBaseRule: {
     ...clientDefaultRules.tsBaseRule,
-    include: [paths.server.sources, paths.client.sources, paths.shared.sources],
+    include: [paths.server.sources, paths.shared.sources],
   },
 };
 
@@ -26,6 +26,7 @@ export const universalDefaultRules: typeof clientDefaultRules = {
   },
   tsBaseRule: {
     ...serverDefaultRules.tsBaseRule,
+    include: [...(clientDefaultRules.jsRule.include as string[]), paths.server.sources],
   },
   cssRule: {
     ...clientDefaultRules.cssRule,
@@ -80,7 +81,9 @@ export default ({
       outputPath: paths.server.output.path,
       outputPublicPath: dirMap.server.output.publicPath,
       outputJsDir: '',
+      hash: false,
       useTypeScript,
+      tsLoaderType,
       tsconfig,
     }),
     {
@@ -116,15 +119,6 @@ export default ({
       },
 
       plugins: [
-        ...(useTypeScript
-          ? [
-              loaders.getTsCheckerPlugin({
-                loaderType: tsLoaderType,
-                tsconfig,
-              } as GetTsCheckerPluginOptions),
-            ]
-          : []),
-
         // Don't watch on client files when ssr is turned off because client by self make hot update
         // and server not needs in updated files because server not render react components.
         ...(!isUniversal || appEnv.ssr ? [] : [new WatchIgnorePlugin([paths.client.root])]),

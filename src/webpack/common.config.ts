@@ -2,7 +2,7 @@ import path from 'path';
 import webpack, { Options, Configuration } from 'webpack';
 import appEnv from '../appEnv';
 import paths, { moduleFileExtensions } from '../paths';
-import { BaseTsOptions } from './loaders';
+import loaders, { BaseTsOptions, TsLoaderType, GetTsCheckerPluginOptions } from './loaders';
 
 export interface CommonConfigOptions extends Partial<BaseTsOptions> {
   outputPath: string;
@@ -10,6 +10,7 @@ export interface CommonConfigOptions extends Partial<BaseTsOptions> {
   outputJsDir: string;
   hash?: boolean;
   useTypeScript?: boolean;
+  tsLoaderType?: TsLoaderType;
 }
 
 export default ({
@@ -18,6 +19,7 @@ export default ({
   outputJsDir,
   hash,
   useTypeScript,
+  tsLoaderType = TsLoaderType.Default,
   tsconfig,
 }: CommonConfigOptions): Configuration => ({
   // The base directory (absolute path!) for resolving the `entry` option.
@@ -46,6 +48,17 @@ export default ({
     // In order for the specified environment variables to be available in the JS code.
     // EnvironmentPlugin not working on client side with ssr because environment variables not passed to webpackDevMiddleware?
     new webpack.DefinePlugin(appEnv.stringified),
+    // Enable HMR in development.
+    ...appEnv.ifDevMode([new webpack.HotModuleReplacementPlugin()], []),
+    // Forked check for TS
+    ...(useTypeScript
+      ? [
+          loaders.getTsCheckerPlugin({
+            loaderType: tsLoaderType,
+            tsconfig,
+          } as GetTsCheckerPluginOptions),
+        ]
+      : []),
   ],
 
   resolve: {
@@ -56,5 +69,13 @@ export default ({
         ? [new (require('tsconfig-paths-webpack-plugin'))({ configFile: tsconfig })]
         : []),
     ],
+  },
+
+  module: {
+    rules: [],
+    // To suppress warning with 'Critical dependency: require function is used in a way in which dependencies cannot be statically extracted'
+    exprContextCritical: false,
+    // To suppress warning with 'Critical dependency: the request of a dependency is an expression'
+    unknownContextCritical: false,
   },
 });
