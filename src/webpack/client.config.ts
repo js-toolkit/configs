@@ -1,5 +1,6 @@
 import { Configuration, RuleSetRule } from 'webpack';
 import webpackMerge from 'webpack-merge';
+import path from 'path';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import WebpackManifestPlugin from 'webpack-manifest-plugin';
 import appEnv from '../appEnv';
@@ -55,7 +56,7 @@ export default ({
   tsLoaderType = TsLoaderType.Default,
   tsconfig = paths.client.tsconfig,
 }: ClientConfigOptions): Configuration => {
-  const { tsBaseRule, ...rest } = clientDefaultRules;
+  const { tsBaseRule, ...restRules } = clientDefaultRules;
 
   const preparedRules = useTypeScript
     ? {
@@ -67,9 +68,9 @@ export default ({
             tsconfig,
           } as GetTsLoaderOptions),
         },
-        ...rest,
+        ...restRules,
       }
-    : { ...rest };
+    : { ...restRules };
 
   const moduleRules = mergeAndReplaceRules(preparedRules, rules);
 
@@ -106,6 +107,23 @@ export default ({
       },
 
       plugins: [
+        // Generate html if needed
+        ...(dirMap.client.html.template
+          ? [
+              (() => {
+                const getName = () => 'html-webpack-plugin';
+                const { template, ...rest } = dirMap.client.html;
+
+                return new (require(getName()))({
+                  inject: false,
+                  template: path.join(paths.client.assets, template),
+                  filename: 'index.html',
+                  ...rest,
+                });
+              })(),
+            ]
+          : []),
+
         // Extract css in production
         ...appEnv.ifProdMode(
           [

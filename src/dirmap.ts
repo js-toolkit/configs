@@ -9,6 +9,11 @@ export default Object.freeze({
     assets: 'src/assets',
     staticContent: 'public',
 
+    html: {
+      template: 'index.pug',
+      title: 'App',
+    },
+
     tsconfig: 'tsconfig.json',
 
     output: {

@@ -99,8 +99,6 @@ export default {
       forkedChecks,
       afterLoaders: [
         ...(afterLoaders || []),
-        // Necessary for RHL4.
-        // Not working with RHL3 and DateRangePicker.
         ...appEnv.ifDevMode([{ loader: 'babel-loader' }], []),
       ],
       ...rest,
@@ -141,11 +139,7 @@ export default {
   },
 
   atsRHL({ tsconfig, ...rest }: BaseTsOptions) {
-    return [
-      // Necessary for RHL4.
-      ...appEnv.ifDevMode([{ loader: 'babel-loader' }], []),
-      this.atl({ tsconfig, ...rest }),
-    ];
+    return [...appEnv.ifDevMode([{ loader: 'babel-loader' }], []), this.atl({ tsconfig, ...rest })];
   },
 
   /** In order to runs typescript type checker on a separate process. */

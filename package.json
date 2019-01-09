@@ -16,6 +16,7 @@
     "copy": "copyfiles --exclude './src/**/*.ts' --up 1 './src/**/*' ./lib/ && copyfiles package.json LICENSE README.md ./lib/",
     "build": "npm run clean && tsc --project ./tsconfig.json && npm run copy",
     "build-to-tutoron": "npm run clean && tsc --project ./tsconfig.json --outDir '../tutoron/node_modules/@vzh/configs/' && copyfiles --exclude './src/**/*.ts' --up 1 './src/**/*' '../tutoron/node_modules/@vzh/configs/'",
+    "build-to-pwa": "npm run clean && tsc --project ./tsconfig.json --outDir '../pwa/node_modules/@vzh/configs/' && copyfiles --exclude './src/**/*.ts' --up 1 './src/**/*' '../pwa/node_modules/@vzh/configs/'",
     "build-to-reflexy": "npm run clean && tsc --project ./tsconfig.json --outDir '../reflexy/node_modules/@vzh/configs/' && copyfiles --exclude './src/**/*.ts' --up 1 './src/**/*' '../reflexy/node_modules/@vzh/configs/'",
     "build-to-react-components": "npm run clean && tsc --project ./tsconfig.json --outDir '../@vzh-react-components/node_modules/@vzh/configs/' && copyfiles --exclude './src/**/*.ts' --up 1 './src/**/*' '../@vzh-react-components/node_modules/@vzh/configs/'",
     "build-to-js-collections": "npm run clean && tsc --project ./tsconfig.json --outDir '../js-collections/node_modules/@vzh/configs/' && copyfiles --exclude './src/**/*.ts' --up 1 './src/**/*' '../js-collections/node_modules/@vzh/configs/'",
@@ -25,6 +26,7 @@
     "major-publish": "npm version major && npm run build && npm publish ./lib --access public && git push --follow-tags"
   },
   "devDependencies": {
+    "@types/html-webpack-plugin": "^3.2.0",
     "@types/mini-css-extract-plugin": "^0.2.0",
     "@types/node": "^10.12.18",
     "@types/webpack": "^4.4.22",
