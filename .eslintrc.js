@@ -1,20 +1,23 @@
-import { moduleFileExtensions } from '../paths';
-
 module.exports = {
-  extends: [require.resolve('./common.eslintrc.js')],
+  extends: ['airbnb-base', 'plugin:prettier/recommended'],
 
   parser: 'typescript-eslint-parser',
 
   plugins: ['typescript'],
 
+  env: {
+    node: true,
+    es6: true,
+  },
+
   settings: {
     'import/parsers': {
-      'typescript-eslint-parser': moduleFileExtensions.filter(ext => ext.includes('ts')),
+      'typescript-eslint-parser': ['.ts', '.tsx', '.js', '.jsx'],
     },
 
     'import/resolver': {
       node: {
-        extensions: moduleFileExtensions.filter(ext => ext.includes('js') || ext.includes('ts')),
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
       },
     },
   },

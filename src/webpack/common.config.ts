@@ -1,7 +1,7 @@
 import path from 'path';
 import webpack, { Options, Configuration } from 'webpack';
 import appEnv from '../appEnv';
-import paths from '../paths';
+import paths, { moduleFileExtensions } from '../paths';
 import { BaseTsOptions } from './loaders';
 
 export interface CommonConfigOptions extends Partial<BaseTsOptions> {
@@ -10,10 +10,6 @@ export interface CommonConfigOptions extends Partial<BaseTsOptions> {
   outputJsDir: string;
   hash?: boolean;
   useTypeScript?: boolean;
-}
-
-function getTsExtensions() {
-  return ['.ts', '.tsx', '.d.ts'];
 }
 
 export default ({
@@ -31,8 +27,11 @@ export default ({
     path: outputPath,
     publicPath: outputPublicPath,
     pathinfo: appEnv.ifDevMode(true, false),
-    filename: path.join(outputJsDir, `[name].js${hash ? '?[hash:5]' : ''}`),
-    // chunkFilename: path.join(outputFilePath, `[id].js${hash ? '?[chunkhash]' : ''}`),
+    filename: path.join(outputJsDir, `[name]${appEnv.prod && hash ? '.[hash:5]' : ''}.js`),
+    chunkFilename: path.join(
+      outputJsDir,
+      `[name]${appEnv.prod && hash ? '.[chunkhash:8]' : ''}.chunk.js`
+    ),
   },
 
   mode: appEnv.raw.NODE_ENV,
@@ -50,7 +49,7 @@ export default ({
   ],
 
   resolve: {
-    extensions: ['.js', '.jsx', ...(useTypeScript ? getTsExtensions() : [])],
+    extensions: moduleFileExtensions.filter(ext => useTypeScript || !ext.includes('ts')),
     modules: [paths.nodeModules.root, paths.root],
     plugins: [
       ...(useTypeScript

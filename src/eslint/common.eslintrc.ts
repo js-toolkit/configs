@@ -1,8 +1,8 @@
-import paths from '../paths';
+import paths, { moduleFileExtensions } from '../paths';
 
 module.exports = {
   // import and prettier plugins are already added by airbnb-base and plugin:prettier/recommended
-  extends: ['airbnb-base', 'plugin:prettier/recommended', require.resolve('./base.rules.json')],
+  extends: ['airbnb-base', 'plugin:prettier/recommended'],
 
   parser: 'babel-eslint',
 
@@ -18,7 +18,7 @@ module.exports = {
       // },
 
       node: {
-        extensions: ['.js'],
+        extensions: moduleFileExtensions.filter(ext => ext.includes('js')),
 
         moduleDirectory: [
           'node_modules',
@@ -31,6 +31,8 @@ module.exports = {
   },
 
   rules: {
+    'no-console': 'off',
+    'no-unused-expressions': ['error', { allowShortCircuit: true }],
     'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
   },
 };

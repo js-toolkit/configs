@@ -17,6 +17,8 @@ export const dirMap: DirMapConfig = fs.existsSync(customDirMapPath)
   ? (webpackMerge(defaultDirMap as any, loadCustomDirMap(customDirMapPath)) as any)
   : defaultDirMap;
 
+export const moduleFileExtensions = ['.js', '.jsx', '.ts', '.tsx', '.d.ts'];
+
 export default Object.freeze({
   root: baseDir,
 

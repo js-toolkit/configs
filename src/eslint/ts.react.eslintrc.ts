@@ -1,19 +1,13 @@
+import { moduleFileExtensions } from '../paths';
+
 module.exports = {
-  extends: [
-    require.resolve('./react.eslintrc.js'),
-    require.resolve('./ts.common.eslintrc.js'),
-    require.resolve('./ts.react.rules.json'),
-  ],
+  extends: [require.resolve('./react.eslintrc.js'), require.resolve('./ts.common.eslintrc.js')],
 
-  settings: {
-    'import/parsers': {
-      'typescript-eslint-parser': ['.ts', '.tsx'],
-    },
-
-    'import/resolver': {
-      node: {
-        extensions: ['.js', '.ts', '.tsx', '.d.ts'],
-      },
-    },
+  rules: {
+    'react/jsx-filename-extension': [
+      'error',
+      { extensions: moduleFileExtensions.filter(ext => ext.includes('js') || ext.includes('ts')) },
+    ],
+    'react/jsx-wrap-multilines': 'off',
   },
 };
