@@ -23,8 +23,10 @@ module.exports = {
   },
 
   rules: {
+    'no-console': 'off',
     'no-undef': 'off',
     'no-unused-vars': 'off',
+    'no-unused-expressions': ['error', { allowShortCircuit: true }],
     'no-use-before-define': 'off',
     'no-restricted-globals': 'off',
     'no-redeclare': 'off',
@@ -32,5 +34,6 @@ module.exports = {
     'no-useless-constructor': 'off',
     'no-empty-function': ['error', { allow: ['constructors'] }],
     'class-methods-use-this': 'off',
+    'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
   },
 };
