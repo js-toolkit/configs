@@ -4,7 +4,8 @@ import path from 'path';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import WebpackManifestPlugin from 'webpack-manifest-plugin';
 import appEnv from '../appEnv';
-import paths, { dirMap } from '../paths';
+import paths from '../paths';
+import appConfig from '../appConfig';
 import commonConfig, { CommonConfigOptions } from './common.config';
 import loaders, { BaseTsOptions, TsLoaderType, GetTsLoaderOptions } from './loaders';
 import { mergeAndReplaceRules } from './utils';
@@ -77,15 +78,15 @@ export default ({
   return webpackMerge(
     commonConfig({
       outputPath: paths.client.output.path,
-      outputPublicPath: dirMap.client.output.publicPath,
-      outputJsDir: dirMap.client.output.js,
+      outputPublicPath: appConfig.client.output.publicPath,
+      outputJsDir: appConfig.client.output.js,
       hash: true,
       useTypeScript,
       tsLoaderType,
       tsconfig,
     }),
     {
-      name: dirMap.client.root,
+      name: appConfig.client.root,
       target: 'web',
 
       context: paths.client.sources,
@@ -108,16 +109,15 @@ export default ({
 
       plugins: [
         // Generate html if needed
-        ...(dirMap.client.html.template
+        ...(appConfig.client.html.template
           ? [
               (() => {
                 const getName = () => 'html-webpack-plugin';
-                const { template, ...rest } = dirMap.client.html;
+                const { template, ...rest } = appConfig.client.html;
 
                 return new (require(getName()))({
                   inject: false,
                   template: path.join(paths.client.assets, template),
-                  filename: 'index.html',
                   ...rest,
                 });
               })(),
@@ -128,16 +128,16 @@ export default ({
         ...appEnv.ifProdMode(
           [
             new MiniCssExtractPlugin({
-              filename: `${dirMap.client.output.styles}/[name].css?[contenthash:5]`,
+              filename: `${appConfig.client.output.styles}/[name].css?[contenthash:5]`,
             }),
           ],
           []
         ),
         // Generate asset manifest for some tools
         new WebpackManifestPlugin({
-          fileName: dirMap.client.output.assetManifest.fileName,
+          fileName: appConfig.client.output.assetManifest.fileName,
           filter: (() => {
-            const template = dirMap.client.output.assetManifest.filterTemplate;
+            const template = appConfig.client.output.assetManifest.filterTemplate;
             if (!template) return undefined;
             const keys = Object.getOwnPropertyNames(template);
             if (!keys.length) return undefined;
@@ -149,7 +149,7 @@ export default ({
 
       devServer: {
         contentBase: paths.client.staticContent, // Static content which not processed by webpack and loadable from disk.
-        publicPath: dirMap.client.output.publicPath,
+        publicPath: appConfig.client.output.publicPath,
         historyApiFallback: true, // For react subpages handling with webpack-dev-server
         host: '0.0.0.0',
         port: 9000,

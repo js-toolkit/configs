@@ -2,7 +2,8 @@ import { Configuration, WatchIgnorePlugin } from 'webpack';
 import webpackMerge from 'webpack-merge';
 import webpackNodeExternals from 'webpack-node-externals';
 import appEnv from '../appEnv';
-import paths, { dirMap } from '../paths';
+import paths from '../paths';
+import appConfig from '../appConfig';
 import commonConfig from './common.config';
 import { clientDefaultRules, ClientConfigOptions } from './client.config';
 import { mergeAndReplaceRules } from './utils';
@@ -79,7 +80,7 @@ export default ({
   return webpackMerge(
     commonConfig({
       outputPath: paths.server.output.path,
-      outputPublicPath: dirMap.server.output.publicPath,
+      outputPublicPath: appConfig.server.output.publicPath,
       outputJsDir: '',
       hash: false,
       useTypeScript,
@@ -87,7 +88,7 @@ export default ({
       tsconfig,
     }),
     {
-      name: dirMap.server.root,
+      name: appConfig.server.root,
       target: 'node',
 
       context: isUniversal ? paths.root : paths.server.sources,

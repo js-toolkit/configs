@@ -1,7 +1,8 @@
 import { Loader } from 'webpack';
 import { Omit } from '@vzh/ts-types';
 import appEnv from '../appEnv';
-import paths, { dirMap } from '../paths';
+import paths from '../paths';
+import appConfig from '../appConfig';
 import nodeRequire from './nodeRequire';
 
 export interface BaseTsOptions {
@@ -215,13 +216,13 @@ export default {
                 loader: 'file-loader',
                 options: {
                   regExp: 'node_modules(?:/|\\\\)(.*)',
-                  name: `${dirMap.client.output.external}/[1]`,
+                  name: `${appConfig.client.output.external}/[1]`,
                 },
               },
               {
                 loader: 'extract-loader',
                 options: {
-                  publicPath: dirMap.client.output.publicPath,
+                  publicPath: appConfig.client.output.publicPath,
                 },
               },
             ]
@@ -250,7 +251,7 @@ export default {
         limit: 1024,
         fallback: 'file-loader',
         emitFile: !ssr,
-        name: `${dirMap.client.output.assets}/[name].[ext]?[hash:base64:5]`, // Virtual hash for HRM during development.
+        name: `${appConfig.client.output.assets}/[name].[ext]?[hash:base64:5]`, // Virtual hash for HRM during development.
       },
     };
   },
@@ -261,7 +262,7 @@ export default {
       options: {
         emitFile: !ssr,
         regExp: 'node_modules(?:/|\\\\)(.*)',
-        name: `${dirMap.client.output.external}/[1]`,
+        name: `${appConfig.client.output.external}/[1]`,
       },
     };
   },

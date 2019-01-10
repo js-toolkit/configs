@@ -1,24 +1,7 @@
 import path from 'path';
-import webpackMerge from 'webpack-merge';
-import defaultDirMap from './dirmap';
-
-function resolveDirMapPath() {
-  try {
-    return require.resolve('dirmap', { paths: [baseDir] });
-  } catch {
-    return '';
-  }
-}
-
-export type DirMapConfig = typeof defaultDirMap;
+import appConfig from './appConfig';
 
 const baseDir = process.cwd();
-
-const customDirMapPath = resolveDirMapPath();
-
-export const dirMap: DirMapConfig = customDirMapPath
-  ? (webpackMerge(defaultDirMap as any, require(customDirMapPath) as any) as DirMapConfig)
-  : defaultDirMap;
 
 export const moduleFileExtensions = ['.js', '.jsx', '.ts', '.tsx', '.d.ts'];
 
@@ -31,42 +14,42 @@ export default Object.freeze({
   },
 
   output: {
-    root: path.resolve(baseDir, dirMap.output.root),
+    root: path.resolve(baseDir, appConfig.output.root),
   },
 
   client: {
-    root: path.resolve(baseDir, dirMap.client.root),
-    sources: path.resolve(baseDir, dirMap.client.root, dirMap.client.sources),
-    assets: path.resolve(baseDir, dirMap.client.root, dirMap.client.assets),
-    staticContent: path.resolve(baseDir, dirMap.client.root, dirMap.client.staticContent),
+    root: path.resolve(baseDir, appConfig.client.root),
+    sources: path.resolve(baseDir, appConfig.client.root, appConfig.client.sources),
+    assets: path.resolve(baseDir, appConfig.client.root, appConfig.client.assets),
+    staticContent: path.resolve(baseDir, appConfig.client.root, appConfig.client.staticContent),
 
-    tsconfig: path.resolve(baseDir, dirMap.client.root, dirMap.client.tsconfig),
+    tsconfig: path.resolve(baseDir, appConfig.client.root, appConfig.client.tsconfig),
 
     output: {
-      path: path.resolve(baseDir, dirMap.output.root, dirMap.client.output.root),
+      path: path.resolve(baseDir, appConfig.output.root, appConfig.client.output.root),
       jsPath: path.resolve(
         baseDir,
-        dirMap.output.root,
-        dirMap.client.output.root,
-        dirMap.client.output.js
+        appConfig.output.root,
+        appConfig.client.output.root,
+        appConfig.client.output.js
       ),
     },
   },
 
   server: {
-    root: path.resolve(baseDir, dirMap.server.root),
-    sources: path.resolve(baseDir, dirMap.server.root, dirMap.server.sources),
+    root: path.resolve(baseDir, appConfig.server.root),
+    sources: path.resolve(baseDir, appConfig.server.root, appConfig.server.sources),
 
-    tsconfig: path.resolve(baseDir, dirMap.server.root, dirMap.server.tsconfig),
+    tsconfig: path.resolve(baseDir, appConfig.server.root, appConfig.server.tsconfig),
 
     output: {
-      path: path.resolve(baseDir, dirMap.output.root, dirMap.server.output.root),
+      path: path.resolve(baseDir, appConfig.output.root, appConfig.server.output.root),
     },
   },
 
   shared: {
-    root: path.resolve(baseDir, dirMap.shared.root),
-    sources: path.resolve(baseDir, dirMap.shared.root, dirMap.shared.sources),
-    tsconfig: path.resolve(baseDir, dirMap.shared.root, dirMap.shared.tsconfig),
+    root: path.resolve(baseDir, appConfig.shared.root),
+    sources: path.resolve(baseDir, appConfig.shared.root, appConfig.shared.sources),
+    tsconfig: path.resolve(baseDir, appConfig.shared.root, appConfig.shared.tsconfig),
   },
 });

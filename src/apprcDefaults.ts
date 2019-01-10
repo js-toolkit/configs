@@ -11,6 +11,7 @@ export default Object.freeze({
 
     html: {
       template: 'index.pug',
+      filename: 'index.html',
       title: 'App',
     },
 
@@ -23,10 +24,15 @@ export default Object.freeze({
       assets: 'assets',
       external: 'lib',
       publicPath: '/',
+
+      /** Generated asset manifest */
       assetManifest: {
         fileName: 'asset-manifest.json',
         filterTemplate: {},
       },
+
+      /** Generated service worker file name */
+      swFile: 'service-worker.js',
     },
   },
 
