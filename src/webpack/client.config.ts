@@ -117,7 +117,7 @@ export default ({
 
                 return new (require(getName()))({
                   inject: false,
-                  template: path.join(paths.client.assets, template),
+                  template: path.join(paths.client.sources, template),
                   ...rest,
                 });
               })(),

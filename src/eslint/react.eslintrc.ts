@@ -1,3 +1,4 @@
+import appConfig from '../appConfig';
 import { moduleFileExtensions } from '../paths';
 
 module.exports = {
@@ -5,6 +6,14 @@ module.exports = {
 
   env: {
     browser: true,
+  },
+
+  settings: {
+    'import/resolver': {
+      webpack: appConfig.client.webpackConfig
+        ? { config: appConfig.client.webpackConfig }
+        : undefined,
+    },
   },
 
   rules: {

@@ -10,11 +10,12 @@ export default Object.freeze({
     staticContent: 'public',
 
     html: {
-      template: 'index.pug',
+      template: 'assets/index.pug',
       filename: 'index.html',
       title: 'App',
     },
 
+    webpackConfig: '',
     tsconfig: 'tsconfig.json',
 
     output: {
@@ -40,6 +41,7 @@ export default Object.freeze({
     root: 'server',
     sources: 'src',
 
+    webpackConfig: '',
     tsconfig: 'tsconfig.json',
 
     output: {

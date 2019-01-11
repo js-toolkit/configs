@@ -13,10 +13,6 @@ module.exports = {
 
   settings: {
     'import/resolver': {
-      // webpack: {
-      //   config: 'webpack.config.babel.js',
-      // },
-
       node: {
         extensions: moduleFileExtensions.filter(ext => ext.includes('js')),
 
