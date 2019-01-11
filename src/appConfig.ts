@@ -16,10 +16,18 @@ function resolveConfigPath() {
 function getAppConfig() {
   const apprcPath = resolveConfigPath();
 
-  const appConfig: AppConfig = apprcPath
-    ? (webpackMerge(appConfigDefaults as any, require(apprcPath) as any) as AppConfig)
-    : appConfigDefaults;
-  return appConfig;
+  const appConfig: AppConfig =
+    (process.env.appConfig as any) ||
+    (apprcPath
+      ? (webpackMerge(appConfigDefaults as any, require(apprcPath) as any) as AppConfig)
+      : appConfigDefaults);
+
+  return {
+    ...appConfig,
+    envStringify() {
+      return { 'process.env.appConfig': JSON.stringify(this) };
+    },
+  };
 }
 
 /** Do not use it in runtime in browser environment! */

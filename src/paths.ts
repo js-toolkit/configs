@@ -53,6 +53,10 @@ const paths = Object.freeze({
     sources: path.resolve(baseDir, appConfig.shared.root, appConfig.shared.sources),
     tsconfig: path.resolve(baseDir, appConfig.shared.root, appConfig.shared.tsconfig),
   },
+
+  envStringify() {
+    return { 'process.env.paths': JSON.stringify(this) };
+  },
 });
 
 export default paths;

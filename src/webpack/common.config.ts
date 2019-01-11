@@ -1,6 +1,7 @@
 import path from 'path';
 import webpack, { Options, Configuration } from 'webpack';
 import appEnv from '../appEnv';
+import appConfig from '../appConfig';
 import paths, { moduleExtensions } from '../paths';
 import loaders, { BaseTsOptions, TsLoaderType, GetTsCheckerPluginOptions } from './loaders';
 
@@ -47,7 +48,13 @@ export default ({
   plugins: [
     // In order for the specified environment variables to be available in the JS code.
     // EnvironmentPlugin not working on client side with ssr because environment variables not passed to webpackDevMiddleware?
-    new webpack.DefinePlugin(appEnv.stringified),
+    new webpack.DefinePlugin({
+      ...appEnv.stringified,
+      // Replace appConfig... to static values in bundle.
+      ...appConfig.envStringify(),
+      // Replace paths... to static values in bundle.
+      ...paths.envStringify(),
+    }),
     // Enable HMR in development.
     ...appEnv.ifDevMode([new webpack.HotModuleReplacementPlugin()], []),
     // Forked check for TS
