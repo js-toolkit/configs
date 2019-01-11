@@ -52,8 +52,6 @@ export default ({
       ...appEnv.stringified,
       // Replace appConfig... to static values in bundle.
       ...appConfig.envStringify(),
-      // Replace paths... to static values in bundle.
-      ...paths.envStringify(),
     }),
     // Enable HMR in development.
     ...appEnv.ifDevMode([new webpack.HotModuleReplacementPlugin()], []),
