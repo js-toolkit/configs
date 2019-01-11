@@ -2,7 +2,6 @@ import { Configuration, RuleSetRule } from 'webpack';
 import webpackMerge from 'webpack-merge';
 import path from 'path';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
-import WebpackManifestPlugin from 'webpack-manifest-plugin';
 import appEnv from '../appEnv';
 import paths from '../paths';
 import appConfig from '../appConfig';
@@ -115,7 +114,8 @@ export default ({
                 const getName = () => 'html-webpack-plugin';
                 const { template, ...rest } = appConfig.client.html;
 
-                return new (require(getName()))({
+                const HtmlWebpackPlugin = require(getName());
+                return new HtmlWebpackPlugin({
                   inject: false,
                   template: path.join(paths.client.sources, template),
                   ...rest,
@@ -134,17 +134,27 @@ export default ({
           []
         ),
         // Generate asset manifest for some tools
-        new WebpackManifestPlugin({
-          fileName: appConfig.client.output.assetManifest.fileName,
-          filter: (() => {
-            const template = appConfig.client.output.assetManifest.filterTemplate;
-            if (!template) return undefined;
-            const keys = Object.getOwnPropertyNames(template);
-            if (!keys.length) return undefined;
-            return (item: WebpackManifestPlugin.FileDescriptor) =>
-              keys.every(key => !(key in item) || item[key] === template[key]);
-          })(),
-        }),
+        ...(appConfig.client.output.assetManifest.fileName
+          ? [
+              (() => {
+                const getName = () => 'webpack-manifest-plugin';
+                const { fileName, filterTemplate } = appConfig.client.output.assetManifest;
+                const isNeedFilter =
+                  !!filterTemplate && !!Object.getOwnPropertyNames(filterTemplate).length;
+
+                const WebpackManifestPlugin = require(getName());
+                return new WebpackManifestPlugin({
+                  fileName,
+                  filter: !isNeedFilter
+                    ? undefined
+                    : (item: any) =>
+                        Object.getOwnPropertyNames(filterTemplate).every(
+                          key => !(key in item) || item[key] === filterTemplate[key]
+                        ),
+                });
+              })(),
+            ]
+          : []),
       ],
 
       devServer: {
