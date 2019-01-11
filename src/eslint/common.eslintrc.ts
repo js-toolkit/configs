@@ -1,4 +1,4 @@
-import paths, { moduleFileExtensions } from '../paths';
+import paths, { moduleExtensions } from '../paths';
 
 module.exports = {
   // import and prettier plugins are already added by airbnb-base and plugin:prettier/recommended
@@ -14,7 +14,7 @@ module.exports = {
   settings: {
     'import/resolver': {
       node: {
-        extensions: moduleFileExtensions.filter(ext => ext.includes('js')),
+        extensions: moduleExtensions.filter(ext => ext.includes('js')),
 
         moduleDirectory: [
           'node_modules',

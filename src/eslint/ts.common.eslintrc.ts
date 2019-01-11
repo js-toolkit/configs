@@ -1,4 +1,4 @@
-import { moduleFileExtensions } from '../paths';
+import { moduleExtensions } from '../paths';
 
 module.exports = {
   extends: [require.resolve('./common.eslintrc.js')],
@@ -9,12 +9,12 @@ module.exports = {
 
   settings: {
     'import/parsers': {
-      'typescript-eslint-parser': moduleFileExtensions.filter(ext => ext.includes('ts')),
+      'typescript-eslint-parser': moduleExtensions.filter(ext => ext.includes('ts')),
     },
 
     'import/resolver': {
       node: {
-        extensions: moduleFileExtensions.filter(ext => ext.includes('js') || ext.includes('ts')),
+        extensions: moduleExtensions.filter(ext => ext.includes('js') || ext.includes('ts')),
       },
     },
   },

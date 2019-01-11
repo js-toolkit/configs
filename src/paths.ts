@@ -3,9 +3,10 @@ import appConfig from './appConfig';
 
 const baseDir = process.cwd();
 
-export const moduleFileExtensions = ['.js', '.jsx', '.ts', '.tsx', '.d.ts'];
+export const moduleExtensions = ['.js', '.jsx', '.ts', '.tsx', '.d.ts'];
 
-export default Object.freeze({
+/** Do not use it in runtime in browser environment! */
+const paths = Object.freeze({
   root: baseDir,
 
   nodeModules: {
@@ -53,3 +54,5 @@ export default Object.freeze({
     tsconfig: path.resolve(baseDir, appConfig.shared.root, appConfig.shared.tsconfig),
   },
 });
+
+export default paths;

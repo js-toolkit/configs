@@ -29,7 +29,9 @@ export function getAppEnvironment() {
   };
 
   return {
+    /** Object with keys and their default values so we can feed into Webpack EnvironmentPlugin. */
     raw,
+    /** All values that we can feed into Webpack DefinePlugin. */
     stringified,
 
     get ssr() {

@@ -1,4 +1,4 @@
-import { moduleFileExtensions } from '../paths';
+import { moduleExtensions } from '../paths';
 
 module.exports = {
   extends: [require.resolve('./react.eslintrc.js'), require.resolve('./ts.common.eslintrc.js')],
@@ -6,7 +6,7 @@ module.exports = {
   rules: {
     'react/jsx-filename-extension': [
       'error',
-      { extensions: moduleFileExtensions.filter(ext => ext.includes('js') || ext.includes('ts')) },
+      { extensions: moduleExtensions.filter(ext => ext.includes('js') || ext.includes('ts')) },
     ],
     'react/jsx-wrap-multilines': 'off',
   },

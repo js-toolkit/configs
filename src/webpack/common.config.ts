@@ -1,7 +1,7 @@
 import path from 'path';
 import webpack, { Options, Configuration } from 'webpack';
 import appEnv from '../appEnv';
-import paths, { moduleFileExtensions } from '../paths';
+import paths, { moduleExtensions } from '../paths';
 import loaders, { BaseTsOptions, TsLoaderType, GetTsCheckerPluginOptions } from './loaders';
 
 export interface CommonConfigOptions extends Partial<BaseTsOptions> {
@@ -62,7 +62,7 @@ export default ({
   ],
 
   resolve: {
-    extensions: moduleFileExtensions.filter(ext => useTypeScript || !ext.includes('ts')),
+    extensions: moduleExtensions.filter(ext => useTypeScript || !ext.includes('ts')),
     modules: [paths.nodeModules.root, paths.root],
     plugins: [
       ...(useTypeScript

@@ -1,5 +1,5 @@
 import appConfig from '../appConfig';
-import { moduleFileExtensions } from '../paths';
+import { moduleExtensions } from '../paths';
 
 module.exports = {
   extends: ['airbnb', require.resolve('./common.eslintrc.js')],
@@ -21,7 +21,7 @@ module.exports = {
     'react/destructuring-assignment': ['on', 'always', { ignoreClassFields: true }],
     'react/jsx-filename-extension': [
       'error',
-      { extensions: moduleFileExtensions.filter(ext => ext.includes('js')) },
+      { extensions: moduleExtensions.filter(ext => ext.includes('js')) },
     ],
     'jsx-a11y/anchor-is-valid': ['error', { specialLink: ['to'] }],
     'jsx-a11y/label-has-for': [2, { allowChildren: true }],

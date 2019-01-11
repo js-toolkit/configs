@@ -22,4 +22,7 @@ function getAppConfig() {
   return appConfig;
 }
 
-export default getAppConfig();
+/** Do not use it in runtime in browser environment! */
+const appConfig = getAppConfig();
+
+export default appConfig;
