@@ -24,13 +24,15 @@ function getAppConfig() {
 
   return {
     ...appConfig,
+
+    /** Stringify all values that we can feed into Webpack DefinePlugin. */
     envStringify() {
       return { 'process.env.appConfig': JSON.stringify(this) };
     },
   };
 }
 
-/** Do not use it in runtime in browser environment! */
+/** Use in runtime in browser environment only JSON convertable values, not functions! */
 const appConfig = getAppConfig();
 
 export default appConfig;

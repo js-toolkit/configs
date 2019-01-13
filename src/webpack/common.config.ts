@@ -49,8 +49,9 @@ export default ({
     // In order for the specified environment variables to be available in the JS code.
     // EnvironmentPlugin not working on client side with ssr because environment variables not passed to webpackDevMiddleware?
     new webpack.DefinePlugin({
-      ...appEnv.stringified,
-      // Replace appConfig... to static values in bundle.
+      // Replace process.env... and appEnv.raw... to static values in the bundle.
+      ...appEnv.envStringify(),
+      // Replace appConfig... to static values in the bundle.
       ...appConfig.envStringify(),
     }),
     // Enable HMR in development.
