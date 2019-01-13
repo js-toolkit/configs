@@ -15,7 +15,9 @@ export default Object.freeze({
       title: 'App',
     },
 
+    /** Used by eslint webpack resolver */
     webpackConfig: '',
+    /** Used by webpack loaders and plugins */
     tsconfig: 'tsconfig.json',
 
     output: {
@@ -41,7 +43,9 @@ export default Object.freeze({
     root: 'server',
     sources: 'src',
 
+    /** Used by eslint webpack resolver */
     webpackConfig: '',
+    /** Used by webpack loaders and plugins */
     tsconfig: 'tsconfig.json',
 
     output: {
