@@ -54,8 +54,10 @@ export default ({
       // Replace appConfig... to static values in the bundle.
       ...appConfig.envStringify(),
     }),
+
     // Enable HMR in development.
     ...appEnv.ifDevMode([new webpack.HotModuleReplacementPlugin()], []),
+
     // Forked check for TS
     ...(useTypeScript
       ? [
@@ -65,6 +67,10 @@ export default ({
           } as GetTsCheckerPluginOptions),
         ]
       : []),
+
+    // Ignore all locale files of moment.js
+    // https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
+    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
   ],
 
   resolve: {
