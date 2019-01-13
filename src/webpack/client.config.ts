@@ -103,7 +103,13 @@ export default ({
       // recordsOutputPath: path.join(paths.output.path, 'webpack.client.stats.json'),
 
       module: {
-        rules: Object.getOwnPropertyNames(moduleRules).map(name => moduleRules[name] || {}),
+        rules: [
+          ...Object.getOwnPropertyNames(moduleRules).map(name => moduleRules[name] || {}),
+          // Provide pug loader if html template is pug template
+          ...(appConfig.client.html.template && appConfig.client.html.template.endsWith('.pug')
+            ? [{ test: /\.pug$/, use: { loader: 'pug-loader' } }]
+            : []),
+        ],
       },
 
       plugins: [
@@ -133,6 +139,7 @@ export default ({
           ],
           []
         ),
+
         // Generate asset manifest for some tools
         ...(appConfig.client.output.assetManifest.fileName
           ? [
