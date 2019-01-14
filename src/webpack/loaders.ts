@@ -43,13 +43,13 @@ export type GetTsCheckerPluginOptions =
   | ({ loaderType: TsLoaderType.Default } & BaseTsOptions);
 
 export default {
-  getTsLoader({ loaderType, ...rest }: GetTsLoaderOptions) {
+  getTsLoader({ loaderType, ...rest }: GetTsLoaderOptions & Record<string, any>) {
     if (loaderType === TsLoaderType.ATL) return this.atl(rest);
     if (loaderType === TsLoaderType.Babel) return this.babel(rest);
     return this.ts({ ...rest });
   },
 
-  getTsCheckerPlugin({ loaderType, ...rest }: GetTsCheckerPluginOptions) {
+  getTsCheckerPlugin({ loaderType, ...rest }: GetTsCheckerPluginOptions & Record<string, any>) {
     if (loaderType === TsLoaderType.ATL) return this.atlCheckerPlugin();
     return this.tsCheckerPlugin(rest as BaseTsOptions);
   },
@@ -59,7 +59,7 @@ export default {
     forkedChecks,
     afterLoaders,
     ...rest
-  }: Omit<GetTsDefaultLoaderOptions, 'loaderType'>) {
+  }: Omit<GetTsDefaultLoaderOptions, 'loaderType'> & Record<string, any>) {
     return [
       ...(forkedChecks && appEnv.prod
         ? [
@@ -94,7 +94,7 @@ export default {
     forkedChecks,
     afterLoaders,
     ...rest
-  }: Omit<GetTsDefaultLoaderOptions, 'loaderType'>) {
+  }: Omit<GetTsDefaultLoaderOptions, 'loaderType'> & Record<string, any>) {
     return this.ts({
       tsconfig,
       forkedChecks,
@@ -107,7 +107,7 @@ export default {
   },
 
   /** In order to runs typescript type checker on a separate process. */
-  tsCheckerPlugin({ tsconfig, ...rest }: BaseTsOptions) {
+  tsCheckerPlugin({ tsconfig, ...rest }: BaseTsOptions & Record<string, any>) {
     const getName = () => 'fork-ts-checker-webpack-plugin';
     const Plugin = nodeRequire(getName());
     return new Plugin({
@@ -127,7 +127,7 @@ export default {
     });
   },
 
-  atl({ tsconfig, ...rest }: BaseTsOptions) {
+  atl({ tsconfig, ...rest }: BaseTsOptions & Record<string, any>) {
     return {
       loader: 'awesome-typescript-loader',
       options: {
@@ -139,7 +139,7 @@ export default {
     };
   },
 
-  atsRHL({ tsconfig, ...rest }: BaseTsOptions) {
+  atsRHL({ tsconfig, ...rest }: BaseTsOptions & Record<string, any>) {
     return [...appEnv.ifDevMode([{ loader: 'babel-loader' }], []), this.atl({ tsconfig, ...rest })];
   },
 
@@ -171,7 +171,12 @@ export default {
     prodPattern = '[hash:5]',
     postcss = true,
     ...rest
-  } = {}) {
+  }: {
+    ssr?: boolean;
+    pattern?: string;
+    prodPattern?: string;
+    postcss?: boolean;
+  } & Record<string, any> = {}) {
     return [
       {
         loader: 'css-loader',
