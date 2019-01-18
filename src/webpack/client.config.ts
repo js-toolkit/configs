@@ -8,6 +8,8 @@ import commonConfig, { CommonConfigOptions } from './common.config';
 import loaders, { BaseTsOptions, TsLoaderType, GetTsLoaderOptions } from './loaders';
 import { mergeAndReplaceRules } from './utils';
 
+const cssExtractLoader = 'mini-css-extract-plugin/dist/loader';
+
 export const clientDefaultRules: Record<
   'jsRule' | 'tsBaseRule' | 'cssRule' | 'cssNodeModulesRule' | 'assetsRule',
   RuleSetRule
@@ -24,18 +26,12 @@ export const clientDefaultRules: Record<
   cssRule: {
     test: /\.css$/,
     include: [paths.client.sources],
-    use: [
-      appEnv.ifDevMode('style-loader', 'mini-css-extract-plugin/dist/loader'),
-      ...loaders.css(),
-    ],
+    use: [appEnv.ifDevMode('style-loader', cssExtractLoader), ...loaders.css()],
   },
   cssNodeModulesRule: {
     test: /\.css$/,
     include: [paths.nodeModules.root],
-    use: [
-      appEnv.ifDevMode('style-loader', 'mini-css-extract-plugin/dist/loader'),
-      ...loaders.cssNodeModules(),
-    ],
+    use: [appEnv.ifDevMode('style-loader', cssExtractLoader), ...loaders.cssNodeModules()],
   },
   assetsRule: {
     test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2|otf)$/,
@@ -49,6 +45,17 @@ export interface ClientConfigOptions
     Pick<CommonConfigOptions, 'useTypeScript' | 'tsLoaderType'>,
     Partial<BaseTsOptions> {
   rules: Record<string, RuleSetRule>;
+}
+
+function containsLoader(rules: Record<string, RuleSetRule>, loader: string): boolean {
+  return Object.getOwnPropertyNames(rules).some(key => {
+    const rule = rules[key];
+    return !!(
+      (rule.loader && rule.loader.toString().includes(loader)) ||
+      (rule.loaders && rule.loaders.toString().includes(loader)) ||
+      (rule.use && rule.use.toString().includes(loader))
+    );
+  });
 }
 
 export default ({
@@ -132,19 +139,18 @@ export default ({
             ]
           : []),
 
-        // Extract css in production
-        ...appEnv.ifProdMode(
-          [
-            (() => {
-              const getName = () => 'mini-css-extract-plugin';
-              const MiniCssExtractPlugin = require(getName());
-              return new MiniCssExtractPlugin({
-                filename: `${appConfig.client.output.styles}/[name].css?[contenthash:5]`,
-              });
-            })(),
-          ],
-          []
-        ),
+        // Extract css in production only if has mini-css-extract-plugin loader
+        ...(appEnv.prod && containsLoader(moduleRules, cssExtractLoader)
+          ? [
+              (() => {
+                const getName = () => 'mini-css-extract-plugin';
+                const MiniCssExtractPlugin = require(getName());
+                return new MiniCssExtractPlugin({
+                  filename: `${appConfig.client.output.styles}/[name].css?[contenthash:5]`,
+                });
+              })(),
+            ]
+          : []),
 
         // Generate asset manifest for some tools
         ...(appConfig.client.output.assetManifest.fileName
