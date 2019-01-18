@@ -15,6 +15,7 @@ export default ({ importPath = defaultImportPath, presetEnv }: Props = {}) => ({
     'postcss-import': importPath ? { path: importPath } : false, // https://github.com/postcss/postcss-import/issues/224
     'postcss-icss-values': {}, // import values with css-loader not postcss-import
     'postcss-nested': {},
+    // https://preset-env.cssdb.org/
     'postcss-preset-env': {
       stage: 2,
       ...presetEnv,
