@@ -1,7 +1,6 @@
 import { Configuration, RuleSetRule } from 'webpack';
 import webpackMerge from 'webpack-merge';
 import path from 'path';
-import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import appEnv from '../appEnv';
 import paths from '../paths';
 import appConfig from '../appConfig';
@@ -25,13 +24,16 @@ export const clientDefaultRules: Record<
   cssRule: {
     test: /\.css$/,
     include: [paths.client.sources],
-    use: [appEnv.ifDevMode('style-loader', MiniCssExtractPlugin.loader), ...loaders.css()],
+    use: [
+      appEnv.ifDevMode('style-loader', 'mini-css-extract-plugin/dist/loader'),
+      ...loaders.css(),
+    ],
   },
   cssNodeModulesRule: {
     test: /\.css$/,
     include: [paths.nodeModules.root],
     use: [
-      appEnv.ifDevMode('style-loader', MiniCssExtractPlugin.loader),
+      appEnv.ifDevMode('style-loader', 'mini-css-extract-plugin/dist/loader'),
       ...loaders.cssNodeModules(),
     ],
   },
@@ -117,9 +119,9 @@ export default ({
         ...(appConfig.client.html.template
           ? [
               (() => {
-                const getName = () => 'html-webpack-plugin';
                 const { template, ...rest } = appConfig.client.html;
 
+                const getName = () => 'html-webpack-plugin';
                 const HtmlWebpackPlugin = require(getName());
                 return new HtmlWebpackPlugin({
                   inject: false,
@@ -133,9 +135,13 @@ export default ({
         // Extract css in production
         ...appEnv.ifProdMode(
           [
-            new MiniCssExtractPlugin({
-              filename: `${appConfig.client.output.styles}/[name].css?[contenthash:5]`,
-            }),
+            (() => {
+              const getName = () => 'mini-css-extract-plugin';
+              const MiniCssExtractPlugin = require(getName());
+              return new MiniCssExtractPlugin({
+                filename: `${appConfig.client.output.styles}/[name].css?[contenthash:5]`,
+              });
+            })(),
           ],
           []
         ),
@@ -144,11 +150,11 @@ export default ({
         ...(appConfig.client.output.assetManifest.fileName
           ? [
               (() => {
-                const getName = () => 'webpack-manifest-plugin';
                 const { fileName, filterTemplate } = appConfig.client.output.assetManifest;
                 const isNeedFilter =
                   !!filterTemplate && !!Object.getOwnPropertyNames(filterTemplate).length;
 
+                const getName = () => 'webpack-manifest-plugin';
                 const WebpackManifestPlugin = require(getName());
                 return new WebpackManifestPlugin({
                   fileName,
