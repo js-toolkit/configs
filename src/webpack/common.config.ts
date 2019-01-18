@@ -78,7 +78,13 @@ export default ({
     modules: [paths.nodeModules.root, paths.root],
     plugins: [
       ...(useTypeScript
-        ? [new (require('tsconfig-paths-webpack-plugin'))({ configFile: tsconfig })]
+        ? [
+            (() => {
+              const getName = () => 'tsconfig-paths-webpack-plugin';
+              const TSConfigPathsWebpackPlugin = require(getName());
+              return new TSConfigPathsWebpackPlugin({ configFile: tsconfig });
+            })(),
+          ]
         : []),
     ],
   },
