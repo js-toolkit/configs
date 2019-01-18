@@ -200,51 +200,12 @@ export default {
       postcss,
       pattern: '[local]',
       prodPattern: '[local]',
-      // In some cases has problems when build with modules because webpack requiring urls as modules.
+      // In some cases have problems when build with modules because webpack requiring urls as modules.
       // In this case you need define resolve.extensions in webpack config for those files.
       // For example, font urls in katex.css.
       modules: false,
       ...rest,
     } as any);
-  },
-
-  cssNodeModulesCopy({ ssr = false, localIdentName = '[local]', postcss = false } = {}) {
-    return [
-      ...(ssr
-        ? []
-        : appEnv.ifDevMode<Loader[]>(
-            [{ loader: 'style-loader' }],
-            // In production mode extract processed css and save result to file.
-            [
-              {
-                // todo: in production add link to file in html file
-                loader: 'file-loader',
-                options: {
-                  regExp: 'node_modules(?:/|\\\\)(.*)',
-                  name: `${appConfig.client.output.external}/[1]`,
-                },
-              },
-              {
-                loader: 'extract-loader',
-                options: {
-                  publicPath: appConfig.client.output.publicPath,
-                },
-              },
-            ]
-          )),
-      {
-        loader: 'css-loader',
-        options: {
-          modules: true,
-          camelCase: false,
-          sourceMap: false,
-          exportOnlyLocals: ssr,
-          localIdentName,
-          importLoaders: postcss ? 1 : undefined,
-        },
-      },
-      ...(postcss ? ['postcss-loader'] : []),
-    ];
   },
 
   assets({ ssr = false } = {}) {
@@ -257,17 +218,6 @@ export default {
         fallback: 'file-loader',
         emitFile: !ssr,
         name: `${appConfig.client.output.assets}/[name].[ext]?[hash:base64:5]`, // Virtual hash for HRM during development.
-      },
-    };
-  },
-
-  assetsNodeModules({ ssr = false } = {}) {
-    return {
-      loader: 'file-loader',
-      options: {
-        emitFile: !ssr,
-        regExp: 'node_modules(?:/|\\\\)(.*)',
-        name: `${appConfig.client.output.external}/[1]`,
       },
     };
   },
