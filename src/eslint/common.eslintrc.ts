@@ -1,7 +1,8 @@
 import paths, { moduleExtensions } from '../paths';
 
 module.exports = {
-  // import and prettier plugins are already added by airbnb-base and plugin:prettier/recommended
+  // import plugin is already added by airbnb-base
+  // prettier plugin is already added by plugin:prettier/recommended
   extends: ['airbnb-base', 'plugin:prettier/recommended'],
 
   parser: 'babel-eslint',

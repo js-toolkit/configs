@@ -2,7 +2,8 @@ import appConfig from '../appConfig';
 import { moduleExtensions } from '../paths';
 
 module.exports = {
-  extends: ['airbnb', require.resolve('./common.eslintrc.js')],
+  // eslint-plugin-react and eslint-plugin-jsx-a11y are already added by airbnb
+  extends: ['airbnb', require.resolve('./common.eslintrc.js'), 'prettier/react'],
 
   env: {
     browser: true,

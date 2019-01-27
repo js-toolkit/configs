@@ -1,7 +1,11 @@
 import { moduleExtensions } from '../paths';
 
 module.exports = {
-  extends: [require.resolve('./react.eslintrc.js'), require.resolve('./ts.common.eslintrc.js')],
+  extends: [
+    require.resolve('./react.eslintrc.js'),
+    require.resolve('./ts.common.eslintrc.js'),
+    'prettier/react',
+  ],
 
   rules: {
     'react/jsx-filename-extension': [

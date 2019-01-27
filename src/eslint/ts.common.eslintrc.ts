@@ -1,15 +1,19 @@
 import { moduleExtensions } from '../paths';
 
 module.exports = {
-  extends: [require.resolve('./common.eslintrc.js')],
+  extends: [
+    require.resolve('./common.eslintrc.js'),
+    'plugin:@typescript-eslint/recommended',
+    'prettier/@typescript-eslint',
+  ],
 
-  parser: 'typescript-eslint-parser',
+  parser: '@typescript-eslint/parser',
 
-  plugins: ['typescript'],
+  plugins: ['@typescript-eslint'],
 
   settings: {
     'import/parsers': {
-      'typescript-eslint-parser': moduleExtensions.filter(ext => ext.includes('ts')),
+      '@typescript-eslint/parser': moduleExtensions.filter(ext => ext.includes('ts')),
     },
 
     'import/resolver': {
@@ -29,5 +33,7 @@ module.exports = {
     'no-useless-constructor': 'off',
     'no-empty-function': ['error', { allow: ['constructors'] }],
     'class-methods-use-this': 'off',
+    'import/named': 'off',
+    '@typescript-eslint/no-unused-vars': 'off',
   },
 };

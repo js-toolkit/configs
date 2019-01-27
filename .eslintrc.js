@@ -1,9 +1,17 @@
 module.exports = {
-  extends: ['airbnb-base', 'plugin:prettier/recommended'],
+  extends: [
+    'airbnb-base',
+    'plugin:prettier/recommended',
+    'plugin:@typescript-eslint/recommended',
+    'prettier/@typescript-eslint',
+  ],
 
-  parser: 'typescript-eslint-parser',
+  parser: '@typescript-eslint/parser',
+  parserOptions: {
+    project: './tsconfig.json',
+  },
 
-  plugins: ['typescript'],
+  plugins: ['@typescript-eslint'],
 
   env: {
     node: true,
@@ -12,7 +20,7 @@ module.exports = {
 
   settings: {
     'import/parsers': {
-      'typescript-eslint-parser': ['.ts', '.tsx', '.js', '.jsx'],
+      '@typescript-eslint/parser': ['.ts', '.tsx', '.js', '.jsx'],
     },
 
     'import/resolver': {
@@ -33,6 +41,8 @@ module.exports = {
     'no-useless-constructor': 'off',
     'no-empty-function': ['error', { allow: ['constructors'] }],
     'class-methods-use-this': 'off',
+    'import/named': 'off',
+    //
     'global-require': 'off',
     'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
     'import/no-unresolved': 'off',
