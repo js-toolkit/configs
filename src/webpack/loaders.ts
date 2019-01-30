@@ -25,31 +25,20 @@ interface GetTsDefaultLoaderOptions extends GetTsLoaderOptionsBase {
   afterLoaders?: Loader[];
 }
 
-interface GetTsATLOptions extends GetTsLoaderOptionsBase {
-  loaderType: TsLoaderType.ATL;
-}
+export type GetTsLoaderOptions = (GetTsLoaderOptionsBase | GetTsDefaultLoaderOptions) &
+  Partial<Record<string, any>>;
 
-interface GetTsBabelLoaderOptions extends GetTsLoaderOptionsBase, Record<PropertyKey, any> {
-  loaderType: TsLoaderType.Babel;
-}
-
-export type GetTsLoaderOptions =
-  | GetTsDefaultLoaderOptions
-  | GetTsATLOptions
-  | GetTsBabelLoaderOptions;
-
-export type GetTsCheckerPluginOptions =
-  | { loaderType: TsLoaderType.ATL }
-  | ({ loaderType: TsLoaderType.Default } & BaseTsOptions);
+export type GetTsCheckerPluginOptions = { loaderType: TsLoaderType } & BaseTsOptions &
+  Partial<Record<string, any>>;
 
 export default {
-  getTsLoader({ loaderType, ...rest }: GetTsLoaderOptions & Record<string, any>) {
+  getTsLoader({ loaderType, ...rest }: GetTsLoaderOptions) {
     if (loaderType === TsLoaderType.ATL) return this.atl(rest);
     if (loaderType === TsLoaderType.Babel) return this.babel(rest);
     return this.ts({ ...rest });
   },
 
-  getTsCheckerPlugin({ loaderType, ...rest }: GetTsCheckerPluginOptions & Record<string, any>) {
+  getTsCheckerPlugin({ loaderType, ...rest }: GetTsCheckerPluginOptions) {
     if (loaderType === TsLoaderType.ATL) return this.atlCheckerPlugin();
     return this.tsCheckerPlugin(rest as BaseTsOptions);
   },
@@ -108,7 +97,7 @@ export default {
 
   /** In order to runs typescript type checker on a separate process. */
   tsCheckerPlugin({ tsconfig, ...rest }: BaseTsOptions & Record<string, any>) {
-    const getName = () => 'fork-ts-checker-webpack-plugin';
+    const getName = (): string => 'fork-ts-checker-webpack-plugin';
     const Plugin = nodeRequire(getName());
     return new Plugin({
       tsconfig,
@@ -145,7 +134,7 @@ export default {
 
   /** In order to runs typescript type checker on a separate process. */
   atlCheckerPlugin() {
-    const getName = () => 'awesome-typescript-loader';
+    const getName = (): string => 'awesome-typescript-loader';
     const { CheckerPlugin } = nodeRequire(getName());
     return new CheckerPlugin();
   },

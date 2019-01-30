@@ -7,7 +7,7 @@ import appConfig from '../appConfig';
 import commonConfig from './common.config';
 import { clientDefaultRules, ClientConfigOptions } from './client.config';
 import { mergeAndReplaceRules } from './utils';
-import loaders, { GetTsLoaderOptions, TsLoaderType } from './loaders';
+import loaders, { TsLoaderType } from './loaders';
 
 export const serverDefaultRules = {
   jsRule: {
@@ -65,11 +65,7 @@ export default ({
     ? {
         tsRule: {
           ...tsBaseRule,
-          use: loaders.getTsLoader({
-            loaderType: tsLoaderType,
-            forkedChecks: true,
-            tsconfig,
-          } as GetTsLoaderOptions),
+          use: loaders.getTsLoader({ loaderType: tsLoaderType, forkedChecks: true, tsconfig }),
         },
         ...rest,
       }

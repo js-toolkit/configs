@@ -3,7 +3,8 @@ import webpack, { Options, Configuration } from 'webpack';
 import appEnv from '../appEnv';
 import appConfig from '../appConfig';
 import paths, { moduleExtensions } from '../paths';
-import loaders, { BaseTsOptions, TsLoaderType, GetTsCheckerPluginOptions } from './loaders';
+import loaders, { BaseTsOptions, TsLoaderType } from './loaders';
+import nodeRequire from './nodeRequire';
 
 export interface CommonConfigOptions extends Partial<BaseTsOptions> {
   outputPath: string;
@@ -59,13 +60,8 @@ export default ({
     ...appEnv.ifDevMode([new webpack.HotModuleReplacementPlugin()], []),
 
     // Forked check for TS
-    ...(useTypeScript
-      ? [
-          loaders.getTsCheckerPlugin({
-            loaderType: tsLoaderType,
-            tsconfig,
-          } as GetTsCheckerPluginOptions),
-        ]
+    ...(useTypeScript && tsconfig
+      ? [loaders.getTsCheckerPlugin({ loaderType: tsLoaderType, tsconfig })]
       : []),
 
     // Ignore all locale files of moment.js
@@ -80,8 +76,8 @@ export default ({
       ...(useTypeScript
         ? [
             (() => {
-              const getName = () => 'tsconfig-paths-webpack-plugin';
-              const TSConfigPathsWebpackPlugin = require(getName());
+              const getName = (): string => 'tsconfig-paths-webpack-plugin';
+              const TSConfigPathsWebpackPlugin = nodeRequire(getName());
               return new TSConfigPathsWebpackPlugin({ configFile: tsconfig });
             })(),
           ]

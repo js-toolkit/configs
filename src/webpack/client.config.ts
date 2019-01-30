@@ -1,12 +1,14 @@
 import { Configuration, RuleSetRule } from 'webpack';
 import webpackMerge from 'webpack-merge';
 import path from 'path';
+import { Omit } from '@vzh/ts-types';
 import appEnv from '../appEnv';
 import paths from '../paths';
 import appConfig from '../appConfig';
 import commonConfig, { CommonConfigOptions } from './common.config';
-import loaders, { BaseTsOptions, TsLoaderType, GetTsLoaderOptions } from './loaders';
+import loaders, { TsLoaderType } from './loaders';
 import { mergeAndReplaceRules } from './utils';
+import nodeRequire from './nodeRequire';
 
 const cssExtractLoader = 'mini-css-extract-plugin/dist/loader';
 
@@ -42,8 +44,7 @@ export const clientDefaultRules: Record<
 
 export interface ClientConfigOptions
   extends Pick<Configuration, 'entry'>,
-    Pick<CommonConfigOptions, 'useTypeScript' | 'tsLoaderType'>,
-    Partial<BaseTsOptions> {
+    Omit<CommonConfigOptions, 'outputPath' | 'outputPublicPath' | 'outputJsDir'> {
   rules: Record<string, RuleSetRule>;
 }
 
@@ -61,6 +62,7 @@ function containsLoader(rules: Record<string, RuleSetRule>, loader: string): boo
 export default ({
   entry,
   rules,
+  hash = true,
   useTypeScript,
   tsLoaderType = TsLoaderType.Default,
   tsconfig = paths.client.tsconfig,
@@ -71,11 +73,7 @@ export default ({
     ? {
         tsRule: {
           ...tsBaseRule,
-          use: loaders.getTsLoader({
-            loaderType: tsLoaderType,
-            forkedChecks: true,
-            tsconfig,
-          } as GetTsLoaderOptions),
+          use: loaders.getTsLoader({ loaderType: tsLoaderType, forkedChecks: true, tsconfig }),
         },
         ...restRules,
       }
@@ -88,7 +86,7 @@ export default ({
       outputPath: paths.client.output.path,
       outputPublicPath: appConfig.client.output.publicPath,
       outputJsDir: appConfig.client.output.js,
-      hash: true,
+      hash,
       useTypeScript,
       tsLoaderType,
       tsconfig,
@@ -127,9 +125,8 @@ export default ({
           ? [
               (() => {
                 const { template, ...rest } = appConfig.client.html;
-
-                const getName = () => 'html-webpack-plugin';
-                const HtmlWebpackPlugin = require(getName());
+                const getName = (): string => 'html-webpack-plugin';
+                const HtmlWebpackPlugin = nodeRequire(getName());
                 return new HtmlWebpackPlugin({
                   inject: false,
                   template: path.join(paths.client.sources, template),
@@ -143,8 +140,8 @@ export default ({
         ...(appEnv.prod && containsLoader(moduleRules, cssExtractLoader)
           ? [
               (() => {
-                const getName = () => 'mini-css-extract-plugin';
-                const MiniCssExtractPlugin = require(getName());
+                const getName = (): string => 'mini-css-extract-plugin';
+                const MiniCssExtractPlugin = nodeRequire(getName());
                 return new MiniCssExtractPlugin({
                   filename: `${appConfig.client.output.styles}/[name].css?[contenthash:5]`,
                 });
@@ -160,13 +157,13 @@ export default ({
                 const isNeedFilter =
                   !!filterTemplate && !!Object.getOwnPropertyNames(filterTemplate).length;
 
-                const getName = () => 'webpack-manifest-plugin';
-                const WebpackManifestPlugin = require(getName());
+                const getName = (): string => 'webpack-manifest-plugin';
+                const WebpackManifestPlugin = nodeRequire(getName());
                 return new WebpackManifestPlugin({
                   fileName,
                   filter: !isNeedFilter
                     ? undefined
-                    : (item: any) =>
+                    : (item: {}) =>
                         Object.getOwnPropertyNames(filterTemplate).every(
                           key => !(key in item) || item[key] === filterTemplate[key]
                         ),
