@@ -22,7 +22,9 @@ const paths = Object.freeze({
     root: path.resolve(baseDir, appConfig.client.root),
     sources: path.resolve(baseDir, appConfig.client.root, appConfig.client.sources),
     assets: path.resolve(baseDir, appConfig.client.root, appConfig.client.assets),
-    staticContent: path.resolve(baseDir, appConfig.client.root, appConfig.client.staticContent),
+    staticContent: appConfig.client.staticContent.map(p =>
+      path.isAbsolute(p) ? p : path.resolve(baseDir, appConfig.client.root, p)
+    ),
 
     tsconfig: path.resolve(baseDir, appConfig.client.root, appConfig.client.tsconfig),
 

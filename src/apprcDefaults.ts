@@ -7,7 +7,7 @@ export default Object.freeze({
     root: 'client',
     sources: 'src',
     assets: 'src/assets',
-    staticContent: 'public',
+    staticContent: ['public'],
 
     html: {
       template: 'assets/index.pug',
