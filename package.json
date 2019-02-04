@@ -19,8 +19,6 @@
     "build-to-pwa": "npm run clean && tsc --project ./tsconfig.json --outDir '../pwa/node_modules/@vzh/configs/' && copyfiles --exclude './src/**/*.ts' --up 1 './src/**/*' '../pwa/node_modules/@vzh/configs/'",
     "build-to-reflexy": "npm run clean && tsc --project ./tsconfig.json --outDir '../reflexy/node_modules/@vzh/configs/' && copyfiles --exclude './src/**/*.ts' --up 1 './src/**/*' '../reflexy/node_modules/@vzh/configs/'",
     "build-to-react-components": "npm run clean && tsc --project ./tsconfig.json --outDir '../@vzh-react-components/node_modules/@vzh/configs/' && copyfiles --exclude './src/**/*.ts' --up 1 './src/**/*' '../@vzh-react-components/node_modules/@vzh/configs/'",
-    "build-to-js-collections": "npm run clean && tsc --project ./tsconfig.json --outDir '../js-collections/node_modules/@vzh/configs/' && copyfiles --exclude './src/**/*.ts' --up 1 './src/**/*' '../js-collections/node_modules/@vzh/configs/'",
-    "build-to-tabix": "npm run clean && tsc --project ./tsconfig.json --outDir '../tabixio/tabix/node_modules/@vzh/configs/' && copyfiles --exclude './src/**/*.ts' --up 1 './src/**/*' '../tabixio/tabix/node_modules/@vzh/configs/'",
     "patch-publish": "npm version patch && npm run build && npm publish ./lib --access public && git push --follow-tags",
     "minor-publish": "npm version minor && npm run build && npm publish ./lib --access public && git push --follow-tags",
     "major-publish": "npm version major && npm run build && npm publish ./lib --access public && git push --follow-tags"

@@ -35,5 +35,7 @@ module.exports = {
     'class-methods-use-this': 'off',
     'import/named': 'off',
     '@typescript-eslint/no-unused-vars': 'off',
+    '@typescript-eslint/no-use-before-define': 'off',
+    '@typescript-eslint/explicit-member-accessibility': 'off',
   },
 };
