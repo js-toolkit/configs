@@ -11,9 +11,9 @@ module.exports = {
 
   settings: {
     'import/resolver': {
-      webpack: appConfig.client.webpackConfig
-        ? { config: appConfig.client.webpackConfig }
-        : undefined,
+      ...(appConfig.client.webpackConfig
+        ? { webpack: { config: appConfig.client.webpackConfig } }
+        : undefined),
     },
   },
 
