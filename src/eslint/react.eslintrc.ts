@@ -5,6 +5,8 @@ module.exports = {
   // eslint-plugin-react and eslint-plugin-jsx-a11y are already added by airbnb
   extends: ['airbnb', require.resolve('./common.eslintrc.js'), 'prettier/react'],
 
+  plugins: ['react-hooks'],
+
   env: {
     browser: true,
   },
@@ -18,6 +20,7 @@ module.exports = {
   },
 
   rules: {
+    'react-hooks/rules-of-hooks': 'error',
     'react/sort-comp': 'off',
     'react/destructuring-assignment': ['on', 'always', { ignoreClassFields: true }],
     'react/jsx-filename-extension': [
