@@ -2,7 +2,6 @@
   "name": "@vzh/configs",
   "version": "3.15.0",
   "description": "Default configurations for internal projects",
-  "main": "./",
   "author": "Vladimir Zhukov",
   "license": "MIT",
   "contributors": [
@@ -11,6 +10,7 @@
       "url": "http://github.com/vlazh"
     }
   ],
+  "main": "./",
   "scripts": {
     "clean": "rimraf lib/",
     "copy": "copyfiles --exclude './src/**/*.ts' --up 1 './src/**/*' ./lib/ && copyfiles package.json LICENSE README.md ./lib/",
@@ -41,7 +41,7 @@
     "prettier": "^1.16.4",
     "rimraf": "^2.6.3",
     "typescript": "^3.3.1",
-    "webpack": "^4.29.1",
+    "webpack": "^4.29.3",
     "webpack-merge": "^4.2.1",
     "webpack-node-externals": "^1.7.2"
   },
