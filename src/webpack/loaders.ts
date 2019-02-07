@@ -1,5 +1,4 @@
 import { Loader } from 'webpack';
-import { Omit } from '@vzh/ts-types';
 import appEnv from '../appEnv';
 import paths from '../paths';
 import appConfig from '../appConfig';
@@ -25,6 +24,12 @@ interface GetTsDefaultLoaderOptions extends GetTsLoaderOptionsBase {
   afterLoaders?: Loader[];
 }
 
+type TsDefaultLoaderOptions = Pick<
+  GetTsDefaultLoaderOptions,
+  Exclude<keyof GetTsDefaultLoaderOptions, 'loaderType'>
+> &
+  Record<string, any>;
+
 export type GetTsLoaderOptions = (GetTsLoaderOptionsBase | GetTsDefaultLoaderOptions) &
   Partial<Record<string, any>>;
 
@@ -43,12 +48,7 @@ export default {
     return this.tsCheckerPlugin(rest as BaseTsOptions);
   },
 
-  ts({
-    tsconfig,
-    forkedChecks,
-    afterLoaders,
-    ...rest
-  }: Omit<GetTsDefaultLoaderOptions, 'loaderType'> & Record<string, any>) {
+  ts({ tsconfig, forkedChecks, afterLoaders, ...rest }: TsDefaultLoaderOptions) {
     return [
       ...(forkedChecks && appEnv.prod
         ? [
@@ -78,12 +78,7 @@ export default {
     ];
   },
 
-  tsRHL({
-    tsconfig,
-    forkedChecks,
-    afterLoaders,
-    ...rest
-  }: Omit<GetTsDefaultLoaderOptions, 'loaderType'> & Record<string, any>) {
+  tsRHL({ tsconfig, forkedChecks, afterLoaders, ...rest }: TsDefaultLoaderOptions) {
     return this.ts({
       tsconfig,
       forkedChecks,

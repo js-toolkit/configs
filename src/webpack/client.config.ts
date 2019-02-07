@@ -1,7 +1,6 @@
 import { Configuration, RuleSetRule } from 'webpack';
 import webpackMerge from 'webpack-merge';
 import path from 'path';
-import { Omit } from '@vzh/ts-types';
 import appEnv from '../appEnv';
 import paths from '../paths';
 import appConfig from '../appConfig';
@@ -44,7 +43,10 @@ export const clientDefaultRules: Record<
 
 export interface ClientConfigOptions
   extends Pick<Configuration, 'entry'>,
-    Omit<CommonConfigOptions, 'outputPath' | 'outputPublicPath' | 'outputJsDir'> {
+    Pick<
+      CommonConfigOptions,
+      Exclude<keyof CommonConfigOptions, 'outputPath' | 'outputPublicPath' | 'outputJsDir'>
+    > {
   rules: Record<string, RuleSetRule>;
 }
 
