@@ -10,8 +10,8 @@ module.exports = {
 
   settings: {
     'import/resolver': {
-      ...(appConfig.client.webpackConfig
-        ? { webpack: { config: appConfig.client.webpackConfig } }
+      ...(appConfig.server.webpackConfig
+        ? { webpack: { config: appConfig.server.webpackConfig } }
         : undefined),
     },
   },
