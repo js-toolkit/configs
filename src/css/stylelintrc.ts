@@ -8,5 +8,7 @@ module.exports = {
     'comment-empty-line-before': null,
     'no-descending-specificity': null,
     'declaration-colon-newline-after': null,
+    indentation: null,
+    'selector-descendant-combinator-no-non-space': null,
   },
 };
