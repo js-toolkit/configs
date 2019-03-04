@@ -34,6 +34,7 @@ module.exports = {
     'no-empty-function': ['error', { allow: ['constructors'] }],
     'class-methods-use-this': 'off',
     'import/named': 'off',
+    'import/export': 'off', // No named exports found in module
     '@typescript-eslint/no-unused-vars': 'off',
     '@typescript-eslint/no-use-before-define': 'off',
     '@typescript-eslint/explicit-member-accessibility': 'off',
