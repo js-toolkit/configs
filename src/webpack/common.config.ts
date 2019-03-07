@@ -86,8 +86,10 @@ export default ({
   },
 
   stats: {
-    // https://github.com/TypeStrong/ts-loader#transpileonly-boolean-defaultfalse
-    warningsFilter: /export .* was not found in/,
+    ...(useTypeScript
+      ? // https://github.com/TypeStrong/ts-loader#transpileonly-boolean-defaultfalse
+        { warningsFilter: /export .* was not found in/ }
+      : undefined),
   },
 
   module: {

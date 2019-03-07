@@ -73,6 +73,11 @@ export default {
           transpileOnly: forkedChecks,
           happyPackMode: forkedChecks && appEnv.prod, // use happyPackMode mode to speed-up compilation and reduce errors reported to webpack
           ...rest,
+          compilerOptions: {
+            // disable sourceMap in production by default
+            ...appEnv.ifProdMode({ sourceMap: false }, undefined),
+            ...rest.compilerOptions,
+          },
         },
       },
     ];
@@ -199,7 +204,7 @@ export default {
         limit: 1024,
         fallback: 'file-loader',
         emitFile: !ssr,
-        name: `${appConfig.client.output.assets}/[name].[ext]?[hash:base64:5]`, // Virtual hash for HRM during development.
+        name: `${appConfig.client.output.assets}/[name].[ext]?[hash:base64:5]`, // Virtual hash useful for HRM during development.
       },
     };
   },
