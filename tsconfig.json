@@ -1,6 +1,7 @@
 {
   "extends": "./src/ts/dev.tsconfig.json",
   "compilerOptions": {
+    "isolatedModules": false,
     "baseUrl": "./src",
     "outDir": "lib",
     "declaration": true,
