@@ -96,16 +96,14 @@ export default {
     const Plugin = nodeRequire(getName());
     return new Plugin({
       tsconfig,
-      compilerOptions: {
-        module: 'esnext',
-        moduleResolution: 'node',
-        resolveJsonModule: true,
-        isolatedModules: true,
-        // async: false,
-        noEmit: true,
-        jsx: 'preserve',
-      },
-      checkSyntacticErrors: appEnv.prod,
+      // compilerOptions: {
+      //   module: 'esnext',
+      //   resolveJsonModule: true,
+      //   isolatedModules: true,
+      //   noEmit: true,
+      //   jsx: 'preserve',
+      // },
+      checkSyntacticErrors: appEnv.prod, // ts-loader in happyPackMode will not check SyntacticErrors so let check it in this plugin
       memoryLimit: 1024,
       ...rest,
     });

@@ -85,8 +85,14 @@ export default ({
     ],
   },
 
+  stats: {
+    // https://github.com/TypeStrong/ts-loader#transpileonly-boolean-defaultfalse
+    warningsFilter: /export .* was not found in/,
+  },
+
   module: {
     rules: [],
+    // Suppress warnings of dynamic requiring in configs:
     // To suppress warning with 'Critical dependency: require function is used in a way in which dependencies cannot be statically extracted'
     exprContextCritical: false,
     // To suppress warning with 'Critical dependency: the request of a dependency is an expression'
