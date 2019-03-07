@@ -2,6 +2,7 @@
   "extends": "../js/base.jsconfig.json",
   "compilerOptions": {
     "sourceMap": true,
+    "isolatedModules": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "suppressImplicitAnyIndexErrors": true,
