@@ -21,6 +21,7 @@ module.exports = {
 
   rules: {
     'react-hooks/rules-of-hooks': 'error',
+    'react-hooks/exhaustive-deps': 'warn',
     'react/sort-comp': 'off',
     'react/destructuring-assignment': ['on', 'always', { ignoreClassFields: true }],
     'react/jsx-filename-extension': [
