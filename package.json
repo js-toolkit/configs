@@ -1,6 +1,6 @@
 {
   "name": "@vzh/configs",
-  "version": "3.16.6",
+  "version": "3.17.0",
   "description": "Default configurations for internal projects",
   "author": "Vladimir Zhukov",
   "license": "MIT",
