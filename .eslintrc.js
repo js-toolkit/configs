@@ -38,8 +38,6 @@ module.exports = {
     'no-restricted-globals': 'off',
     'no-redeclare': 'off',
     'no-inner-declarations': ['off', 'functions'],
-    'no-useless-constructor': 'off',
-    'no-empty-function': ['error', { allow: ['constructors'] }],
     'class-methods-use-this': 'off',
     'import/named': 'off',
     //
@@ -47,5 +45,9 @@ module.exports = {
     'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
     'import/no-unresolved': 'off',
     'import/no-dynamic-require': 'off',
+    '@typescript-eslint/explicit-function-return-type': [
+      'warn',
+      { allowExpressions: true, allowTypedFunctionExpressions: true },
+    ],
   },
 };

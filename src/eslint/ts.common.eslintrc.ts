@@ -30,13 +30,17 @@ module.exports = {
     'no-restricted-globals': 'off',
     'no-redeclare': 'off',
     'no-inner-declarations': ['off', 'functions'],
-    'no-useless-constructor': 'off',
-    'no-empty-function': ['error', { allow: ['constructors'] }],
+    // 'no-useless-constructor': 'off',
+    // 'no-empty-function': ['error', { allow: ['constructors'] }],
     'class-methods-use-this': 'off',
     'import/named': 'off',
     'import/export': 'off', // No named exports found in module
     '@typescript-eslint/no-unused-vars': 'off',
     '@typescript-eslint/no-use-before-define': 'off',
     '@typescript-eslint/explicit-member-accessibility': 'off',
+    '@typescript-eslint/explicit-function-return-type': [
+      'warn',
+      { allowExpressions: true, allowTypedFunctionExpressions: true },
+    ],
   },
 };
