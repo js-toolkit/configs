@@ -23,6 +23,7 @@ function tryParse(value?: string): EnvVarType {
 
 // Grab NODE_ENV and APP_* environment variables and prepare them to be
 // injected into the application via DefinePlugin in Webpack configuration.
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function getAppEnvironment() {
   // Object with keys and their default values so we can feed into Webpack EnvironmentPlugin
   const raw: RawAppEnv = Object.keys(process.env)

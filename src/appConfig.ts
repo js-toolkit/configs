@@ -5,7 +5,7 @@ export type AppConfig = typeof appConfigDefaults;
 
 const moduleName = 'apprc';
 
-function resolveConfigPath() {
+function resolveConfigPath(): string {
   try {
     return require.resolve(moduleName, { paths: [process.cwd()] });
   } catch {
@@ -13,6 +13,7 @@ function resolveConfigPath() {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function getAppConfig() {
   const apprcPath = resolveConfigPath();
 
