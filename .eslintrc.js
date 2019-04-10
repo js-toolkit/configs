@@ -45,6 +45,7 @@ module.exports = {
     'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
     'import/no-unresolved': 'off',
     'import/no-dynamic-require': 'off',
+    '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/explicit-function-return-type': [
       'warn',
       { allowExpressions: true, allowTypedFunctionExpressions: true },
