@@ -5,7 +5,8 @@
     "baseUrl": "./src",
     "outDir": "lib",
     "declaration": true,
-    "sourceMap": false
+    "sourceMap": false,
+    "incremental": false
   },
   "include": ["./src/**/*"]
 }
