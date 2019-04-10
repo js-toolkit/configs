@@ -1,6 +1,7 @@
 {
   "extends": "../js/base.jsconfig.json",
   "compilerOptions": {
+    "allowJs": false,
     "sourceMap": true,
     "isolatedModules": true,
     "esModuleInterop": true,
