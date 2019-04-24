@@ -7,7 +7,8 @@ const moduleName = 'apprc';
 
 function resolveConfigPath(): string {
   try {
-    return require.resolve(moduleName, { paths: [process.cwd()] });
+    // With node 12 it is needed to use prefix './'
+    return require.resolve(`./${moduleName}`, { paths: [process.cwd()] });
   } catch {
     return '';
   }
