@@ -49,8 +49,8 @@ export function getAppEnvironment() {
       return { 'process.env': stringified };
     },
 
-    get(envVarName: string): EnvVarType {
-      return raw[envVarName];
+    get<A extends EnvVarType>(envVarName: string): A {
+      return raw[envVarName] as A;
     },
 
     /** Use APP_SSR environment variable */
