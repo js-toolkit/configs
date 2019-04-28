@@ -24,8 +24,8 @@
     "major-publish": "npm version major && npm run build && npm publish ./lib --access public && git push --follow-tags"
   },
   "devDependencies": {
-    "@types/node": "^11.13.7",
-    "@types/webpack": "^4.4.27",
+    "@types/node": "^11.13.8",
+    "@types/webpack": "^4.4.29",
     "@types/webpack-dev-server": "^3.1.5",
     "@types/webpack-merge": "^4.1.5",
     "@types/webpack-node-externals": "^1.6.3",
@@ -35,12 +35,12 @@
     "copyfiles": "^2.1.0",
     "eslint": "^5.16.0",
     "eslint-config-airbnb-base": "^13.1.0",
-    "eslint-config-prettier": "^4.1.0",
+    "eslint-config-prettier": "^4.2.0",
     "eslint-plugin-import": "^2.17.2",
     "eslint-plugin-prettier": "^3.0.1",
     "prettier": "^1.17.0",
     "rimraf": "^2.6.3",
-    "typescript": "^3.4.4",
+    "typescript": "^3.4.5",
     "webpack": "^4.30.0",
     "webpack-merge": "^4.2.1",
     "webpack-node-externals": "^1.7.2"
