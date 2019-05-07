@@ -123,59 +123,92 @@ export default ({
 
       plugins: [
         // Generate html if needed
-        ...(appConfig.client.html.template
-          ? [
-              (() => {
-                const { template, ...rest } = appConfig.client.html;
-                const getName = (): string => 'html-webpack-plugin';
-                const HtmlWebpackPlugin = nodeRequire(getName());
-                return new HtmlWebpackPlugin({
-                  inject: false,
-                  template: path.join(paths.client.sources, template),
-                  ...rest,
-                });
-              })(),
-            ]
-          : []),
+        appConfig.client.html.template &&
+          (() => {
+            const { template, ...rest } = appConfig.client.html;
+            const getName = (): string => 'html-webpack-plugin';
+            const HtmlWebpackPlugin = nodeRequire(getName());
+            return new HtmlWebpackPlugin({
+              inject: false,
+              template: path.join(paths.client.sources, template),
+              ...rest,
+            });
+          })(),
 
         // Extract css in production only if has mini-css-extract-plugin loader
-        ...(appEnv.prod && containsLoader(moduleRules, cssExtractLoader)
-          ? [
-              (() => {
-                const getName = (): string => 'mini-css-extract-plugin';
-                const MiniCssExtractPlugin = nodeRequire(getName());
-                const hashStr = appEnv.prod && hash ? '.[contenthash:8]' : '';
-                return new MiniCssExtractPlugin({
-                  filename: `${appConfig.client.output.styles}/[name]${hashStr}.css`,
-                  chunkFilename: `${appConfig.client.output.styles}/[name]${hashStr}.chunk.css`,
-                });
-              })(),
-            ]
-          : []),
+        appEnv.prod &&
+          containsLoader(moduleRules, cssExtractLoader) &&
+          (() => {
+            const getName = (): string => 'mini-css-extract-plugin';
+            const MiniCssExtractPlugin = nodeRequire(getName());
+            const hashStr = appEnv.prod && hash ? '.[contenthash:8]' : '';
+            return new MiniCssExtractPlugin({
+              filename: `${appConfig.client.output.styles}/[name]${hashStr}.css`,
+              chunkFilename: `${appConfig.client.output.styles}/[name]${hashStr}.chunk.css`,
+            });
+          })(),
 
-        // Generate asset manifest for some tools
-        ...(appConfig.client.output.assetManifest.fileName
-          ? [
-              (() => {
-                const { fileName, filterTemplate } = appConfig.client.output.assetManifest;
-                const isNeedFilter =
-                  !!filterTemplate && !!Object.getOwnPropertyNames(filterTemplate).length;
+        // Generate a manifest file which contains a mapping of all asset filenames
+        // to their corresponding output file so some tools can pick it up without
+        // having to parse `index.html`.
+        appConfig.client.output.assetManifest.fileName &&
+          (() => {
+            const { fileName, filterTemplate } = appConfig.client.output.assetManifest;
+            const isNeedFilter =
+              !!filterTemplate && !!Object.getOwnPropertyNames(filterTemplate).length;
 
-                const getName = (): string => 'webpack-manifest-plugin';
-                const WebpackManifestPlugin = nodeRequire(getName());
-                return new WebpackManifestPlugin({
-                  fileName,
-                  filter: !isNeedFilter
-                    ? undefined
-                    : (item: {}) =>
-                        Object.getOwnPropertyNames(filterTemplate).every(
-                          key => !(key in item) || item[key] === filterTemplate[key]
-                        ),
-                });
-              })(),
-            ]
-          : []),
-      ],
+            const getName = (): string => 'webpack-manifest-plugin';
+            const WebpackManifestPlugin = nodeRequire(getName());
+            return new WebpackManifestPlugin({
+              fileName,
+              filter: !isNeedFilter
+                ? undefined
+                : (item: {}) =>
+                    Object.getOwnPropertyNames(filterTemplate).every(
+                      key => !(key in item) || item[key] === filterTemplate[key]
+                    ),
+            });
+          })(),
+
+        // Generate a service worker script that will precache, and keep up to date,
+        // the HTML & assets that are part of the Webpack build.
+        appEnv.prod &&
+          appConfig.client.output.sw.swDest &&
+          (() => {
+            const getName = (): string => 'workbox-webpack-plugin';
+            const { GenerateSW } = nodeRequire(getName());
+            return new GenerateSW({
+              clientsClaim: true,
+              importWorkboxFrom: 'cdn',
+              exclude: [/\.map$/, new RegExp(`${appConfig.client.output.assetManifest.fileName}$`)],
+              navigateFallback: `${appConfig.client.output.publicPath}${
+                appConfig.client.html.filename
+              }`,
+              navigateFallbackBlacklist: [
+                // Exclude URLs starting with /_, as they're likely an API call
+                new RegExp('^/_'),
+                // Exclude URLs containing a dot, as they're likely a resource in
+                // public/ and not a SPA route
+                new RegExp('/[^/]+\\.[^/]+$'),
+              ],
+              ...appConfig.client.output.sw,
+            });
+          })(),
+      ].filter(Boolean),
+
+      // Some libraries import Node modules but don't use them in the browser.
+      // Tell Webpack to provide empty mocks for them so importing them works.
+      node: {
+        module: 'empty',
+        dgram: 'empty',
+        dns: 'mock',
+        fs: 'empty',
+        http2: 'empty',
+        net: 'empty',
+        tls: 'empty',
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        child_process: 'empty',
+      },
 
       devServer: {
         contentBase: paths.client.staticContent, // Static content which not processed by webpack and loadable from disk.

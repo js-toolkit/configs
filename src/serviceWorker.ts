@@ -106,7 +106,7 @@ export function register(config?: Config): void {
     }
 
     window.addEventListener('load', () => {
-      const swUrl = `${appConfig.client.output.publicPath}${appConfig.client.output.swFile}`;
+      const swUrl = `${appConfig.client.output.publicPath}${appConfig.client.output.sw.swDest}`;
 
       if (isLocalhost) {
         // This is running on localhost. Let's check if a service worker still exists or not.

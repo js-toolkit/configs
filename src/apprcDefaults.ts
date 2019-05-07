@@ -34,8 +34,8 @@ export default Object.freeze({
         filterTemplate: {},
       },
 
-      /** Generated service worker file name */
-      swFile: 'service-worker.js',
+      /** Generating service worker options (workbox-webpack-plugin) */
+      sw: { swDest: 'service-worker.js' },
     },
   },
 
