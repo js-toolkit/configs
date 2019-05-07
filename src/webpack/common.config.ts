@@ -31,10 +31,10 @@ export default ({
     path: outputPath,
     publicPath: outputPublicPath,
     pathinfo: appEnv.ifDevMode(true, false),
-    filename: path.join(outputJsDir, `[name]${appEnv.prod && hash ? '.[hash:5]' : ''}.js`),
+    filename: path.join(outputJsDir, `[name]${appEnv.prod && hash ? '.[contenthash:8]' : ''}.js`),
     chunkFilename: path.join(
       outputJsDir,
-      `[name]${appEnv.prod && hash ? '.[chunkhash:8]' : ''}.chunk.js`
+      `[name]${appEnv.prod && hash ? '.[contenthash:8]' : ''}.chunk.js`
     ),
   },
 

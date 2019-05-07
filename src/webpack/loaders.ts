@@ -204,7 +204,7 @@ export default {
         limit: 1024,
         fallback: 'file-loader',
         emitFile: !ssr,
-        name: `${appConfig.client.output.assets}/[name].[ext]?[hash:base64:5]`, // Virtual hash useful for HRM during development.
+        name: `${appConfig.client.output.assets}/[name].[hash:8].[ext]`, // Virtual hash useful for HRM during development.
       },
     };
   },

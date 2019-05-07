@@ -146,7 +146,7 @@ export default ({
                 const MiniCssExtractPlugin = nodeRequire(getName());
                 return new MiniCssExtractPlugin({
                   filename: `${appConfig.client.output.styles}/[name]${
-                    hash ? '.[contenthash:5]' : ''
+                    hash ? '.[contenthash:8]' : ''
                   }.css`,
                 });
               })(),
