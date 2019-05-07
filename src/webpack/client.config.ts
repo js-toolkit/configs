@@ -144,10 +144,10 @@ export default ({
               (() => {
                 const getName = (): string => 'mini-css-extract-plugin';
                 const MiniCssExtractPlugin = nodeRequire(getName());
+                const hashStr = appEnv.prod && hash ? '.[contenthash:8]' : '';
                 return new MiniCssExtractPlugin({
-                  filename: `${appConfig.client.output.styles}/[name]${
-                    hash ? '.[contenthash:8]' : ''
-                  }.css`,
+                  filename: `${appConfig.client.output.styles}/[name]${hashStr}.css`,
+                  chunkFilename: `${appConfig.client.output.styles}/[name]${hashStr}.chunk.css`,
                 });
               })(),
             ]
