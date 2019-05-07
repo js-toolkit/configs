@@ -40,6 +40,7 @@ module.exports = {
     'no-inner-declarations': ['off', 'functions'],
     'class-methods-use-this': 'off',
     'import/named': 'off',
+    'no-console': 'off',
     //
     'global-require': 'off',
     'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
