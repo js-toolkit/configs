@@ -7,8 +7,10 @@ module.exports = {
     'prettier/prettier': true,
     'comment-empty-line-before': null,
     'no-descending-specificity': null,
-    'declaration-colon-newline-after': null,
+    // fix prettier
     indentation: null,
+    'max-line-length': null,
+    'declaration-colon-newline-after': null,
     'selector-descendant-combinator-no-non-space': null,
   },
 };
