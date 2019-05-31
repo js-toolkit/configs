@@ -10,6 +10,7 @@ module.exports = {
     // fix prettier
     indentation: null,
     'max-line-length': null,
+    'value-list-comma-newline-after': null,
     'declaration-colon-newline-after': null,
     'selector-descendant-combinator-no-non-space': null,
   },
