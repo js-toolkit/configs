@@ -157,23 +157,32 @@ export default {
     pattern = '[name]__[local]--[hash:5]',
     prodPattern = '[hash:5]',
     postcss = true,
-    ...rest
+    ...options
   }: {
     ssr?: boolean;
     pattern?: string;
     prodPattern?: string;
     postcss?: boolean;
   } & Record<string, any> = {}) {
+    const { modules, ...rest } = options;
     return [
       {
         loader: 'css-loader',
         options: {
-          modules: true,
-          localIdentName: appEnv.ifDevMode(pattern, prodPattern),
-          context: paths.root, // https://github.com/webpack-contrib/css-loader/issues/267
+          modules:
+            modules != null && typeof modules !== 'object'
+              ? // override if provided string or boolean
+                modules
+              : // merge if provided object
+                {
+                  mode: 'local',
+                  localIdentName: appEnv.ifDevMode(pattern, prodPattern),
+                  context: paths.root, // https://github.com/webpack-contrib/css-loader/issues/267
+                  ...modules,
+                },
           importLoaders: postcss ? 1 : undefined,
           sourceMap: appEnv.dev,
-          exportOnlyLocals: ssr,
+          onlyLocals: ssr,
           ...rest,
         },
       },
