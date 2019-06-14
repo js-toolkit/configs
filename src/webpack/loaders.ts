@@ -192,7 +192,7 @@ export default {
     ];
   },
 
-  cssNodeModules({ ssr = false, postcss = false, ...rest } = {}) {
+  cssNodeModules({ ssr = false, postcss = true, ...rest } = {}) {
     return this.css({
       ssr,
       postcss,
