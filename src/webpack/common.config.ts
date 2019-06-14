@@ -46,6 +46,23 @@ export default ({
   // http://cheng.logdown.com/posts/2016/03/25/679045
   devtool: appEnv.ifDevMode<Options.Devtool>('cheap-module-eval-source-map', false),
 
+  optimization: {
+    ...appEnv.ifProdMode(
+      {
+        minimizer: [
+          new (nodeRequire('terser-webpack-plugin'))({
+            terserOptions: {
+              output: {
+                comments: false,
+              },
+            },
+          }),
+        ],
+      },
+      undefined
+    ),
+  },
+
   plugins: [
     // In order for the specified environment variables to be available in the JS code.
     // EnvironmentPlugin not working on client side with ssr because environment variables not passed to webpackDevMiddleware?
