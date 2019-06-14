@@ -4,11 +4,12 @@ import paths from '../paths';
 interface Props {
   importPath?: string[] | string;
   presetEnv?: Record<string, any>;
+  minimizer?: boolean;
 }
 
 const defaultImportPath = [paths.client.sources];
 
-export default ({ importPath = defaultImportPath, presetEnv }: Props = {}) => ({
+export default ({ importPath = defaultImportPath, presetEnv, minimizer = true }: Props = {}) => ({
   sourceMap: appEnv.dev,
   plugins: {
     // Primarily use to override imported styles: import css file before css-loader process it and then process merged css by css-loader.
@@ -26,9 +27,12 @@ export default ({ importPath = defaultImportPath, presetEnv }: Props = {}) => ({
       },
     },
     // There are problems with css calc() function which uses icss values. ICSS values processed by css-loader later.
-    // cssnano: appEnv.ifDevMode<any>(false, {
-    //   // Need install cssnano cssnano-preset-default
-    //   preset: ['default', { discardComments: { removeAll: true } }],
-    // }),
+    cssnano:
+      minimizer && appEnv.prod
+        ? {
+            // Need install cssnano cssnano-preset-default
+            preset: ['default', { discardComments: { removeAll: true } }],
+          }
+        : false,
   },
 });
