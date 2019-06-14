@@ -147,6 +147,7 @@ export default {
     };
   },
 
+  cssExtractLoader: 'mini-css-extract-plugin/dist/loader',
   /**
    * Problem of duplication css classes when use composes with css file from node_modules directory.
    * 1. It can occur when use different loaders for source and composing files.
@@ -166,6 +167,7 @@ export default {
   } & Record<string, any> = {}) {
     const { modules, ...rest } = options;
     return [
+      ...(!ssr ? [appEnv.ifDevMode('style-loader', this.cssExtractLoader)] : []),
       {
         loader: 'css-loader',
         options: {

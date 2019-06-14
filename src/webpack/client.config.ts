@@ -1,4 +1,4 @@
-import { Configuration, RuleSetRule } from 'webpack';
+import { Configuration, RuleSetRule, RuleSetUse } from 'webpack';
 import webpackMerge from 'webpack-merge';
 import path from 'path';
 import appEnv from '../appEnv';
@@ -8,8 +8,6 @@ import commonConfig, { CommonConfigOptions } from './common.config';
 import loaders, { TsLoaderType } from './loaders';
 import { mergeAndReplaceRules } from './utils';
 import nodeRequire from './nodeRequire';
-
-const cssExtractLoader = 'mini-css-extract-plugin/dist/loader';
 
 export const clientDefaultRules: Record<
   'jsRule' | 'tsBaseRule' | 'cssRule' | 'cssNodeModulesRule' | 'assetsRule',
@@ -27,12 +25,12 @@ export const clientDefaultRules: Record<
   cssRule: {
     test: /\.css$/,
     include: [paths.client.sources],
-    use: [appEnv.ifDevMode('style-loader', cssExtractLoader), ...loaders.css()],
+    use: loaders.css(),
   },
   cssNodeModulesRule: {
     test: /\.css$/,
     include: [paths.nodeModules.root],
-    use: [appEnv.ifDevMode('style-loader', cssExtractLoader), ...loaders.cssNodeModules()],
+    use: loaders.cssNodeModules(),
   },
   assetsRule: {
     test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2|otf)$/,
@@ -51,13 +49,16 @@ export interface ClientConfigOptions
 }
 
 function containsLoader(rules: Record<string, RuleSetRule>, loader: string): boolean {
+  const checkRule = (use?: RuleSetUse): boolean => {
+    if (typeof use === 'string') return use.includes(loader);
+    if (Array.isArray(use)) return use.some(checkRule);
+    if (typeof use !== 'function' && use && use.loader) return use.loader.includes(loader);
+    return false;
+  };
+
   return Object.getOwnPropertyNames(rules).some(key => {
     const rule = rules[key];
-    return !!(
-      (rule.loader && rule.loader.toString().includes(loader)) ||
-      (rule.loaders && rule.loaders.toString().includes(loader)) ||
-      (rule.use && rule.use.toString().includes(loader))
-    );
+    return checkRule(rule.loader || rule.loaders || rule.use);
   });
 }
 
@@ -137,7 +138,7 @@ export default ({
 
         // Extract css in production only if has mini-css-extract-plugin loader
         appEnv.prod &&
-          containsLoader(moduleRules, cssExtractLoader) &&
+          containsLoader(moduleRules, loaders.cssExtractLoader) &&
           (() => {
             const getName = (): string => 'mini-css-extract-plugin';
             const MiniCssExtractPlugin = nodeRequire(getName());
@@ -181,9 +182,7 @@ export default ({
               clientsClaim: true,
               importWorkboxFrom: 'cdn',
               exclude: [/\.map$/, new RegExp(`${appConfig.client.output.assetManifest.fileName}$`)],
-              navigateFallback: `${appConfig.client.output.publicPath}${
-                appConfig.client.html.filename
-              }`,
+              navigateFallback: `${appConfig.client.output.publicPath}${appConfig.client.html.filename}`,
               navigateFallbackBlacklist: [
                 // Exclude URLs starting with /_, as they're likely an API call
                 new RegExp('^/_'),
