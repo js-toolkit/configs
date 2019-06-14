@@ -66,7 +66,7 @@ async function registerValidSW(swUrl: string, config?: Config): Promise<void> {
       };
     };
   } catch (error) {
-    console.error(logPrefix, 'Error during service worker registration:', error);
+    console.error(logPrefix, 'Error during service worker registration:', error.message || error);
   }
 }
 
