@@ -1,5 +1,5 @@
 {
-  "extends": "./src/ts/dev.tsconfig.json",
+  "extends": "./src/ts/common.tsconfig.json",
   "compilerOptions": {
     "isolatedModules": false,
     "baseUrl": "./src",
