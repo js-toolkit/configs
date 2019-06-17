@@ -3,6 +3,7 @@
   "compilerOptions": {
     "allowJs": false,
     "sourceMap": true,
+    "module": "esnext",
     "isolatedModules": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
