@@ -23,12 +23,12 @@ module.exports = {
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'warn',
     'react/sort-comp': 'off',
-    'react/destructuring-assignment': ['on', 'always', { ignoreClassFields: true }],
+    'react/destructuring-assignment': ['error', 'always', { ignoreClassFields: true }],
     'react/jsx-filename-extension': [
       'error',
       { extensions: moduleExtensions.filter(ext => ext.includes('js')) },
     ],
     'jsx-a11y/anchor-is-valid': ['error', { specialLink: ['to'] }],
-    'jsx-a11y/label-has-for': [2, { allowChildren: true }],
+    'jsx-a11y/label-has-for': ['error', { allowChildren: true }],
   },
 };
