@@ -24,12 +24,22 @@ export const clientDefaultRules: Record<
   },
   cssRule: {
     test: /\.css$/,
-    include: [paths.client.sources],
+    include: [
+      paths.client.sources,
+      // because this packages are require css-modules
+      path.join(paths.nodeModules.root, '@vzh/react-components'),
+      path.join(paths.nodeModules.root, 'reflexy'),
+    ],
     use: loaders.css(),
   },
   cssNodeModulesRule: {
     test: /\.css$/,
     include: [paths.nodeModules.root],
+    // because this packages included in cssRule
+    exclude: [
+      path.join(paths.nodeModules.root, '@vzh/react-components'),
+      path.join(paths.nodeModules.root, 'reflexy'),
+    ],
     use: loaders.cssNodeModules(),
   },
   assetsRule: {
