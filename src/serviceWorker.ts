@@ -18,6 +18,7 @@ interface Config {
 }
 
 const logPrefix = 'SW:';
+const updateEventName = 'SW:UPDATE';
 
 const isLocalhost = Boolean(
   window.location.hostname === 'localhost' ||
@@ -48,6 +49,9 @@ function registerValidSW(swUrl: string, config?: Config): void {
                 'New content is available and will be used when all ' +
                   'tabs for this page are closed. See https://bit.ly/CRA-PWA.'
               );
+
+              // Emit custom event about update
+              window.dispatchEvent(new Event(updateEventName));
 
               // Execute callback
               if (config && config.onUpdate) {
@@ -144,4 +148,8 @@ export function unregister(): void {
       registration.unregister();
     });
   }
+}
+
+export function onUpdate(callback: () => void): void {
+  window.addEventListener(updateEventName, callback);
 }
