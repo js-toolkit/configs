@@ -158,16 +158,18 @@ export default {
     pattern = '[name]__[local]--[hash:5]',
     prodPattern = '[hash:5]',
     postcss = true,
+    finishLoader = true,
     ...options
   }: {
     ssr?: boolean;
     pattern?: string;
     prodPattern?: string;
     postcss?: boolean;
+    finishLoader?: boolean;
   } & Record<string, any> = {}) {
     const { modules, ...rest } = options;
     return [
-      ...(!ssr ? [appEnv.ifDevMode('style-loader', this.cssExtractLoader)] : []),
+      ...(!ssr && finishLoader ? [appEnv.ifDevMode('style-loader', this.cssExtractLoader)] : []),
       {
         loader: 'css-loader',
         options: {
