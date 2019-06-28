@@ -10,7 +10,7 @@ export default Object.freeze({
     staticContent: ['public'],
 
     html: {
-      template: 'assets/index.pug',
+      template: '',
       filename: 'index.html',
       title: 'App',
     },
