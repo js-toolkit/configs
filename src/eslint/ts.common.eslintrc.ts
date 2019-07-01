@@ -13,7 +13,7 @@ module.exports = {
 
   settings: {
     'import/parsers': {
-      '@typescript-eslint/parser': moduleExtensions.filter(ext => ext.includes('ts')),
+      '@typescript-eslint/parser': moduleExtensions /* .filter(ext => ext.includes('ts')) */,
     },
 
     'import/resolver': {
