@@ -1,12 +1,12 @@
-import path from 'path';
 import webpack, { Options, Configuration } from 'webpack';
+import path from 'path';
 import appEnv from '../appEnv';
 import appConfig from '../appConfig';
 import paths, { moduleExtensions } from '../paths';
 import loaders, { BaseTsOptions, TsLoaderType } from './loaders';
 import nodeRequire from './nodeRequire';
 
-export interface CommonConfigOptions extends Partial<BaseTsOptions> {
+export interface CommonConfigOptions extends Partial<BaseTsOptions>, Configuration {
   outputPath: string;
   outputPublicPath: string;
   outputJsDir: string;
@@ -23,9 +23,20 @@ export default ({
   useTypeScript,
   tsLoaderType = TsLoaderType.Default,
   tsconfig,
+  ...restOptions
 }: CommonConfigOptions): Configuration => ({
   // The base directory (absolute path!) for resolving the `entry` option.
   context: paths.root,
+
+  mode: appEnv.raw.NODE_ENV,
+
+  // Stop compilation early in production
+  bail: appEnv.prod,
+
+  // http://cheng.logdown.com/posts/2016/03/25/679045
+  devtool: appEnv.ifDevMode<Options.Devtool>('cheap-module-eval-source-map', false),
+
+  ...restOptions,
 
   output: {
     path: outputPath,
@@ -36,15 +47,8 @@ export default ({
       outputJsDir,
       `[name]${appEnv.prod && hash ? '.[contenthash:8]' : ''}.chunk.js`
     ),
+    ...restOptions.output,
   },
-
-  mode: appEnv.raw.NODE_ENV,
-
-  // Stop compilation early in production
-  bail: appEnv.prod,
-
-  // http://cheng.logdown.com/posts/2016/03/25/679045
-  devtool: appEnv.ifDevMode<Options.Devtool>('cheap-module-eval-source-map', false),
 
   optimization: {
     ...appEnv.ifProdMode(
@@ -61,6 +65,7 @@ export default ({
       },
       undefined
     ),
+    ...restOptions.optimization,
   },
 
   plugins: [
@@ -84,11 +89,20 @@ export default ({
     // Ignore all locale files of moment.js
     // https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+    ...(restOptions.plugins || []),
   ],
 
   resolve: {
-    extensions: moduleExtensions.filter(ext => useTypeScript || !ext.includes('ts')),
-    modules: [paths.nodeModules.root, paths.root],
+    ...restOptions.resolve,
+    extensions: [
+      ...moduleExtensions.filter(ext => useTypeScript || !ext.includes('ts')),
+      ...((restOptions.resolve && restOptions.resolve.extensions) || []),
+    ],
+    modules: [
+      paths.nodeModules.root,
+      paths.root,
+      ...((restOptions.resolve && restOptions.resolve.modules) || []),
+    ],
     plugins: [
       ...(useTypeScript
         ? [
@@ -99,6 +113,7 @@ export default ({
             })(),
           ]
         : []),
+      ...((restOptions.resolve && restOptions.resolve.plugins) || []),
     ],
   },
 
@@ -107,14 +122,16 @@ export default ({
       ? // https://github.com/TypeStrong/ts-loader#transpileonly-boolean-defaultfalse
         { warningsFilter: /export .* was not found in/ }
       : undefined),
+    ...(typeof restOptions.stats === 'object' ? restOptions.stats : undefined),
   },
 
   module: {
-    rules: [],
     // Suppress warnings of dynamic requiring in configs:
     // To suppress warning with 'Critical dependency: require function is used in a way in which dependencies cannot be statically extracted'
     exprContextCritical: false,
     // To suppress warning with 'Critical dependency: the request of a dependency is an expression'
     unknownContextCritical: false,
+    ...restOptions.module,
+    rules: (restOptions.module && restOptions.module.rules) || [],
   },
 });

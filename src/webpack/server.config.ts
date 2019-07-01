@@ -1,12 +1,10 @@
 import { Configuration, WatchIgnorePlugin } from 'webpack';
-import webpackMerge from 'webpack-merge';
 import webpackNodeExternals from 'webpack-node-externals';
 import appEnv from '../appEnv';
 import paths from '../paths';
 import appConfig from '../appConfig';
 import commonConfig from './common.config';
 import { clientDefaultRules, ClientConfigOptions } from './client.config';
-import { mergeAndReplaceRules } from './utils';
 import loaders, { TsLoaderType } from './loaders';
 
 export const serverDefaultRules = {
@@ -51,13 +49,18 @@ export interface ServerConfigOptions extends ClientConfigOptions {
 }
 
 export default ({
+  outputPath = paths.server.output.path,
+  outputPublicPath = appConfig.server.output.publicPath,
+  outputJsDir = '',
+  hash = false,
+  useTypeScript,
+  tsLoaderType = TsLoaderType.Default,
+  tsconfig = paths.server.tsconfig,
   entry,
   rules,
   nodeExternalsOptions,
   isUniversal,
-  useTypeScript,
-  tsLoaderType = TsLoaderType.Default,
-  tsconfig = paths.server.tsconfig,
+  ...restOptions
 }: ServerConfigOptions): Configuration => {
   const { tsBaseRule, ...rest } = isUniversal ? universalDefaultRules : serverDefaultRules;
 
@@ -71,55 +74,69 @@ export default ({
       }
     : { ...rest };
 
-  const moduleRules = mergeAndReplaceRules(preparedRules, rules);
+  const moduleRules = { ...preparedRules, ...rules };
 
-  return webpackMerge(
-    commonConfig({
-      outputPath: paths.server.output.path,
-      outputPublicPath: appConfig.server.output.publicPath,
-      outputJsDir: '',
-      hash: false,
-      useTypeScript,
-      tsLoaderType,
-      tsconfig,
-    }),
-    {
-      name: appConfig.server.root,
-      target: 'node',
+  return commonConfig({
+    outputPath,
+    outputPublicPath,
+    outputJsDir,
+    hash,
+    useTypeScript,
+    tsLoaderType,
+    tsconfig,
 
-      context: isUniversal ? paths.root : paths.server.sources,
+    name: appConfig.server.root,
+    target: 'node',
 
-      entry,
+    context: isUniversal ? paths.root : paths.server.sources,
 
-      resolve: {
-        modules: [isUniversal ? paths.client.sources : paths.server.sources],
-        alias: isUniversal
-          ? {
-              server: paths.server.sources,
-              shared: paths.shared.sources,
-              client: paths.client.sources,
-            }
-          : undefined,
-      },
+    entry,
 
-      // http://jlongster.com/Backend-Apps-with-Webpack--Part-I
-      externals: webpackNodeExternals(nodeExternalsOptions),
+    stats: 'errors-only',
+    // stats: {
+    //   colors: true,
+    //   cached: false, // Add information about cached (not built) modules
+    // },
 
-      stats: 'errors-only',
-      // stats: {
-      //   colors: true,
-      //   cached: false, // Add information about cached (not built) modules
-      // },
+    ...restOptions,
 
-      module: {
-        rules: Object.getOwnPropertyNames(moduleRules).map(name => moduleRules[name] || {}),
-      },
+    // http://jlongster.com/Backend-Apps-with-Webpack--Part-I
+    externals: [
+      webpackNodeExternals(nodeExternalsOptions),
+      ...((restOptions.externals &&
+        (Array.isArray(restOptions.externals) ? restOptions.externals : [restOptions.externals])) ||
+        []),
+    ],
 
-      plugins: [
-        // Don't watch on client files when ssr is turned off because client by self make hot update
-        // and server not needs in updated files because server not render react components.
-        ...(!isUniversal || appEnv.ssr ? [] : [new WatchIgnorePlugin([paths.client.root])]),
+    resolve: {
+      ...restOptions.resolve,
+      modules: [
+        isUniversal ? paths.client.sources : paths.server.sources,
+        ...((restOptions.resolve && restOptions.resolve.modules) || []),
       ],
-    }
-  );
+      alias: isUniversal
+        ? {
+            server: paths.server.sources,
+            shared: paths.shared.sources,
+            client: paths.client.sources,
+            ...((restOptions.resolve && restOptions.resolve.alias) || undefined),
+          }
+        : undefined,
+    },
+
+    module: {
+      ...restOptions.module,
+      rules: [
+        ...Object.getOwnPropertyNames(moduleRules).map(name => moduleRules[name] || {}),
+        ...((restOptions.module && restOptions.module.rules) || []),
+      ],
+    },
+
+    plugins: [
+      // Don't watch on client files when ssr is turned off because client by self make hot update
+      // and server not needs in updated files because server not render react components.
+      ...(!isUniversal || appEnv.ssr ? [] : [new WatchIgnorePlugin([paths.client.root])]),
+      ...(restOptions.plugins || []),
+    ],
+  });
 };
