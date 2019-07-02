@@ -208,7 +208,7 @@ export default {
     } as any);
   },
 
-  assets({ ssr = false } = {}) {
+  assets({ ssr = false, ...restOptions }: Record<string, any> = {}) {
     return {
       // Embeds resources as DataUrl, or if the file size exceeds options.limit then redirects
       // to the file-loader with all specified parameters and it copies the files.
@@ -218,6 +218,7 @@ export default {
         fallback: 'file-loader',
         emitFile: !ssr,
         name: `${appConfig.client.output.assets}/[name].[hash:8].[ext]`, // Virtual hash useful for HRM during development.
+        ...restOptions,
       },
     };
   },
