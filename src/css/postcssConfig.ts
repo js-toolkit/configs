@@ -4,7 +4,6 @@ import paths from '../paths';
 interface Props {
   importPath?: string[] | string;
   presetEnv?: Record<string, any>;
-  icssValues?: boolean;
   nested?: boolean;
   minimizer?: boolean;
 }
@@ -14,7 +13,6 @@ const defaultImportPath = [paths.client.sources];
 export default ({
   importPath = defaultImportPath,
   presetEnv,
-  icssValues = true,
   nested = true,
   minimizer = true,
 }: Props = {}) => ({
@@ -22,7 +20,6 @@ export default ({
   plugins: {
     // Primarily use to override imported styles: import css file before css-loader process it and then process merged css by css-loader.
     'postcss-import': importPath ? { path: importPath } : false, // https://github.com/postcss/postcss-import/issues/224
-    ...(icssValues ? { 'postcss-icss-values': {} } : undefined), // import values with css-loader not postcss-import
     ...(nested ? { 'postcss-nested': {} } : undefined),
     // https://preset-env.cssdb.org/
     'postcss-preset-env': {
