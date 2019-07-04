@@ -48,7 +48,7 @@ export const clientDefaultRules: Record<
 };
 
 export interface ClientConfigOptions extends CommonConfigOptions {
-  rules: Record<string, RuleSetRule>;
+  rules?: Record<string, RuleSetRule>;
 }
 
 function containsLoader(rules: Record<string, RuleSetRule>, loader: string): boolean {
@@ -74,14 +74,15 @@ export default ({
   tsLoaderType = TsLoaderType.Default,
   tsconfig = paths.client.tsconfig,
   entry,
-  rules,
+  rules: { tsBaseRule, ...rules } = {},
   ...restOptions
 }: ClientConfigOptions): Configuration => {
-  const { tsBaseRule, ...restRules } = clientDefaultRules;
+  const { tsBaseRule: defaultTsBaseRule, ...restRules } = clientDefaultRules;
 
   const preparedRules = useTypeScript
     ? {
         tsRule: {
+          ...defaultTsBaseRule,
           ...tsBaseRule,
           use: loaders.getTsLoader({ loaderType: tsLoaderType, forkedChecks: true, tsconfig }),
         },

@@ -57,22 +57,25 @@ export default ({
   tsLoaderType = TsLoaderType.Default,
   tsconfig = paths.server.tsconfig,
   entry,
-  rules,
+  rules: { tsBaseRule, ...rules } = {},
   nodeExternalsOptions,
   isUniversal,
   ...restOptions
 }: ServerConfigOptions): Configuration => {
-  const { tsBaseRule, ...rest } = isUniversal ? universalDefaultRules : serverDefaultRules;
+  const { tsBaseRule: defaultTsBaseRule, ...restRules } = isUniversal
+    ? universalDefaultRules
+    : serverDefaultRules;
 
   const preparedRules = useTypeScript
     ? {
         tsRule: {
+          ...defaultTsBaseRule,
           ...tsBaseRule,
           use: loaders.getTsLoader({ loaderType: tsLoaderType, forkedChecks: true, tsconfig }),
         },
-        ...rest,
+        ...restRules,
       }
-    : { ...rest };
+    : { ...restRules };
 
   const moduleRules = { ...preparedRules, ...rules };
 
