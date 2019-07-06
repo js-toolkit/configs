@@ -24,7 +24,8 @@ export const clientDefaultRules: Record<
     test: /\.css$/,
     include: [
       paths.client.sources,
-      // because this packages are require css-modules
+      // Because this packages are require css-modules.
+      // And to avoid duplicating css classes when composes process in the same loaders.
       path.join(paths.nodeModules.root, '@vzh/react-components'),
       path.join(paths.nodeModules.root, 'reflexy'),
     ],
