@@ -27,6 +27,7 @@ export const clientDefaultRules: Record<
       // Because this packages are require css-modules.
       // And to avoid duplicating css classes when composes process in the same loaders.
       path.join(paths.nodeModules.root, '@vzh/react-components'),
+      path.join(paths.nodeModules.root, '@vzh/editors'),
       path.join(paths.nodeModules.root, 'reflexy'),
     ],
     use: loaders.css(),
@@ -37,6 +38,7 @@ export const clientDefaultRules: Record<
     // because this packages included in cssRule
     exclude: [
       path.join(paths.nodeModules.root, '@vzh/react-components'),
+      path.join(paths.nodeModules.root, '@vzh/editors'),
       path.join(paths.nodeModules.root, 'reflexy'),
     ],
     use: loaders.cssNodeModules(),
