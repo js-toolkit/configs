@@ -5,6 +5,7 @@ interface Props {
   importPath?: string[] | string;
   presetEnv?: Record<string, any>;
   nested?: boolean;
+  /** You need to install cssnano and cssnano-preset-default */
   minimizer?: boolean;
 }
 
@@ -34,10 +35,7 @@ export default ({
     // There are problems with css calc() function which uses icss values. ICSS values processed by css-loader later.
     cssnano:
       minimizer && appEnv.prod
-        ? {
-            // Need install cssnano cssnano-preset-default
-            preset: ['default', { discardComments: { removeAll: true } }],
-          }
+        ? { preset: ['default', { discardComments: { removeAll: true } }] }
         : false,
   },
 });
