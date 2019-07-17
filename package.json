@@ -25,13 +25,13 @@
   },
   "devDependencies": {
     "@types/ftp": "^0.3.29",
-    "@types/node": "^12.6.2",
+    "@types/node": "^12.6.6",
     "@types/node-telegram-bot-api": "^0.31.0",
-    "@types/webpack": "^4.4.34",
+    "@types/webpack": "^4.4.35",
     "@types/webpack-dev-server": "^3.1.7",
     "@types/webpack-node-externals": "^1.6.3",
-    "@typescript-eslint/eslint-plugin": "^1.11.0",
-    "@typescript-eslint/parser": "^1.11.0",
+    "@typescript-eslint/eslint-plugin": "^1.12.0",
+    "@typescript-eslint/parser": "^1.12.0",
     "babel-eslint": "^10.0.2",
     "copyfiles": "^2.1.1",
     "eslint": "^6.0.1",
@@ -44,7 +44,7 @@
     "prettier": "^1.18.2",
     "rimraf": "^2.6.3",
     "typescript": "^3.5.3",
-    "webpack": "^4.35.3",
+    "webpack": "^4.36.1",
     "webpack-node-externals": "^1.7.2"
   }
 }
