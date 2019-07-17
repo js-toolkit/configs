@@ -117,13 +117,16 @@ export default ({
     ],
   },
 
-  stats: {
-    ...(useTypeScript
-      ? // https://github.com/TypeStrong/ts-loader#transpileonly-boolean-defaultfalse
-        { warningsFilter: /export .* was not found in/ }
-      : undefined),
-    ...(typeof restOptions.stats === 'object' ? restOptions.stats : undefined),
-  },
+  stats:
+    restOptions.stats == null || typeof restOptions.stats === 'object'
+      ? {
+          ...(useTypeScript
+            ? // https://github.com/TypeStrong/ts-loader#transpileonly-boolean-defaultfalse
+              { warningsFilter: /export .* was not found in/ }
+            : undefined),
+          ...restOptions.stats,
+        }
+      : restOptions.stats,
 
   module: {
     // Suppress warnings of dynamic requiring in configs:
