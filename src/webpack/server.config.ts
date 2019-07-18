@@ -1,4 +1,4 @@
-import { Configuration, WatchIgnorePlugin } from 'webpack';
+import { Configuration } from 'webpack';
 import webpackNodeExternals from 'webpack-node-externals';
 import appEnv from '../appEnv';
 import paths from '../paths';
@@ -135,11 +135,12 @@ export default ({
       ],
     },
 
-    plugins: [
-      // Don't watch on client files when ssr is turned off because client by self make hot update
-      // and server not needs in updated files because server not render react components.
-      ...(!isUniversal || appEnv.ssr ? [] : [new WatchIgnorePlugin([paths.client.root])]),
-      ...(restOptions.plugins || []),
-    ],
+    watchOptions: {
+      // Don't watch on client files when isUniversal is true and ssr is turned off
+      // because client by self make hot update and server not needs in updated files
+      // because server not render react components.
+      ignored: [paths.nodeModules.root, ...(isUniversal && !appEnv.ssr ? [paths.client.root] : [])],
+      ...restOptions.watchOptions,
+    },
   });
 };
