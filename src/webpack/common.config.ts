@@ -13,6 +13,7 @@ export interface CommonConfigOptions extends Partial<BaseTsOptions>, Configurati
   hash?: boolean;
   useTypeScript?: boolean;
   tsLoaderType?: TsLoaderType;
+  useTsForkedChecks?: boolean;
 }
 
 export default ({
@@ -22,6 +23,7 @@ export default ({
   hash,
   useTypeScript,
   tsLoaderType = TsLoaderType.Default,
+  useTsForkedChecks = true,
   tsconfig,
   ...restOptions
 }: CommonConfigOptions): Configuration => ({
@@ -82,7 +84,7 @@ export default ({
     ...appEnv.ifDevMode([new webpack.HotModuleReplacementPlugin()], []),
 
     // Forked check for TS
-    ...(useTypeScript && tsconfig
+    ...(useTypeScript && useTsForkedChecks && tsconfig
       ? [loaders.getTsCheckerPlugin({ loaderType: tsLoaderType, tsconfig })]
       : []),
 

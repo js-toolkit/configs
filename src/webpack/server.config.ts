@@ -56,6 +56,7 @@ export default ({
   useTypeScript,
   tsLoaderType = TsLoaderType.Default,
   tsconfig = paths.server.tsconfig,
+  useTsForkedChecks = true,
   entry,
   rules: { tsBaseRule, ...rules } = {},
   nodeExternalsOptions,
@@ -71,7 +72,11 @@ export default ({
         tsRule: {
           ...defaultTsBaseRule,
           ...tsBaseRule,
-          use: loaders.getTsLoader({ loaderType: tsLoaderType, forkedChecks: true, tsconfig }),
+          use: loaders.getTsLoader({
+            loaderType: tsLoaderType,
+            forkedChecks: useTsForkedChecks,
+            tsconfig,
+          }),
         },
         ...restRules,
       }
@@ -87,6 +92,7 @@ export default ({
     useTypeScript,
     tsLoaderType,
     tsconfig,
+    useTsForkedChecks,
 
     name: appConfig.server.root,
     target: 'node',

@@ -40,7 +40,7 @@ export default {
   getTsLoader({ loaderType, ...rest }: GetTsLoaderOptions) {
     if (loaderType === TsLoaderType.ATL) return this.atl(rest);
     if (loaderType === TsLoaderType.Babel) return this.babel(rest);
-    return this.ts({ ...rest });
+    return this.ts(rest);
   },
 
   getTsCheckerPlugin({ loaderType, ...rest }: GetTsCheckerPluginOptions) {
@@ -101,13 +101,14 @@ export default {
     const Plugin = nodeRequire(getName());
     return new Plugin({
       tsconfig,
-      // compilerOptions: {
-      //   module: 'esnext',
-      //   resolveJsonModule: true,
-      //   isolatedModules: true,
-      //   noEmit: true,
-      //   jsx: 'preserve',
-      // },
+      compilerOptions: {
+        //   module: 'esnext',
+        //   resolveJsonModule: true,
+        //   isolatedModules: true,
+        noEmit: true,
+        //   jsx: 'preserve',
+      },
+      useTypescriptIncrementalApi: true,
       checkSyntacticErrors: appEnv.prod, // ts-loader in happyPackMode will not check SyntacticErrors so let check it in this plugin
       memoryLimit: 1024,
       ...rest,
