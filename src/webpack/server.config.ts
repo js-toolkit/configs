@@ -56,7 +56,7 @@ export default ({
   useTypeScript,
   tsLoaderType = TsLoaderType.Default,
   tsconfig = paths.server.tsconfig,
-  useTsForkedChecks = true,
+  useTsForkedChecks = false,
   entry,
   rules: { tsBaseRule, ...rules } = {},
   nodeExternalsOptions,

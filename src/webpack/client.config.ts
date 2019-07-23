@@ -76,7 +76,7 @@ export default ({
   useTypeScript,
   tsLoaderType = TsLoaderType.Default,
   tsconfig = paths.client.tsconfig,
-  useTsForkedChecks = true,
+  useTsForkedChecks = false,
   entry,
   rules: { tsBaseRule, ...rules } = {},
   ...restOptions

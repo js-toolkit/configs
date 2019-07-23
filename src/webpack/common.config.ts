@@ -23,7 +23,7 @@ export default ({
   hash,
   useTypeScript,
   tsLoaderType = TsLoaderType.Default,
-  useTsForkedChecks = true,
+  useTsForkedChecks = false,
   tsconfig,
   ...restOptions
 }: CommonConfigOptions): Configuration => ({
