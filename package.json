@@ -1,7 +1,7 @@
 {
   "name": "@vzh/configs",
   "version": "3.37.0",
-  "description": "Default configurations for internal projects",
+  "description": "Preconfigured configurations",
   "author": "Vladimir Zhukov",
   "license": "MIT",
   "contributors": [
@@ -26,7 +26,7 @@
   },
   "devDependencies": {
     "@types/ftp": "^0.3.29",
-    "@types/node": "^12.6.8",
+    "@types/node": "^12.6.9",
     "@types/node-telegram-bot-api": "^0.31.0",
     "@types/webpack": "^4.32.1",
     "@types/webpack-dev-server": "^3.1.7",
@@ -45,7 +45,7 @@
     "prettier": "^1.18.2",
     "rimraf": "^2.6.3",
     "typescript": "^3.5.3",
-    "webpack": "^4.38.0",
+    "webpack": "^4.39.1",
     "webpack-node-externals": "^1.7.2"
   }
 }
