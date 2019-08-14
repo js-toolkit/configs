@@ -1,4 +1,4 @@
-import { moduleExtensions } from '../paths';
+import paths, { moduleExtensions } from '../paths';
 
 module.exports = {
   extends: [
@@ -6,6 +6,10 @@ module.exports = {
     require.resolve('./ts.common.eslintrc.js'),
     'prettier/react',
   ],
+
+  parserOptions: {
+    project: paths.client.tsconfig,
+  },
 
   rules: {
     'react/jsx-filename-extension': [

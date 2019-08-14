@@ -3,11 +3,17 @@ import { moduleExtensions } from '../paths';
 module.exports = {
   extends: [
     require.resolve('./common.eslintrc.js'),
+    'plugin:@typescript-eslint/eslint-recommended',
     'plugin:@typescript-eslint/recommended',
+    'plugin:@typescript-eslint/recommended-requiring-type-checking',
     'prettier/@typescript-eslint',
   ],
 
   parser: '@typescript-eslint/parser',
+
+  parserOptions: {
+    project: 'tsconfig.json',
+  },
 
   plugins: ['@typescript-eslint'],
 
@@ -24,19 +30,11 @@ module.exports = {
   },
 
   rules: {
-    'no-undef': 'off',
-    'no-unused-vars': 'off',
-    'no-use-before-define': 'off',
     'no-restricted-globals': 'off',
-    'no-redeclare': 'off',
     'no-inner-declarations': ['off', 'functions'],
-    // 'no-useless-constructor': 'off',
-    // 'no-empty-function': ['error', { allow: ['constructors'] }],
     'class-methods-use-this': 'off',
     'import/named': 'off',
     'import/export': 'off', // No named exports found in module
-    '@typescript-eslint/no-unused-vars': 'off',
-    '@typescript-eslint/no-use-before-define': 'off',
     '@typescript-eslint/explicit-member-accessibility': 'off',
     '@typescript-eslint/explicit-function-return-type': [
       'warn',
