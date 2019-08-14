@@ -17,5 +17,6 @@ module.exports = {
       { extensions: moduleExtensions.filter(ext => ext.includes('js') || ext.includes('ts')) },
     ],
     'react/jsx-wrap-multilines': 'off',
+    'react/jsx-props-no-spreading': 'off',
   },
 };
