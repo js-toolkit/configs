@@ -97,7 +97,7 @@ export default ({
   resolve: {
     ...restOptions.resolve,
     extensions: [
-      ...moduleExtensions.filter(ext => useTypeScript || !ext.includes('ts')),
+      ...(useTypeScript ? moduleExtensions : moduleExtensions.filter(ext => !ext.includes('.ts'))),
       ...((restOptions.resolve && restOptions.resolve.extensions) || []),
     ],
     modules: [

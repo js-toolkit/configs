@@ -19,19 +19,18 @@ module.exports = {
 
   settings: {
     'import/parsers': {
-      '@typescript-eslint/parser': moduleExtensions /* .filter(ext => ext.includes('ts')) */,
+      '@typescript-eslint/parser': moduleExtensions,
     },
 
     'import/resolver': {
       node: {
-        extensions: moduleExtensions.filter(ext => ext.includes('js') || ext.includes('ts')),
+        extensions: moduleExtensions,
       },
     },
   },
 
   rules: {
     'no-restricted-globals': 'off',
-    // 'no-inner-declarations': ['off', 'functions'],
     // 'class-methods-use-this': 'off',
     'import/named': 'off',
     'import/export': 'off', // No named exports found in module

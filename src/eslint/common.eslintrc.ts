@@ -15,7 +15,7 @@ module.exports = {
   settings: {
     'import/resolver': {
       node: {
-        extensions: moduleExtensions.filter(ext => ext.includes('js')),
+        extensions: moduleExtensions.filter(ext => ext.includes('.js')),
 
         moduleDirectory: [
           'node_modules',
