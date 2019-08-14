@@ -31,8 +31,8 @@ module.exports = {
 
   rules: {
     'no-restricted-globals': 'off',
-    'no-inner-declarations': ['off', 'functions'],
-    'class-methods-use-this': 'off',
+    // 'no-inner-declarations': ['off', 'functions'],
+    // 'class-methods-use-this': 'off',
     'import/named': 'off',
     'import/export': 'off', // No named exports found in module
     '@typescript-eslint/explicit-member-accessibility': 'off',
