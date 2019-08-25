@@ -1,3 +1,4 @@
+import fs from 'fs';
 import paths, { moduleExtensions } from '../paths';
 
 module.exports = {
@@ -8,7 +9,7 @@ module.exports = {
   ],
 
   parserOptions: {
-    project: paths.client.tsconfig,
+    project: fs.existsSync(paths.client.tsconfig) ? paths.client.tsconfig : 'tsconfig.json',
   },
 
   rules: {
