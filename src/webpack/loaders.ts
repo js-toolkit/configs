@@ -102,11 +102,7 @@ export default {
     return new Plugin({
       tsconfig,
       compilerOptions: {
-        //   module: 'esnext',
-        //   resolveJsonModule: true,
-        //   isolatedModules: true,
         noEmit: true,
-        //   jsx: 'preserve',
       },
       useTypescriptIncrementalApi: true,
       checkSyntacticErrors: appEnv.prod, // ts-loader in happyPackMode will not check SyntacticErrors so let check it in this plugin
