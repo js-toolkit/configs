@@ -57,6 +57,7 @@ export default ({
       {
         minimizer: [
           new (nodeRequire('terser-webpack-plugin'))({
+            extractComments: false,
             terserOptions: {
               output: {
                 comments: false,
