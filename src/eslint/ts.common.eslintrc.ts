@@ -1,4 +1,6 @@
+import fs from 'fs';
 import { moduleExtensions } from '../paths';
+import { eslintTsProject } from './consts';
 
 module.exports = {
   extends: [
@@ -14,7 +16,7 @@ module.exports = {
   parser: '@typescript-eslint/parser',
 
   parserOptions: {
-    project: 'tsconfig.json',
+    project: fs.existsSync(eslintTsProject) ? eslintTsProject : 'tsconfig.json',
   },
 
   plugins: ['@typescript-eslint'],

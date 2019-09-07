@@ -3,9 +3,12 @@
  * eslint configuration and then extends it, so we just provide utils.
  * https://github.com/eslint/eslint/issues/11934#issuecomment-508024268
  */
+import fs from 'fs';
+import path from 'path';
 import { Linter } from 'eslint';
 import appConfig, { AppConfig } from '../appConfig';
 import paths, { moduleExtensions } from '../paths';
+import { eslintTsProject } from './consts';
 
 export function getTsFilesGlob(root: string): string[] {
   return moduleExtensions.filter(e => e.includes('ts')).map(e => `${root}/**/*${e}`);
@@ -45,7 +48,12 @@ export function getOverrides(
       extends: [require.resolve('@vzh/configs/eslint/ts.common.eslintrc.js')],
       ...overrides.shared,
       parserOptions: {
-        project: paths.shared.tsconfig,
+        project: (() => {
+          if (fs.existsSync(path.join(paths.shared.root, eslintTsProject)))
+            return path.join(paths.shared.root, eslintTsProject);
+          if (fs.existsSync(paths.shared.tsconfig)) return paths.shared.tsconfig;
+          return 'tsconfig.json';
+        })(),
         ...(overrides.shared && overrides.shared.parserOptions),
       },
     },

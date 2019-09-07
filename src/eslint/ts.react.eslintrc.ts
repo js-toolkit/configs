@@ -1,5 +1,7 @@
 import fs from 'fs';
+import path from 'path';
 import paths, { moduleExtensions } from '../paths';
+import { eslintTsProject } from './consts';
 
 module.exports = {
   extends: [
@@ -9,7 +11,12 @@ module.exports = {
   ],
 
   parserOptions: {
-    project: fs.existsSync(paths.client.tsconfig) ? paths.client.tsconfig : 'tsconfig.json',
+    project: (() => {
+      if (fs.existsSync(path.join(paths.client.root, eslintTsProject)))
+        return path.join(paths.client.root, eslintTsProject);
+      if (fs.existsSync(paths.client.tsconfig)) return paths.client.tsconfig;
+      return 'tsconfig.json';
+    })(),
   },
 
   rules: {
