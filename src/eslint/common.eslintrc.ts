@@ -1,9 +1,12 @@
 import paths, { moduleExtensions } from '../paths';
 
 module.exports = {
-  // import plugin is already added by airbnb-base
-  // prettier plugin is already added by plugin:prettier/recommended
-  extends: ['airbnb-base', 'plugin:prettier/recommended'],
+  extends: [
+    // Adds import plugin, import/resolver.node.extensions, import/extensions
+    'airbnb-base',
+    // Adds prettier plugin
+    'plugin:prettier/recommended',
+  ],
 
   parser: 'babel-eslint',
 
@@ -15,7 +18,8 @@ module.exports = {
   settings: {
     'import/resolver': {
       node: {
-        extensions: moduleExtensions.filter(ext => ext.includes('.js')),
+        // Add again for consistency with webpack configs
+        extensions: moduleExtensions.filter(ext => ext.includes('js')),
 
         moduleDirectory: [
           'node_modules',

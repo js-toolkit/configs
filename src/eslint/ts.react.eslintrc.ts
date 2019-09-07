@@ -15,7 +15,7 @@ module.exports = {
   rules: {
     'react/jsx-filename-extension': [
       'error',
-      { extensions: moduleExtensions.filter(ext => ext.includes('js') || ext.includes('ts')) },
+      { extensions: moduleExtensions.filter(ext => ext.includes('sx')) },
     ],
     'react/jsx-wrap-multilines': 'off',
     'react/jsx-props-no-spreading': 'off',
