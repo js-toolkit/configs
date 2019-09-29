@@ -51,7 +51,7 @@ export const clientDefaultRules: Record<
 };
 
 export interface ClientConfigOptions extends CommonConfigOptions {
-  tsLoaderOptions?: object;
+  tsLoaderOptions?: {};
   useTsThreadLoader?: boolean;
   tsThreadLoaderOptions?: {};
   rules?: Record<string, RuleSetRule>;
