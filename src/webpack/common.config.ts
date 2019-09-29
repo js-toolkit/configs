@@ -14,6 +14,8 @@ export interface CommonConfigOptions extends Partial<BaseTsOptions>, Configurati
   useTypeScript?: boolean;
   tsLoaderType?: TsLoaderType;
   useTsForkedChecks?: boolean;
+  /** Forked checks webpack plugin options */
+  tsCheckerOptions?: object;
 }
 
 export default ({
@@ -24,6 +26,7 @@ export default ({
   useTypeScript,
   tsLoaderType = TsLoaderType.Default,
   useTsForkedChecks = false,
+  tsCheckerOptions = {},
   tsconfig,
   ...restOptions
 }: CommonConfigOptions): Configuration => ({
@@ -43,7 +46,7 @@ export default ({
   output: {
     path: outputPath,
     publicPath: outputPublicPath,
-    pathinfo: appEnv.ifDevMode(true, false),
+    pathinfo: false, // For speed up
     filename: path.join(outputJsDir, `[name]${appEnv.prod && hash ? '.[contenthash:8]' : ''}.js`),
     chunkFilename: path.join(
       outputJsDir,
@@ -86,7 +89,13 @@ export default ({
 
     // Forked check for TS
     ...(useTypeScript && useTsForkedChecks && tsconfig
-      ? [loaders.getTsCheckerPlugin({ loaderType: tsLoaderType, tsconfig })]
+      ? [
+          loaders.getTsCheckerPlugin({
+            tsconfig,
+            ...tsCheckerOptions,
+            loaderType: tsLoaderType,
+          }),
+        ]
       : []),
 
     // Ignore all locale files of moment.js

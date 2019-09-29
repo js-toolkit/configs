@@ -21,20 +21,21 @@ interface GetTsLoaderOptionsBase extends BaseTsOptions {
 interface GetTsDefaultLoaderOptions extends GetTsLoaderOptionsBase {
   loaderType: TsLoaderType.Default;
   forkedChecks?: boolean;
+  useThreadLoader?: boolean;
+  threadLoaderOptions?: {};
   afterLoaders?: Loader[];
 }
 
-type TsDefaultLoaderOptions = Pick<
-  GetTsDefaultLoaderOptions,
-  Exclude<keyof GetTsDefaultLoaderOptions, 'loaderType'>
-> &
-  Record<string, any>;
+type TsDefaultLoaderOptions = Omit<GetTsDefaultLoaderOptions, 'loaderType'> & { [P: string]: any };
 
-export type GetTsLoaderOptions = (GetTsLoaderOptionsBase | GetTsDefaultLoaderOptions) &
-  Partial<Record<string, any>>;
+export type GetTsLoaderOptions = (GetTsLoaderOptionsBase | GetTsDefaultLoaderOptions) & {
+  [P: string]: any;
+};
 
-export type GetTsCheckerPluginOptions = { loaderType: TsLoaderType } & BaseTsOptions &
-  Partial<Record<string, any>>;
+export type GetTsCheckerPluginOptions = BaseTsOptions & {
+  loaderType: TsLoaderType;
+  [P: string]: any;
+};
 
 export default {
   getTsLoader({ loaderType, ...rest }: GetTsLoaderOptions) {
@@ -48,9 +49,16 @@ export default {
     return this.tsCheckerPlugin(rest as BaseTsOptions);
   },
 
-  ts({ tsconfig, forkedChecks, afterLoaders, ...rest }: TsDefaultLoaderOptions) {
+  ts({
+    tsconfig,
+    forkedChecks,
+    useThreadLoader,
+    threadLoaderOptions,
+    afterLoaders,
+    ...rest
+  }: TsDefaultLoaderOptions) {
     return [
-      ...(forkedChecks && appEnv.prod
+      ...(useThreadLoader
         ? [
             // Must be placen on front of other loaders.
             // Useful without watch mode, because on every edit (compilation) thread-loader fork process and increase total time of build
@@ -58,7 +66,9 @@ export default {
               loader: 'thread-loader',
               options: {
                 // there should be 1 cpu for the fork-ts-checker-webpack-plugin
-                workers: 1, // best for universal builds
+                workers: 1, // best for universal builds on my machine (2 core * 2 hyperthreads)
+                poolTimeout: appEnv.ifDevMode(Infinity, undefined),
+                ...threadLoaderOptions,
               },
             },
           ]
@@ -71,7 +81,7 @@ export default {
         options: {
           configFile: tsconfig,
           transpileOnly: forkedChecks,
-          happyPackMode: forkedChecks && appEnv.prod, // use happyPackMode mode to speed-up compilation and reduce errors reported to webpack
+          happyPackMode: useThreadLoader, // use happyPackMode mode to speed-up compilation and reduce errors reported to webpack
           ...rest,
           compilerOptions: {
             // disable sourceMap in production by default
@@ -83,10 +93,8 @@ export default {
     ];
   },
 
-  tsRHL({ tsconfig, forkedChecks, afterLoaders, ...rest }: TsDefaultLoaderOptions) {
+  tsRHL({ afterLoaders, ...rest }: TsDefaultLoaderOptions) {
     return this.ts({
-      tsconfig,
-      forkedChecks,
       afterLoaders: [
         ...(afterLoaders || []),
         ...appEnv.ifDevMode([{ loader: 'babel-loader' }], []),
@@ -101,11 +109,6 @@ export default {
     const Plugin = nodeRequire(getName());
     return new Plugin({
       tsconfig,
-      compilerOptions: {
-        noEmit: true,
-      },
-      useTypescriptIncrementalApi: true,
-      checkSyntacticErrors: appEnv.prod, // ts-loader in happyPackMode will not check SyntacticErrors so let check it in this plugin
       memoryLimit: 1024,
       ...rest,
     });

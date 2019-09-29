@@ -57,6 +57,10 @@ export default ({
   tsLoaderType = TsLoaderType.Default,
   tsconfig = paths.server.tsconfig,
   useTsForkedChecks = false,
+  useTsThreadLoader = false,
+  tsLoaderOptions = {},
+  tsCheckerOptions = {},
+  tsThreadLoaderOptions = {},
   entry,
   rules: { tsBaseRule, ...rules } = {},
   nodeExternalsOptions,
@@ -73,9 +77,12 @@ export default ({
           ...defaultTsBaseRule,
           ...tsBaseRule,
           use: loaders.getTsLoader({
-            loaderType: tsLoaderType,
-            forkedChecks: useTsForkedChecks,
             tsconfig,
+            forkedChecks: useTsForkedChecks,
+            useThreadLoader: useTsThreadLoader,
+            threadLoaderOptions: tsThreadLoaderOptions,
+            ...tsLoaderOptions,
+            loaderType: tsLoaderType,
           }),
         },
         ...restRules,
@@ -93,6 +100,10 @@ export default ({
     tsLoaderType,
     tsconfig,
     useTsForkedChecks,
+    tsCheckerOptions: {
+      checkSyntacticErrors: useTsThreadLoader, // ts-loader in happyPackMode will not check SyntacticErrors so let check it in this plugin
+      ...tsCheckerOptions,
+    },
 
     name: appConfig.server.root,
     target: 'node',

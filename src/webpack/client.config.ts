@@ -51,6 +51,9 @@ export const clientDefaultRules: Record<
 };
 
 export interface ClientConfigOptions extends CommonConfigOptions {
+  tsLoaderOptions?: object;
+  useTsThreadLoader?: boolean;
+  tsThreadLoaderOptions?: {};
   rules?: Record<string, RuleSetRule>;
 }
 
@@ -77,6 +80,10 @@ export default ({
   tsLoaderType = TsLoaderType.Default,
   tsconfig = paths.client.tsconfig,
   useTsForkedChecks = false,
+  useTsThreadLoader = false,
+  tsLoaderOptions = {},
+  tsCheckerOptions = {},
+  tsThreadLoaderOptions = {},
   entry,
   rules: { tsBaseRule, ...rules } = {},
   ...restOptions
@@ -89,9 +96,12 @@ export default ({
           ...defaultTsBaseRule,
           ...tsBaseRule,
           use: loaders.getTsLoader({
-            loaderType: tsLoaderType,
-            forkedChecks: useTsForkedChecks,
             tsconfig,
+            forkedChecks: useTsForkedChecks,
+            useThreadLoader: useTsThreadLoader,
+            threadLoaderOptions: tsThreadLoaderOptions,
+            ...tsLoaderOptions,
+            loaderType: tsLoaderType,
           }),
         },
         ...restRules,
@@ -109,6 +119,10 @@ export default ({
     tsLoaderType,
     tsconfig,
     useTsForkedChecks,
+    tsCheckerOptions: {
+      checkSyntacticErrors: useTsThreadLoader, // ts-loader in happyPackMode will not check SyntacticErrors so let check it in this plugin
+      ...tsCheckerOptions,
+    },
 
     name: appConfig.client.root,
     target: 'web',
