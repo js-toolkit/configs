@@ -1,6 +1,12 @@
 import appConfigDefaults from './apprcDefaults';
 
-export type AppConfig = typeof appConfigDefaults;
+type AddStringProps<T extends object> = {
+  [P in keyof T]: T[P] extends object ? (AddStringProps<T[P]> & { [P: string]: any }) : T[P];
+};
+
+export type AppConfig = AddStringProps<typeof appConfigDefaults> & {
+  envStringify(): { 'process.env.appConfig': string };
+};
 
 const moduleName = 'apprc';
 
@@ -27,17 +33,16 @@ function merge<T1 extends {}, T2 extends Partial<T1>>(obj1: T1, obj2: T2): Omit<
       }
       return acc;
     },
-    // eslint-disable-next-line @typescript-eslint/no-object-literal-type-assertion
     {} as Omit<T1, keyof T2> & T2
   );
 }
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function getAppConfig() {
+function getAppConfig(): AppConfig {
   const apprcPath = resolveConfigPath();
 
   const appConfig: AppConfig =
     process.env.appConfig ||
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     (apprcPath ? merge(appConfigDefaults, require(apprcPath)) : appConfigDefaults);
 
   return {
