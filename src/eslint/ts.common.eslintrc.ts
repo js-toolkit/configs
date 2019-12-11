@@ -39,6 +39,15 @@ module.exports = {
     // 'class-methods-use-this': 'off',
     'import/named': 'off',
     'import/export': 'off', // No named exports found in module
+    'import/extensions': [
+      'error',
+      'ignorePackages',
+      // never allow the use of the module extensions.
+      moduleExtensions.reduce(
+        (acc, ext) => ({ ...acc, [ext.substr(1)]: 'never' }),
+        { '': 'never' } // Fix error on import user type declaration folder such as `shared/types`
+      ),
+    ],
     '@typescript-eslint/explicit-member-accessibility': 'off',
     '@typescript-eslint/explicit-function-return-type': [
       'warn',
