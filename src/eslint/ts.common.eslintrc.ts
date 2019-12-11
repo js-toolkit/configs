@@ -45,7 +45,7 @@ module.exports = {
       // never allow the use of the module extensions.
       moduleExtensions.reduce(
         (acc, ext) => ({ ...acc, [ext.substr(1)]: 'never' }),
-        { '': 'never' } // Fix error on import user type declaration folder such as `shared/types`
+        { '': 'never' } // Fix error on import user type declaration folder such as `client/types`
       ),
     ],
     '@typescript-eslint/explicit-member-accessibility': 'off',
