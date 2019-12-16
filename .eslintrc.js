@@ -38,14 +38,15 @@ module.exports = {
     'no-restricted-globals': 'off',
     'no-redeclare': 'off',
     'no-inner-declarations': ['off', 'functions'],
-    'class-methods-use-this': 'off',
-    'import/named': 'off',
     'no-console': 'off',
+    'class-methods-use-this': 'off',
     //
     'global-require': 'off',
+    'import/named': 'off',
     'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
     'import/no-unresolved': 'off',
     'import/no-dynamic-require': 'off',
+    'import/extensions': ['error', 'ignorePackages', { js: 'never', ts: 'never' }],
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/explicit-function-return-type': [
       'warn',
