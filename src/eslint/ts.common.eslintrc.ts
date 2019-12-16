@@ -1,4 +1,5 @@
 import fs from 'fs';
+import { rules } from 'eslint-config-airbnb-base/rules/style';
 import { moduleExtensions } from '../paths';
 import { eslintTsProject } from './consts';
 
@@ -36,7 +37,11 @@ module.exports = {
 
   rules: {
     'no-restricted-globals': 'off',
-    // 'class-methods-use-this': 'off',
+    'no-restricted-syntax': Array.isArray(rules['no-restricted-syntax'])
+      ? rules['no-restricted-syntax'].filter(
+          param => typeof param !== 'object' || param.selector !== 'ForOfStatement'
+        )
+      : rules['no-restricted-syntax'],
     'import/named': 'off',
     'import/export': 'off', // No named exports found in module
     'import/extensions': [
