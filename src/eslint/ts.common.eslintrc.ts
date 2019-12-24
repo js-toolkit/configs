@@ -61,4 +61,14 @@ module.exports = {
       { allowExpressions: true, allowTypedFunctionExpressions: true },
     ],
   },
+
+  overrides: [
+    // Special overrides for TS declaration files
+    {
+      files: ['*.d.ts'],
+      rules: {
+        'max-classes-per-file': 'off',
+      },
+    },
+  ],
 };
