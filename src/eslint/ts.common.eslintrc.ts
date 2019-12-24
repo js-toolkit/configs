@@ -42,6 +42,8 @@ module.exports = {
           param => typeof param !== 'object' || param.selector !== 'ForOfStatement'
         )
       : rules['no-restricted-syntax'],
+    // https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/docs/rules/no-useless-constructor.md#rule-changes
+    'no-useless-constructor': 'off',
     'import/named': 'off',
     'import/export': 'off', // No named exports found in module
     'import/extensions': [
