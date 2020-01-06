@@ -15,7 +15,7 @@ export default ({
   importPath = defaultImportPath,
   presetEnv,
   nested = true,
-  minimizer = true,
+  minimizer = appEnv.prod,
 }: Props = {}) => ({
   sourceMap: appEnv.dev,
   plugins: {
@@ -33,9 +33,6 @@ export default ({
       },
     },
     // There are problems with css calc() function which uses icss values. ICSS values processed by css-loader later.
-    cssnano:
-      minimizer && appEnv.prod
-        ? { preset: ['default', { discardComments: { removeAll: true } }] }
-        : false,
+    cssnano: minimizer ? { preset: ['default', { discardComments: { removeAll: true } }] } : false,
   },
 });
