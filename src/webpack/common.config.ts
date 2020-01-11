@@ -56,21 +56,20 @@ export default ({
   },
 
   optimization: {
-    ...appEnv.ifProdMode(
-      {
-        minimizer: [
-          new (nodeRequire('terser-webpack-plugin'))({
-            extractComments: false,
-            terserOptions: {
-              output: {
-                comments: false,
+    ...(appEnv.prod
+      ? {
+          minimizer: [
+            new (nodeRequire('terser-webpack-plugin'))({
+              extractComments: false,
+              terserOptions: {
+                output: {
+                  comments: false,
+                },
               },
-            },
-          }),
-        ],
-      },
-      undefined
-    ),
+            }),
+          ],
+        }
+      : undefined),
     ...restOptions.optimization,
   },
 
