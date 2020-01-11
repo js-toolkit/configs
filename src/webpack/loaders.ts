@@ -85,7 +85,7 @@ export default {
           ...rest,
           compilerOptions: {
             // disable sourceMap in production by default
-            ...appEnv.ifProdMode({ sourceMap: false }, undefined),
+            ...appEnv.ifProdMode(() => ({ sourceMap: false }), undefined),
             ...rest.compilerOptions,
           },
         },
@@ -97,7 +97,7 @@ export default {
     return this.ts({
       afterLoaders: [
         ...(afterLoaders || []),
-        ...appEnv.ifDevMode([{ loader: 'babel-loader' }], []),
+        ...appEnv.ifDevMode(() => [{ loader: 'babel-loader' }], []),
       ],
       ...rest,
     });
@@ -127,7 +127,10 @@ export default {
   },
 
   atsRHL({ tsconfig, ...rest }: BaseTsOptions & Record<string, any>) {
-    return [...appEnv.ifDevMode([{ loader: 'babel-loader' }], []), this.atl({ tsconfig, ...rest })];
+    return [
+      ...appEnv.ifDevMode(() => [{ loader: 'babel-loader' }], []),
+      this.atl({ tsconfig, ...rest }),
+    ];
   },
 
   /** In order to runs typescript type checker on a separate process. */

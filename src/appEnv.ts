@@ -69,13 +69,19 @@ export function getAppEnvironment() {
     },
 
     /** Use NODE_ENV environment variable */
-    ifDevMode<T>(devModeValue: T, elseValue: T): T {
-      return this.dev ? devModeValue : elseValue;
+    ifDevMode<T>(devModeValue: (() => T) | T, elseValue: (() => T) | T): T {
+      if (this.dev) {
+        return typeof devModeValue === 'function' ? (devModeValue as Function)() : devModeValue;
+      }
+      return typeof elseValue === 'function' ? (elseValue as Function)() : elseValue;
     },
 
     /** Use NODE_ENV environment variable */
-    ifProdMode<T>(prodModeValue: T, elseValue: T): T {
-      return this.prod ? prodModeValue : elseValue;
+    ifProdMode<T>(prodModeValue: (() => T) | T, elseValue: (() => T) | T): T {
+      if (this.prod) {
+        return typeof prodModeValue === 'function' ? (prodModeValue as Function)() : prodModeValue;
+      }
+      return typeof elseValue === 'function' ? (elseValue as Function)() : elseValue;
     },
 
     /** Use APP_DEV_SERVER environment variable */

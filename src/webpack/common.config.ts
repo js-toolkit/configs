@@ -56,20 +56,21 @@ export default ({
   },
 
   optimization: {
-    ...(appEnv.prod
-      ? {
-          minimizer: [
-            new (nodeRequire('terser-webpack-plugin'))({
-              extractComments: false,
-              terserOptions: {
-                output: {
-                  comments: false,
-                },
+    ...appEnv.ifProdMode(
+      () => ({
+        minimizer: [
+          new (nodeRequire('terser-webpack-plugin'))({
+            extractComments: false,
+            terserOptions: {
+              output: {
+                comments: false,
               },
-            }),
-          ],
-        }
-      : undefined),
+            },
+          }),
+        ],
+      }),
+      undefined
+    ),
     ...restOptions.optimization,
   },
 
@@ -84,7 +85,7 @@ export default ({
     }),
 
     // Enable HMR in development.
-    ...appEnv.ifDevMode([new webpack.HotModuleReplacementPlugin()], []),
+    ...appEnv.ifDevMode(() => [new webpack.HotModuleReplacementPlugin()], []),
 
     // Forked check for TS
     ...(useTypeScript && useTsForkedChecks && tsconfig
