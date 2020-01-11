@@ -174,9 +174,8 @@ export default ({
           });
         })(),
 
-      // Extract css in production only if has mini-css-extract-plugin loader
-      appEnv.prod &&
-        containsLoader(moduleRules, loaders.cssExtractLoader) &&
+      // Extract css if has mini-css-extract-plugin loader
+      containsLoader(moduleRules, loaders.cssExtractLoader) &&
         (() => {
           const getName = (): string => 'mini-css-extract-plugin';
           const MiniCssExtractPlugin = nodeRequire(getName());
