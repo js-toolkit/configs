@@ -1,4 +1,4 @@
 module.exports = {
-  extends: './common.babelrc.json',
+  extends: './common.babelrc.js',
   presets: ['@babel/preset-typescript'],
 };
