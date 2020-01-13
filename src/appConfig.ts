@@ -1,16 +1,11 @@
 import appConfigDefaults from './apprcDefaults';
 
-type AddStringProps<T extends object> = {
-  [P in keyof T]: T[P] extends object ? AddStringProps<T[P]> : T[P];
-} & { [P: string]: any };
-
-export type AppConfig = AddStringProps<typeof appConfigDefaults> & {
+export type AppConfig = typeof appConfigDefaults & {
   envStringify(): { 'process.env.appConfig': string };
 };
 
-const moduleName = 'apprc';
-
 function resolveConfigPath(): string {
+  const moduleName = 'apprc';
   try {
     // With node 12 it is needed to use prefix './'
     return require.resolve(`./${moduleName}`, { paths: [process.cwd()] });
