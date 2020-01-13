@@ -2,7 +2,7 @@ import { Configuration, RuleSetRule, RuleSetUse } from 'webpack';
 import path from 'path';
 import appEnv from '../appEnv';
 import paths from '../paths';
-import appConfig from '../appConfig';
+import apprc from '../apprc';
 import commonConfig, { CommonConfigOptions } from './common.config';
 import loaders, { TsLoaderType } from './loaders';
 import nodeRequire from './nodeRequire';
@@ -73,8 +73,8 @@ function containsLoader(rules: Record<string, RuleSetRule>, loader: string): boo
 
 export default ({
   outputPath = paths.client.output.path,
-  outputPublicPath = appConfig.client.output.publicPath,
-  outputJsDir = appConfig.client.output.js,
+  outputPublicPath = apprc.client.output.publicPath,
+  outputJsDir = apprc.client.output.js,
   hash = true,
   useTypeScript,
   tsLoaderType = TsLoaderType.Default,
@@ -124,7 +124,7 @@ export default ({
       ...tsCheckerOptions,
     },
 
-    name: appConfig.client.root,
+    name: apprc.client.root,
     target: 'web',
 
     context: paths.client.sources,
@@ -153,7 +153,7 @@ export default ({
       rules: [
         ...Object.getOwnPropertyNames(moduleRules).map(name => moduleRules[name] || {}),
         // Provide pug loader if html template is pug template
-        ...(appConfig.client.html.template && appConfig.client.html.template.endsWith('.pug')
+        ...(apprc.client.html.template && apprc.client.html.template.endsWith('.pug')
           ? [{ test: /\.pug$/, use: { loader: 'pug-loader' } }]
           : []),
         ...((restOptions.module && restOptions.module.rules) || []),
@@ -162,9 +162,9 @@ export default ({
 
     plugins: [
       // Generate html if needed
-      appConfig.client.html.template &&
+      apprc.client.html.template &&
         (() => {
-          const { template, ...rest } = appConfig.client.html;
+          const { template, ...rest } = apprc.client.html;
           const getName = (): string => 'html-webpack-plugin';
           const HtmlWebpackPlugin = nodeRequire(getName());
           return new HtmlWebpackPlugin({
@@ -181,17 +181,17 @@ export default ({
           const MiniCssExtractPlugin = nodeRequire(getName());
           const hashStr = hash ? '.[contenthash:8]' : '';
           return new MiniCssExtractPlugin({
-            filename: `${appConfig.client.output.styles}/[name]${hashStr}.css`,
-            chunkFilename: `${appConfig.client.output.styles}/[name]${hashStr}.chunk.css`,
+            filename: `${apprc.client.output.styles}/[name]${hashStr}.css`,
+            chunkFilename: `${apprc.client.output.styles}/[name]${hashStr}.chunk.css`,
           });
         })(),
 
       // Generate a manifest file which contains a mapping of all asset filenames
       // to their corresponding output file so some tools can pick it up without
       // having to parse `index.html`.
-      appConfig.client.output.assetManifest.fileName &&
+      apprc.client.output.assetManifest.fileName &&
         (() => {
-          const { fileName, filterTemplate } = appConfig.client.output.assetManifest;
+          const { fileName, filterTemplate } = apprc.client.output.assetManifest;
           const isNeedFilter =
             !!filterTemplate && !!Object.getOwnPropertyNames(filterTemplate).length;
 
@@ -211,15 +211,15 @@ export default ({
       // Generate a service worker script that will precache, and keep up to date,
       // the HTML & assets that are part of the Webpack build.
       appEnv.prod &&
-        appConfig.client.output.sw.swDest &&
+        apprc.client.output.sw.swDest &&
         (() => {
           const getName = (): string => 'workbox-webpack-plugin';
           const { GenerateSW } = nodeRequire(getName());
           return new GenerateSW({
             clientsClaim: true,
             importWorkboxFrom: 'cdn',
-            exclude: [/\.map$/, new RegExp(`${appConfig.client.output.assetManifest.fileName}$`)],
-            navigateFallback: `${appConfig.client.output.publicPath}${appConfig.client.html.filename}`,
+            exclude: [/\.map$/, new RegExp(`${apprc.client.output.assetManifest.fileName}$`)],
+            navigateFallback: `${apprc.client.output.publicPath}${apprc.client.html.filename}`,
             navigateFallbackBlacklist: [
               // Exclude URLs starting with /_, as they're likely an API call
               new RegExp('^/_'),
@@ -227,7 +227,7 @@ export default ({
               // public/ and not a SPA route
               new RegExp('/[^/]+\\.[^/]+$'),
             ],
-            ...appConfig.client.output.sw,
+            ...apprc.client.output.sw,
           });
         })(),
 
@@ -251,7 +251,7 @@ export default ({
 
     devServer: {
       contentBase: paths.client.staticContent, // Static content which not processed by webpack and loadable from disk.
-      publicPath: appConfig.client.output.publicPath,
+      publicPath: apprc.client.output.publicPath,
       historyApiFallback: true, // For react subpages handling with webpack-dev-server
       host: '0.0.0.0',
       port: 9000,

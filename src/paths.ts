@@ -1,5 +1,5 @@
 import path from 'path';
-import appConfig from './appConfig';
+import apprc from './apprc';
 
 const baseDir = process.cwd();
 
@@ -15,45 +15,45 @@ const paths = Object.freeze({
   },
 
   output: {
-    root: path.resolve(baseDir, appConfig.output.root),
+    root: path.resolve(baseDir, apprc.output.root),
   },
 
   client: {
-    root: path.resolve(baseDir, appConfig.client.root),
-    sources: path.resolve(baseDir, appConfig.client.root, appConfig.client.sources),
-    assets: path.resolve(baseDir, appConfig.client.root, appConfig.client.assets),
-    staticContent: appConfig.client.staticContent.map(p =>
-      path.isAbsolute(p) ? p : path.resolve(baseDir, appConfig.client.root, p)
+    root: path.resolve(baseDir, apprc.client.root),
+    sources: path.resolve(baseDir, apprc.client.root, apprc.client.sources),
+    assets: path.resolve(baseDir, apprc.client.root, apprc.client.assets),
+    staticContent: apprc.client.staticContent.map(p =>
+      path.isAbsolute(p) ? p : path.resolve(baseDir, apprc.client.root, p)
     ),
 
-    tsconfig: path.resolve(baseDir, appConfig.client.root, appConfig.client.tsconfig),
+    tsconfig: path.resolve(baseDir, apprc.client.root, apprc.client.tsconfig),
 
     output: {
-      path: path.resolve(baseDir, appConfig.output.root, appConfig.client.output.root),
+      path: path.resolve(baseDir, apprc.output.root, apprc.client.output.root),
       jsPath: path.resolve(
         baseDir,
-        appConfig.output.root,
-        appConfig.client.output.root,
-        appConfig.client.output.js
+        apprc.output.root,
+        apprc.client.output.root,
+        apprc.client.output.js
       ),
     },
   },
 
   server: {
-    root: path.resolve(baseDir, appConfig.server.root),
-    sources: path.resolve(baseDir, appConfig.server.root, appConfig.server.sources),
+    root: path.resolve(baseDir, apprc.server.root),
+    sources: path.resolve(baseDir, apprc.server.root, apprc.server.sources),
 
-    tsconfig: path.resolve(baseDir, appConfig.server.root, appConfig.server.tsconfig),
+    tsconfig: path.resolve(baseDir, apprc.server.root, apprc.server.tsconfig),
 
     output: {
-      path: path.resolve(baseDir, appConfig.output.root, appConfig.server.output.root),
+      path: path.resolve(baseDir, apprc.output.root, apprc.server.output.root),
     },
   },
 
   shared: {
-    root: path.resolve(baseDir, appConfig.shared.root),
-    sources: path.resolve(baseDir, appConfig.shared.root, appConfig.shared.sources),
-    tsconfig: path.resolve(baseDir, appConfig.shared.root, appConfig.shared.tsconfig),
+    root: path.resolve(baseDir, apprc.shared.root),
+    sources: path.resolve(baseDir, apprc.shared.root, apprc.shared.sources),
+    tsconfig: path.resolve(baseDir, apprc.shared.root, apprc.shared.tsconfig),
   },
 });
 

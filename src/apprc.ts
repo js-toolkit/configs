@@ -1,6 +1,6 @@
-import appConfigDefaults from './apprcDefaults';
+import apprcDefaults from './apprcDefaults';
 
-export type AppConfig = typeof appConfigDefaults & {
+export type AppRC = typeof apprcDefaults & {
   envStringify(): { 'process.env.appConfig': string };
 };
 
@@ -29,16 +29,16 @@ function merge<T1 extends {}, T2 extends Partial<T1>>(obj1: T1, obj2: T2): Omit<
   }, {} as Omit<T1, keyof T2> & T2);
 }
 
-function getAppConfig(): AppConfig {
+function getAppRC(): AppRC {
   const apprcPath = resolveConfigPath();
 
-  const appConfig: AppConfig =
+  const apprc: AppRC =
     process.env.appConfig ||
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    (apprcPath ? merge(appConfigDefaults, require(apprcPath)) : appConfigDefaults);
+    (apprcPath ? merge(apprcDefaults, require(apprcPath)) : apprcDefaults);
 
   return {
-    ...appConfig,
+    ...apprc,
 
     /** Stringify all values that we can feed into Webpack DefinePlugin. */
     envStringify() {
@@ -48,6 +48,6 @@ function getAppConfig(): AppConfig {
 }
 
 /** Use in runtime in browser environment only JSON convertable values, not functions! */
-const appConfig = getAppConfig();
+const apprc = getAppRC();
 
-export default appConfig;
+export default apprc;

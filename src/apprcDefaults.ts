@@ -12,7 +12,6 @@ export default Object.freeze({
     html: {
       template: '',
       filename: 'index.html',
-      title: 'App',
     },
 
     /** Used by eslint webpack resolver */

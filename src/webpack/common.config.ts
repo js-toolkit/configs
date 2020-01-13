@@ -1,7 +1,7 @@
 import webpack, { Options, Configuration } from 'webpack';
 import path from 'path';
 import appEnv from '../appEnv';
-import appConfig from '../appConfig';
+import apprc from '../apprc';
 import paths, { moduleExtensions } from '../paths';
 import loaders, { BaseTsOptions, TsLoaderType } from './loaders';
 import nodeRequire from './nodeRequire';
@@ -81,7 +81,7 @@ export default ({
       // Replace process.env... and appEnv.raw... to static values in the bundle.
       ...appEnv.envStringify(),
       // Replace appConfig... to static values in the bundle.
-      ...appConfig.envStringify(),
+      ...apprc.envStringify(),
     }),
 
     // Enable HMR in development.

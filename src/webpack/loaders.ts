@@ -1,7 +1,7 @@
 import { Loader } from 'webpack';
 import appEnv from '../appEnv';
 import paths from '../paths';
-import appConfig from '../appConfig';
+import apprc from '../apprc';
 import nodeRequire from './nodeRequire';
 
 export interface BaseTsOptions {
@@ -220,7 +220,7 @@ export default {
         limit: 1024,
         fallback: 'file-loader',
         emitFile: !ssr,
-        name: `${appConfig.client.output.assets}/[name].[hash:8].[ext]`, // Virtual hash useful for HRM during development.
+        name: `${apprc.client.output.assets}/[name].[hash:8].[ext]`, // Virtual hash useful for HRM during development.
         ...restOptions,
       },
     };

@@ -1,4 +1,4 @@
-import appConfig from '../appConfig';
+import apprc from '../apprc';
 
 module.exports = {
   extends: [require.resolve('./common.eslintrc.js')],
@@ -10,8 +10,8 @@ module.exports = {
 
   settings: {
     'import/resolver': {
-      ...(appConfig.server.webpackConfig
-        ? { webpack: { config: appConfig.server.webpackConfig } }
+      ...(apprc.server.webpackConfig
+        ? { webpack: { config: apprc.server.webpackConfig } }
         : undefined),
     },
   },

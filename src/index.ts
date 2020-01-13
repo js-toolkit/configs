@@ -1,3 +1,3 @@
 export { default as appEnv } from './appEnv';
-export { default as appConfig } from './appConfig';
+export { default as apprc } from './apprc';
 export { default as paths } from './paths';

@@ -1,4 +1,4 @@
-import appConfig from '../appConfig';
+import apprc from '../apprc';
 
 module.exports = {
   extends: [
@@ -16,8 +16,8 @@ module.exports = {
 
   settings: {
     'import/resolver': {
-      ...(appConfig.client.webpackConfig
-        ? { webpack: { config: appConfig.client.webpackConfig } }
+      ...(apprc.client.webpackConfig
+        ? { webpack: { config: apprc.client.webpackConfig } }
         : undefined),
     },
   },

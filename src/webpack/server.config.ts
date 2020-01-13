@@ -2,7 +2,7 @@ import { Configuration } from 'webpack';
 import webpackNodeExternals from 'webpack-node-externals';
 import appEnv from '../appEnv';
 import paths from '../paths';
-import appConfig from '../appConfig';
+import apprc from '../apprc';
 import commonConfig from './common.config';
 import { clientDefaultRules, ClientConfigOptions } from './client.config';
 import loaders, { TsLoaderType } from './loaders';
@@ -50,7 +50,7 @@ export interface ServerConfigOptions extends ClientConfigOptions {
 
 export default ({
   outputPath = paths.server.output.path,
-  outputPublicPath = appConfig.server.output.publicPath,
+  outputPublicPath = apprc.server.output.publicPath,
   outputJsDir = '',
   hash = false,
   useTypeScript,
@@ -105,7 +105,7 @@ export default ({
       ...tsCheckerOptions,
     },
 
-    name: appConfig.server.root,
+    name: apprc.server.root,
     target: 'node',
 
     context: isUniversal ? paths.root : paths.server.sources,

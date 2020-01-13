@@ -6,7 +6,7 @@
 import fs from 'fs';
 import path from 'path';
 import { Linter } from 'eslint';
-import appConfig, { AppConfig } from '../appConfig';
+import apprc, { AppRC } from '../apprc';
 import paths, { moduleExtensions } from '../paths';
 import { eslintTsProject } from './consts';
 
@@ -15,12 +15,12 @@ export function getTsFilesGlob(root: string): string[] {
 }
 
 export const filesGlobs: Record<
-  keyof Pick<AppConfig, 'client' | 'server' | 'shared'> | 'js',
+  keyof Pick<AppRC, 'client' | 'server' | 'shared'> | 'js',
   string[]
 > = {
-  client: getTsFilesGlob(appConfig.client.root),
-  server: getTsFilesGlob(appConfig.server.root),
-  shared: getTsFilesGlob(appConfig.shared.root),
+  client: getTsFilesGlob(apprc.client.root),
+  server: getTsFilesGlob(apprc.server.root),
+  shared: getTsFilesGlob(apprc.shared.root),
   js: moduleExtensions.filter(e => e.includes('js')).map(e => `**/*${e}`),
 };
 
