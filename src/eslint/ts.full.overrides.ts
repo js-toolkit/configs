@@ -11,7 +11,7 @@ import paths, { moduleExtensions } from '../paths';
 import { eslintTsProject } from './consts';
 
 export function getTsFilesGlob(root: string): string[] {
-  return moduleExtensions.filter(e => e.includes('ts')).map(e => `${root}/**/*${e}`);
+  return moduleExtensions.filter((e) => e.includes('ts')).map((e) => `${root}/**/*${e}`);
 }
 
 export const filesGlobs: Record<
@@ -21,7 +21,7 @@ export const filesGlobs: Record<
   client: getTsFilesGlob(apprc.client.root),
   server: getTsFilesGlob(apprc.server.root),
   shared: getTsFilesGlob(apprc.shared.root),
-  js: moduleExtensions.filter(e => e.includes('js')).map(e => `**/*${e}`),
+  js: moduleExtensions.filter((e) => e.includes('js')).map((e) => `**/*${e}`),
 };
 
 export interface OverrideConfig extends Linter.RuleOverride, Omit<Linter.Config, 'overrides'> {}
@@ -30,6 +30,11 @@ export function getOverrides(
   overrides: Partial<Record<keyof typeof filesGlobs, OverrideConfig>> = {}
 ): OverrideConfig[] {
   return [
+    // ...apprc.client.map((config) => ({
+    //   files: getTsFilesGlob(config.root),
+    //   extends: [require.resolve('@vzh/configs/eslint/ts.react.eslintrc.js')],
+    //   ...overrides.client,
+    // })),
     {
       files: filesGlobs.client,
       extends: [require.resolve('@vzh/configs/eslint/ts.react.eslintrc.js')],

@@ -1,10 +1,7 @@
-export default Object.freeze({
-  output: {
-    root: 'dist',
-  },
-
-  client: {
-    root: 'client',
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+export function getClientConfig(root = 'client') {
+  return {
+    root,
     sources: 'src',
     assets: 'src/assets',
     staticContent: ['public'],
@@ -37,10 +34,12 @@ export default Object.freeze({
       /** Generating service worker options (workbox-webpack-plugin) */
       sw: { swDest: 'service-worker.js' },
     },
-  },
+  };
+}
 
-  server: {
-    root: 'server',
+export function getServerConfig(root = 'server') {
+  return {
+    root,
     sources: 'src',
 
     /** Used by eslint webpack resolver */
@@ -52,11 +51,41 @@ export default Object.freeze({
       root: 'server',
       publicPath: '/',
     },
-  },
+  };
+}
 
-  shared: {
-    root: 'shared',
+export function getSharedConfig(root = 'shared') {
+  return {
+    root,
     sources: 'src',
     tsconfig: 'tsconfig.json',
+  };
+}
+
+export type ApprcDefaults = {
+  output: {
+    root: string;
+  };
+
+  // client: readonly ReturnType<typeof getClientConfig>[];
+  // server: readonly ReturnType<typeof getServerConfig>[];
+  // shared: readonly ReturnType<typeof getSharedConfig>[];
+  client: ReturnType<typeof getClientConfig>;
+  server: ReturnType<typeof getServerConfig>;
+  shared: ReturnType<typeof getSharedConfig>;
+};
+
+const apprcDefaults: ApprcDefaults = {
+  output: {
+    root: 'dist',
   },
-});
+
+  // client: [getClientConfig()],
+  // server: [getServerConfig()],
+  // shared: [getSharedConfig()],
+  client: getClientConfig(),
+  server: getServerConfig(),
+  shared: getSharedConfig(),
+};
+
+export default Object.freeze(apprcDefaults);
