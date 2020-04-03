@@ -27,7 +27,9 @@ export const filesGlobs: Record<
 export interface OverrideConfig extends Linter.RuleOverride, Omit<Linter.Config, 'overrides'> {}
 
 export function getOverrides(
-  overrides: Partial<Record<keyof typeof filesGlobs, OverrideConfig>> = {}
+  overrides: Partial<
+    Record<keyof typeof filesGlobs, OverrideConfig> & { common: Pick<Linter.Config, 'rules'> }
+  > = {}
 ): OverrideConfig[] {
   return [
     // ...apprc.client.map((config) => ({
@@ -39,6 +41,7 @@ export function getOverrides(
       files: filesGlobs.client,
       extends: [require.resolve('@vzh/configs/eslint/ts.react.eslintrc.js')],
       ...overrides.client,
+      rules: { ...overrides.common?.rules, ...overrides.client?.rules },
     },
     {
       files: filesGlobs.server,
@@ -47,11 +50,13 @@ export function getOverrides(
         require.resolve('@vzh/configs/eslint/ts.node.eslintrc.js'),
       ],
       ...overrides.server,
+      rules: { ...overrides.common?.rules, ...overrides.server?.rules },
     },
     {
       files: filesGlobs.shared,
       extends: [require.resolve('@vzh/configs/eslint/ts.common.eslintrc.js')],
       ...overrides.shared,
+      rules: { ...overrides.common?.rules, ...overrides.shared?.rules },
       parserOptions: {
         project: (() => {
           if (fs.existsSync(path.join(paths.shared.root, eslintTsProject)))
@@ -66,6 +71,7 @@ export function getOverrides(
       files: filesGlobs.js,
       extends: [require.resolve('@vzh/configs/eslint/common.eslintrc.js')],
       ...overrides.js,
+      rules: { ...overrides.common?.rules, ...overrides.js?.rules },
     },
   ];
 }
