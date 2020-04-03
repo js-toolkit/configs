@@ -18,7 +18,7 @@ export function getClientConfig(root = 'client') {
     tsconfig: 'tsconfig.json',
 
     output: {
-      root: 'client',
+      root,
       js: 'js',
       styles: 'styles',
       assets: 'assets',
@@ -48,7 +48,7 @@ export function getServerConfig(root = 'server') {
     tsconfig: 'tsconfig.json',
 
     output: {
-      root: 'server',
+      root,
       publicPath: '/',
     },
   };
