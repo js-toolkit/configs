@@ -4,12 +4,6 @@
   "description": "Preconfigured configurations",
   "author": "Vladimir Zhukov",
   "license": "MIT",
-  "contributors": [
-    {
-      "name": "Vladimir Zhukov",
-      "url": "http://github.com/vlazh"
-    }
-  ],
   "main": "./",
   "scripts": {
     "update-deps": "yarn upgrade-interactive --latest",
