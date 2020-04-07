@@ -150,7 +150,7 @@ export default {
     };
   },
 
-  cssExtractLoader: 'mini-css-extract-plugin/dist/loader',
+  cssExtractLoader: 'extract-css-chunks-webpack-plugin/dist/loader',
   /**
    * Problem of duplication css classes when use composes with css file from node_modules directory.
    * 1. It can occur when use different loaders for source and composing files.
@@ -161,18 +161,17 @@ export default {
     pattern = '[name]__[local]--[hash:5]',
     prodPattern = '[hash:5]',
     postcss = true,
-    finishLoader = true,
-    ...options
+    modules,
+    ...cssLoaderOptions
   }: {
     ssr?: boolean;
     pattern?: string;
     prodPattern?: string;
     postcss?: boolean;
-    finishLoader?: boolean;
+    modules?: object | boolean;
   } & Record<string, any> = {}) {
-    const { modules, ...rest } = options;
     return [
-      ...(!ssr && finishLoader ? [appEnv.ifDevMode('style-loader', this.cssExtractLoader)] : []),
+      ...(!ssr ? [appEnv.ifDevMode('style-loader', this.cssExtractLoader)] : []),
       {
         loader: 'css-loader',
         options: {
@@ -190,25 +189,23 @@ export default {
           importLoaders: postcss ? 1 : undefined,
           sourceMap: appEnv.dev,
           onlyLocals: ssr,
-          ...rest,
+          ...cssLoaderOptions,
         },
       },
       ...(postcss ? ['postcss-loader'] : []),
     ];
   },
 
-  cssNodeModules({ ssr = false, postcss = true, ...rest } = {}) {
+  cssNodeModules(options: Record<string, any> = {}) {
     return this.css({
-      ssr,
-      postcss,
       pattern: '[local]',
       prodPattern: '[local]',
-      // In some cases have problems when build with modules because webpack requiring urls as modules.
-      // In this case you need define resolve.extensions in webpack config for those files.
-      // For example, font urls in katex.css.
+      // // In some cases have problems when build with modules because webpack requiring urls as modules.
+      // // In this case you need define resolve.extensions in webpack config for those files.
+      // // For example, font urls in katex.css.
       modules: false,
-      ...rest,
-    } as any);
+      ...options,
+    });
   },
 
   assets({ ssr = false, ...restOptions }: Record<string, any> = {}) {

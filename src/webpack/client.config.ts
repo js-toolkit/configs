@@ -65,7 +65,7 @@ function containsLoader(rules: Record<string, RuleSetRule>, loader: string): boo
     return false;
   };
 
-  return Object.getOwnPropertyNames(rules).some(key => {
+  return Object.getOwnPropertyNames(rules).some((key) => {
     const rule = rules[key];
     return checkRule(rule.loader || rule.loaders || rule.use);
   });
@@ -151,7 +151,7 @@ export default ({
     module: {
       ...restOptions.module,
       rules: [
-        ...Object.getOwnPropertyNames(moduleRules).map(name => moduleRules[name] || {}),
+        ...Object.getOwnPropertyNames(moduleRules).map((name) => moduleRules[name] || {}),
         // Provide pug loader if html template is pug template
         ...(apprc.client.html.template && apprc.client.html.template.endsWith('.pug')
           ? [{ test: /\.pug$/, use: { loader: 'pug-loader' } }]
@@ -174,13 +174,13 @@ export default ({
           });
         })(),
 
-      // Extract css if has mini-css-extract-plugin loader
+      // Extract css if has corresponding loader
       containsLoader(moduleRules, loaders.cssExtractLoader) &&
         (() => {
-          const getName = (): string => 'mini-css-extract-plugin';
-          const MiniCssExtractPlugin = nodeRequire(getName());
-          const hashStr = hash ? '.[contenthash:8]' : '';
-          return new MiniCssExtractPlugin({
+          const getName = (): string => 'extract-css-chunks-webpack-plugin';
+          const ExtractCssPlugin = nodeRequire(getName());
+          const hashStr = appEnv.prod && hash ? '.[contenthash:8]' : '';
+          return new ExtractCssPlugin({
             filename: `${apprc.client.output.styles}/[name]${hashStr}.css`,
             chunkFilename: `${apprc.client.output.styles}/[name]${hashStr}.chunk.css`,
           });
@@ -203,7 +203,7 @@ export default ({
               ? undefined
               : (item: {}) =>
                   Object.getOwnPropertyNames(filterTemplate).every(
-                    key => !(key in item) || item[key] === filterTemplate[key]
+                    (key) => !(key in item) || item[key] === filterTemplate[key]
                   ),
           });
         })(),
@@ -237,7 +237,7 @@ export default ({
         (() => {
           const getName = (): string => 'copy-webpack-plugin';
           const CopyPlugin = nodeRequire(getName());
-          return new CopyPlugin(paths.client.staticContent.map(p => ({ from: p })));
+          return new CopyPlugin(paths.client.staticContent.map((p) => ({ from: p })));
         })(),
 
       ...(restOptions.plugins || []),
