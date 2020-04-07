@@ -24,13 +24,9 @@ export const filesGlobs: Record<
   js: moduleExtensions.filter((e) => e.includes('js')).map((e) => `**/*${e}`),
 };
 
-export interface OverrideConfig extends Linter.RuleOverride, Omit<Linter.Config, 'overrides'> {}
-
 export function getOverrides(
-  overrides: Partial<
-    Record<keyof typeof filesGlobs, OverrideConfig> & { common: Pick<Linter.Config, 'rules'> }
-  > = {}
-): OverrideConfig[] {
+  overrides: Partial<Record<keyof typeof filesGlobs | 'common', Linter.ConfigOverride>> = {}
+): Linter.ConfigOverride[] {
   return [
     // ...apprc.client.map((config) => ({
     //   files: getTsFilesGlob(config.root),
