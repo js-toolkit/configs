@@ -185,6 +185,18 @@ export default ({
             chunkFilename: `${apprc.client.output.styles}/[name]${hashStr}.chunk.css`,
           });
         })(),
+      // Minimize css
+      (restOptions.optimization?.minimize ?? true) &&
+        containsLoader(moduleRules, loaders.cssExtractLoader) &&
+        (() => {
+          const getName = (): string => 'optimize-css-assets-webpack-plugin';
+          const OptimizeCssAssetsPlugin = nodeRequire(getName());
+          return new OptimizeCssAssetsPlugin({
+            cssProcessorPluginOptions: {
+              preset: ['default', { discardComments: { removeAll: true } }],
+            },
+          });
+        })(),
 
       // Generate a manifest file which contains a mapping of all asset filenames
       // to their corresponding output file so some tools can pick it up without

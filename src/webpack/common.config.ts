@@ -56,6 +56,7 @@ export default ({
   },
 
   optimization: {
+    ...restOptions.optimization,
     ...appEnv.ifProdMode(
       () => ({
         minimizer: [
@@ -67,11 +68,11 @@ export default ({
               },
             },
           }),
+          ...(restOptions.optimization?.minimizer || []),
         ],
       }),
       undefined
     ),
-    ...restOptions.optimization,
   },
 
   plugins: [
@@ -107,7 +108,7 @@ export default ({
   resolve: {
     ...restOptions.resolve,
     extensions: [
-      ...(useTypeScript ? moduleExtensions : moduleExtensions.filter(ext => !ext.includes('ts'))),
+      ...(useTypeScript ? moduleExtensions : moduleExtensions.filter((ext) => !ext.includes('ts'))),
       ...((restOptions.resolve && restOptions.resolve.extensions) || []),
     ],
     modules: [
