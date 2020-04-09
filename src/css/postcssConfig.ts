@@ -1,12 +1,13 @@
 import appEnv from '../appEnv';
 import paths from '../paths';
 
-interface Props {
+export interface Options {
   importPath?: string[] | string;
   presetEnv?: Record<string, any>;
   nested?: boolean;
   /** You need to install cssnano and cssnano-preset-default */
   minimizer?: boolean;
+  autoprefixer?: boolean;
 }
 
 const defaultImportPath = [paths.client.sources];
@@ -16,7 +17,8 @@ export default ({
   presetEnv,
   nested = true,
   minimizer = appEnv.prod,
-}: Props = {}) => ({
+  autoprefixer = appEnv.prod,
+}: Options = {}): {} => ({
   sourceMap: appEnv.dev,
   plugins: {
     // Primarily use to override imported styles: import css file before css-loader process it and then process merged css by css-loader.
@@ -28,7 +30,7 @@ export default ({
       ...presetEnv,
       features: {
         'custom-media-queries': true,
-        autoprefixer: appEnv.prod,
+        autoprefixer,
         ...(presetEnv ? presetEnv.features : undefined),
       },
     },
