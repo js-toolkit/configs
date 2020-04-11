@@ -81,7 +81,7 @@ export default ({
     new webpack.DefinePlugin({
       // Replace process.env... and appEnv.raw... to static values in the bundle.
       ...appEnv.envStringify(),
-      // Replace appConfig... to static values in the bundle.
+      // Replace apprc... to static values in the bundle.
       ...apprc.envStringify(),
     }),
 

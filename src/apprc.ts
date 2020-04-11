@@ -1,8 +1,6 @@
 import apprcDefaults from './apprcDefaults';
 
-export type AppRC = typeof apprcDefaults & {
-  envStringify(): { 'process.env.appConfig': string };
-};
+export type AppRC = typeof apprcDefaults & { envStringify(): { 'process.env.apprc': string } };
 
 function resolveConfigPath(): string {
   const moduleName = 'apprc';
@@ -33,6 +31,7 @@ function getAppRC(): AppRC {
   const apprcPath = resolveConfigPath();
 
   const apprc: AppRC =
+    process.env.apprc ||
     process.env.appConfig ||
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     (apprcPath ? merge(apprcDefaults, require(apprcPath)) : apprcDefaults);
@@ -42,7 +41,11 @@ function getAppRC(): AppRC {
 
     /** Stringify all values that we can feed into Webpack DefinePlugin. */
     envStringify() {
-      return { 'process.env.appConfig': JSON.stringify(this) };
+      return {
+        'process.env.apprc': JSON.stringify(this),
+        /** Deprecated. It saved for prev versions. */
+        'process.env.appConfig': JSON.stringify(this),
+      };
     },
   };
 }
