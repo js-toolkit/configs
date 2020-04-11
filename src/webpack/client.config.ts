@@ -28,6 +28,8 @@ export const clientDefaultRules: Record<
       // And to avoid duplicating css classes when composes process in the same loaders.
       path.join(paths.nodeModules.root, '@vzh/react-components'),
       path.join(paths.nodeModules.root, '@vzh/editors'),
+      path.join(paths.nodeModules.root, '@vlazh/react-components'),
+      path.join(paths.nodeModules.root, '@vlazh/editors'),
       path.join(paths.nodeModules.root, 'reflexy'),
     ],
     use: loaders.css(),
@@ -39,6 +41,8 @@ export const clientDefaultRules: Record<
     exclude: [
       path.join(paths.nodeModules.root, '@vzh/react-components'),
       path.join(paths.nodeModules.root, '@vzh/editors'),
+      path.join(paths.nodeModules.root, '@vlazh/react-components'),
+      path.join(paths.nodeModules.root, '@vlazh/editors'),
       path.join(paths.nodeModules.root, 'reflexy'),
     ],
     use: loaders.cssNodeModules(),
