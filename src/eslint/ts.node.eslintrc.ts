@@ -3,7 +3,7 @@ import path from 'path';
 import paths from '../paths';
 import { eslintTsProject } from './consts';
 
-module.exports = {
+const config: import('eslint').Linter.Config = {
   extends: [require.resolve('./node.eslintrc.js'), require.resolve('./ts.common.eslintrc.js')],
 
   parserOptions: {
@@ -15,3 +15,5 @@ module.exports = {
     })(),
   },
 };
+
+module.exports = config;

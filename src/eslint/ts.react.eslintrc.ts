@@ -3,7 +3,7 @@ import path from 'path';
 import paths, { moduleExtensions } from '../paths';
 import { eslintTsProject } from './consts';
 
-module.exports = {
+const config: import('eslint').Linter.Config = {
   extends: [
     require.resolve('./react.eslintrc.js'),
     require.resolve('./ts.common.eslintrc.js'),
@@ -22,9 +22,9 @@ module.exports = {
   rules: {
     'react/jsx-filename-extension': [
       'error',
-      { extensions: moduleExtensions.filter(ext => ext.includes('sx')) },
+      { extensions: moduleExtensions.filter((ext) => ext.includes('sx')) },
     ],
-    'react/jsx-wrap-multilines': 'off',
-    'react/jsx-props-no-spreading': 'off',
   },
 };
+
+module.exports = config;

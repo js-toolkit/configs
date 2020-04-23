@@ -1,6 +1,6 @@
 import apprc from '../apprc';
 
-module.exports = {
+const config: import('eslint').Linter.Config = {
   extends: [require.resolve('./common.eslintrc.js')],
 
   env: {
@@ -16,3 +16,5 @@ module.exports = {
     },
   },
 };
+
+module.exports = config;

@@ -1,12 +1,14 @@
 import fs from 'fs';
+import { Linter } from 'eslint';
 import { rules } from 'eslint-config-airbnb-base/rules/style';
 import { moduleExtensions } from '../paths';
 import { eslintTsProject } from './consts';
 
-module.exports = {
+const config: Linter.Config = {
   extends: [
     require.resolve('./common.eslintrc.js'),
     // Adds @typescript-eslint/parse, import/extensions, import/resolver.node.extensions
+    // https://github.com/benmosher/eslint-plugin-import/blob/master/config/typescript.js
     'plugin:import/typescript',
     'plugin:@typescript-eslint/eslint-recommended',
     'plugin:@typescript-eslint/recommended',
@@ -22,10 +24,10 @@ module.exports = {
 
   plugins: ['@typescript-eslint'],
 
-  // Add again for consistency with webpack configs
+  // Add again for consistency with extensions in webpack configs
   settings: {
     'import/parsers': {
-      '@typescript-eslint/parser': moduleExtensions.filter(ext => ext.includes('ts')),
+      '@typescript-eslint/parser': moduleExtensions,
     },
 
     'import/resolver': {
@@ -37,24 +39,14 @@ module.exports = {
 
   rules: {
     'no-restricted-globals': 'off',
-    'no-restricted-syntax': Array.isArray(rules['no-restricted-syntax'])
+    'no-restricted-syntax': (Array.isArray(rules['no-restricted-syntax'])
       ? rules['no-restricted-syntax'].filter(
-          param => typeof param !== 'object' || param.selector !== 'ForOfStatement'
+          (param) => typeof param !== 'object' || param.selector !== 'ForOfStatement'
         )
-      : rules['no-restricted-syntax'],
+      : rules['no-restricted-syntax']) as Linter.RuleEntry,
     // https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/docs/rules/no-useless-constructor.md#rule-changes
     'no-useless-constructor': 'off',
-    'import/named': 'off',
     'import/export': 'off', // No named exports found in module
-    'import/extensions': [
-      'error',
-      'ignorePackages',
-      // never allow the use of the module extensions.
-      moduleExtensions.reduce(
-        (acc, ext) => ({ ...acc, [ext.substr(1)]: 'never' }),
-        { '': 'never' } // Fix error on import user type declaration folder such as `client/types`
-      ),
-    ],
     '@typescript-eslint/explicit-member-accessibility': 'off',
     '@typescript-eslint/explicit-function-return-type': [
       'warn',
@@ -72,3 +64,5 @@ module.exports = {
     },
   ],
 };
+
+module.exports = config;

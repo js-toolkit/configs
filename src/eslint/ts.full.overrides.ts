@@ -1,6 +1,6 @@
 /**
- * Because files glob in overrides relative from the config file it can't provides complete
- * eslint configuration and then extends it, so we just provide utils.
+ * Because files glob in `overrides` relative to the config file in which them declares
+ * we can't provide complete eslint configuration and then extends it, so we just provide utils.
  * https://github.com/eslint/eslint/issues/11934#issuecomment-508024268
  */
 import fs from 'fs';

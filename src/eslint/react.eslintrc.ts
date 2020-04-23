@@ -1,6 +1,6 @@
 import apprc from '../apprc';
 
-module.exports = {
+const config: import('eslint').Linter.Config = {
   extends: [
     // Adds eslint-plugin-react, eslint-plugin-jsx-a11y
     'airbnb',
@@ -28,7 +28,11 @@ module.exports = {
     'react/sort-comp': 'off',
     'react/destructuring-assignment': ['error', 'always', { ignoreClassFields: true }],
     'react/jsx-filename-extension': ['error', { extensions: ['.jsx'] }],
+    'react/jsx-wrap-multilines': 'off',
+    'react/jsx-props-no-spreading': 'off',
     'jsx-a11y/anchor-is-valid': ['error', { specialLink: ['to'] }],
     'jsx-a11y/label-has-for': ['error', { allowChildren: true }],
   },
 };
+
+module.exports = config;
