@@ -10,8 +10,8 @@ const paths = Object.freeze({
   root: baseDir,
 
   nodeModules: {
-    dirname: 'node_modules',
-    root: path.resolve(baseDir, 'node_modules'),
+    // dirname: 'node_modules',
+    root: path.resolve(baseDir, apprc.nodeModules),
   },
 
   output: {
@@ -22,7 +22,7 @@ const paths = Object.freeze({
     root: path.resolve(baseDir, apprc.client.root),
     sources: path.resolve(baseDir, apprc.client.root, apprc.client.sources),
     assets: path.resolve(baseDir, apprc.client.root, apprc.client.assets),
-    staticContent: apprc.client.staticContent.map(p =>
+    staticContent: apprc.client.staticContent.map((p) =>
       path.isAbsolute(p) ? p : path.resolve(baseDir, apprc.client.root, p)
     ),
 

@@ -27,7 +27,7 @@ function merge<T1 extends {}, T2 extends Partial<T1>>(obj1: T1, obj2: T2): Omit<
   }, {} as Omit<T1, keyof T2> & T2);
 }
 
-function getAppRC(): AppRC {
+export function getAppRC(): AppRC {
   const apprcPath = resolveConfigPath();
 
   const apprc: AppRC =

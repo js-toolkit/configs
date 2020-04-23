@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
+
 export function getClientConfig(root = 'client') {
   return {
     root,
@@ -63,6 +64,8 @@ export function getSharedConfig(root = 'shared') {
 }
 
 export type ApprcDefaults = {
+  nodeModules: string;
+
   output: {
     root: string;
   };
@@ -76,6 +79,8 @@ export type ApprcDefaults = {
 };
 
 const apprcDefaults: ApprcDefaults = {
+  nodeModules: 'node_modules',
+
   output: {
     root: 'dist',
   },
