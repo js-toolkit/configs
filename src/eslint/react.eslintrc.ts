@@ -5,10 +5,9 @@ const config: import('eslint').Linter.Config = {
     // Adds eslint-plugin-react, eslint-plugin-jsx-a11y
     'airbnb',
     require.resolve('./common.eslintrc.js'),
+    'plugin:react-hooks/recommended',
     'prettier/react',
   ],
-
-  plugins: ['react-hooks'],
 
   env: {
     browser: true,
@@ -23,7 +22,6 @@ const config: import('eslint').Linter.Config = {
   },
 
   rules: {
-    'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'error',
     'react/sort-comp': 'off',
     'react/destructuring-assignment': ['error', 'always', { ignoreClassFields: true }],
