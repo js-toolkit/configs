@@ -50,7 +50,12 @@ const config: Linter.Config = {
     '@typescript-eslint/explicit-member-accessibility': 'off',
     '@typescript-eslint/explicit-function-return-type': [
       'warn',
-      { allowExpressions: true, allowTypedFunctionExpressions: true },
+      {
+        allowExpressions: true,
+        allowTypedFunctionExpressions: true,
+        allowHigherOrderFunctions: true,
+        allowConciseArrowFunctionExpressionsStartingWithVoid: true,
+      },
     ],
   },
 
