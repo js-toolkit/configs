@@ -11,7 +11,7 @@ const config: import('eslint').Linter.Config = {
       if (fs.existsSync(path.join(paths.server.root, eslintTsProject)))
         return path.join(paths.server.root, eslintTsProject);
       if (fs.existsSync(paths.server.tsconfig)) return paths.server.tsconfig;
-      return 'tsconfig.json';
+      return fs.existsSync(eslintTsProject) ? eslintTsProject : 'tsconfig.json';
     })(),
   },
 };

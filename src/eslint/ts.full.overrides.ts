@@ -58,7 +58,7 @@ export function getOverrides(
           if (fs.existsSync(path.join(paths.shared.root, eslintTsProject)))
             return path.join(paths.shared.root, eslintTsProject);
           if (fs.existsSync(paths.shared.tsconfig)) return paths.shared.tsconfig;
-          return 'tsconfig.json';
+          return fs.existsSync(eslintTsProject) ? eslintTsProject : 'tsconfig.json';
         })(),
         ...(overrides.shared && overrides.shared.parserOptions),
       },
