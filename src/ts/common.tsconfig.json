@@ -6,12 +6,14 @@
     "isolatedModules": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
-    "suppressImplicitAnyIndexErrors": true,
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "jsx": "react"
+    "suppressImplicitAnyIndexErrors": true,
+    "jsx": "react",
+    "importHelpers": true,
+    "incremental": true
   }
 }
