@@ -1,10 +1,10 @@
 {
   "compilerOptions": {
     "target": "ES2015",
-    "module": "commonjs",
+    "module": "CommonJS",
     "moduleResolution": "node",
     "experimentalDecorators": true,
     "jsx": "preserve",
-    "lib": ["dom", "dom.iterable", "esnext"]
+    "lib": ["DOM", "DOM.Iterable", "ScriptHost", "ESNext"]
   }
 }
