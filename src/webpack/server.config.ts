@@ -112,11 +112,16 @@ export default ({
 
     entry,
 
-    stats: 'errors-only',
-    // stats: {
-    //   colors: true,
-    //   cached: false, // Add information about cached (not built) modules
-    // },
+    stats: {
+      all: false,
+      errors: true,
+      errorDetails: true,
+      warnings: true,
+      version: true,
+      timings: true,
+      builtAt: true,
+      entrypoints: true,
+    },
 
     ...restOptions,
 
@@ -147,7 +152,7 @@ export default ({
     module: {
       ...restOptions.module,
       rules: [
-        ...Object.getOwnPropertyNames(moduleRules).map(name => moduleRules[name] || {}),
+        ...Object.getOwnPropertyNames(moduleRules).map((name) => moduleRules[name] || {}),
         ...((restOptions.module && restOptions.module.rules) || []),
       ],
     },

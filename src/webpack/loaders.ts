@@ -9,9 +9,9 @@ export interface BaseTsOptions {
 }
 
 export enum TsLoaderType {
-  Default = 1,
-  ATL,
-  Babel,
+  Default = 'ts',
+  ATL = 'atl',
+  Babel = 'babel',
 }
 
 interface GetTsLoaderOptionsBase extends BaseTsOptions {
@@ -40,7 +40,7 @@ export type GetTsCheckerPluginOptions = BaseTsOptions & {
 export default {
   getTsLoader({ loaderType, ...rest }: GetTsLoaderOptions) {
     if (loaderType === TsLoaderType.ATL) return this.atl(rest);
-    if (loaderType === TsLoaderType.Babel) return this.babel(rest);
+    if (loaderType === TsLoaderType.Babel) return this.babel();
     return this.ts(rest);
   },
 
@@ -145,6 +145,7 @@ export default {
       loader: 'babel-loader',
       options: {
         cacheDirectory: true,
+        cacheCompression: false,
         ...options,
       },
     };
