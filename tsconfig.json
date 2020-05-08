@@ -1,10 +1,9 @@
 {
   "extends": "./src/ts/common.tsconfig.json",
   "compilerOptions": {
-    "module": "commonjs",
-    "isolatedModules": false,
     "baseUrl": "./src",
     "outDir": "./dist",
+    "isolatedModules": false,
     "declaration": true,
     "sourceMap": false,
     "incremental": false
