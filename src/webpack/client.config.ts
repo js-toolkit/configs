@@ -181,6 +181,7 @@ export default ({
       // Extract css if has corresponding loader
       containsLoader(moduleRules, loaders.cssExtractLoader) &&
         (() => {
+          // const getName = (): string => 'mini-css-extract-plugin';
           const getName = (): string => 'extract-css-chunks-webpack-plugin';
           const ExtractCssPlugin = nodeRequire(getName());
           const hashStr = appEnv.prod && hash ? '.[contenthash:8]' : '';

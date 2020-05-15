@@ -151,6 +151,7 @@ export default {
     };
   },
 
+  // cssExtractLoader: 'mini-css-extract-plugin/dist/loader',
   cssExtractLoader: 'extract-css-chunks-webpack-plugin/dist/loader',
   /**
    * Problem of duplication css classes when use composes with css file from node_modules directory.
