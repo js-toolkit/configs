@@ -254,7 +254,9 @@ export default ({
         (() => {
           const getName = (): string => 'copy-webpack-plugin';
           const CopyPlugin = nodeRequire(getName());
-          return new CopyPlugin(paths.client.staticContent.map((p) => ({ from: p })));
+          return new CopyPlugin({
+            patterns: paths.client.staticContent.map((p) => ({ from: p })),
+          });
         })(),
 
       ...(restOptions.plugins || []),
