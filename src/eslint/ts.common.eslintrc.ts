@@ -47,6 +47,7 @@ const config: Linter.Config = {
     // https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/docs/rules/no-useless-constructor.md#rule-changes
     'no-useless-constructor': 'off',
     'import/export': 'off', // No named exports found in module
+    'import/named': 'off', // With named namespace export: {name} not found in {module}
     '@typescript-eslint/explicit-member-accessibility': 'off',
     '@typescript-eslint/explicit-function-return-type': [
       'warn',
