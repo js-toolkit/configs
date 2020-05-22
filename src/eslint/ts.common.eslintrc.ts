@@ -48,6 +48,8 @@ const config: Linter.Config = {
     'no-useless-constructor': 'off',
     'import/export': 'off', // No named exports found in module
     'import/named': 'off', // With named namespace export: {name} not found in {module}
+    // https://github.com/typescript-eslint/typescript-eslint/blob/v3.0.0/packages/eslint-plugin/docs/rules/no-floating-promises.md#ignorevoid
+    'no-void': ['error', { allowAsStatement: true }],
     '@typescript-eslint/explicit-member-accessibility': 'off',
     '@typescript-eslint/explicit-function-return-type': [
       'warn',
