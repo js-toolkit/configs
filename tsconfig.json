@@ -8,5 +8,5 @@
     "sourceMap": false,
     "incremental": false
   },
-  "include": ["./src/**/*"]
+  "include": ["./src/", "./@types/"]
 }
