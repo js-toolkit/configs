@@ -6,7 +6,7 @@
     "isolatedModules": false,
     "declaration": true,
     "sourceMap": false,
-    "incremental": false
+    "incremental": true
   },
   "include": ["./src/"]
 }

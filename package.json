@@ -8,7 +8,8 @@
   "scripts": {
     "update-deps": "yarn upgrade-interactive --latest",
     "clean": "rimraf dist/*",
-    "copy": "copyfiles --exclude './src/**/*.ts' --up 1 './src/**/*' ./dist/ && copyfiles package.json LICENSE README.md ./dist/",
+    "copy:configs": "copyfiles package.json .npmignore README.md LICENSE ./dist/",
+    "copy": "copyfiles --exclude './src/**/*.ts' --up 1 './src/**/*' ./dist/ && npm run copy:configs",
     "build": "npm run clean && tsc --project ./tsconfig.json",
     "build-to-tutoron": "tsc --project ./tsconfig.json --outDir '/home/vladimir/dev/sources/tutoron/node_modules/@vzh/configs/' && copyfiles --exclude './src/**/*.ts' --up 1 './src/**/*' '/home/vladimir/dev/sources/tutoron/node_modules/@vzh/configs/'",
     "build-to-reflexy": "tsc --project ./tsconfig.json --outDir '/home/vladimir/dev/sources/reflexy/node_modules/@vzh/configs/' && copyfiles --exclude './src/**/*.ts' --up 1 './src/**/*' '/home/vladimir/dev/sources/reflexy/node_modules/@vzh/configs/'",
