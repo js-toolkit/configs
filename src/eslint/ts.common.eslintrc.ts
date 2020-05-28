@@ -10,7 +10,6 @@ const config: Linter.Config = {
     // Adds @typescript-eslint/parse, import/extensions, import/resolver.node.extensions
     // https://github.com/benmosher/eslint-plugin-import/blob/master/config/typescript.js
     'plugin:import/typescript',
-    'plugin:@typescript-eslint/eslint-recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:@typescript-eslint/recommended-requiring-type-checking',
     'prettier/@typescript-eslint',
