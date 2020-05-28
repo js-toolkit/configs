@@ -1,8 +1,12 @@
+/** @type {import('eslint').Linter.Config} */
 module.exports = {
+  root: true,
+
   extends: [
     'airbnb-base',
     'plugin:prettier/recommended',
     'plugin:@typescript-eslint/recommended',
+    'plugin:@typescript-eslint/recommended-requiring-type-checking',
     'prettier/@typescript-eslint',
   ],
 
@@ -17,6 +21,8 @@ module.exports = {
     node: true,
     es6: true,
   },
+
+  ignorePatterns: ['.eslintrc.js'],
 
   settings: {
     'import/parsers': {
