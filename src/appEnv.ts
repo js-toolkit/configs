@@ -14,7 +14,7 @@ const APP = /^APP_/i;
 function tryParse(value?: string): EnvVarType {
   if (value == null) return value;
   try {
-    return JSON.parse(value);
+    return JSON.parse(value) as EnvVarType;
   } catch {
     // Simple string values are unable parsed so we just return origin.
     return value;
@@ -27,7 +27,7 @@ function tryParse(value?: string): EnvVarType {
 export function getAppEnvironment() {
   // Object with keys and their default values so we can feed into Webpack EnvironmentPlugin
   const raw: RawAppEnv = Object.keys(process.env)
-    .filter(key => APP.test(key))
+    .filter((key) => APP.test(key))
     .reduce((env, key) => ({ ...env, [key]: tryParse(process.env[key]) }), {
       // Useful for determining whether we’re running in production mode.
       // Most importantly, it switches React into the correct mode.
@@ -41,7 +41,7 @@ export function getAppEnvironment() {
     raw,
 
     /** Stringify all values that we can feed into Webpack DefinePlugin. */
-    envStringify(): { 'process.env': {} } {
+    envStringify(): { 'process.env': Record<string, string | undefined> } {
       const stringified = Object.keys(this.raw).reduce(
         (env, key) => ({ ...env, [key]: JSON.stringify(this.raw[key]) }),
         {}
