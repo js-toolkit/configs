@@ -2,11 +2,11 @@ import apprcDefaults from './apprcDefaults';
 
 export type AppRC = typeof apprcDefaults & { envStringify(): { 'process.env.apprc': string } };
 
-function resolveConfigPath(): string {
+export function resolveConfigPath(paths = [process.cwd()]): string {
   const moduleName = 'apprc';
   try {
     // With node 12 it is needed to use prefix './'
-    return require.resolve(`./${moduleName}`, { paths: [process.cwd()] });
+    return require.resolve(`./${moduleName}`, { paths });
   } catch {
     return '';
   }
@@ -27,9 +27,7 @@ function merge<T1 extends {}, T2 extends Partial<T1>>(obj1: T1, obj2: T2): Omit<
   }, {} as Omit<T1, keyof T2> & T2);
 }
 
-export function getAppRC(): AppRC {
-  const apprcPath = resolveConfigPath();
-
+export function getAppRC(apprcPath = resolveConfigPath()): AppRC {
   const apprc: AppRC =
     process.env.apprc ||
     process.env.appConfig ||
