@@ -108,8 +108,8 @@ export default {
     const getName = (): string => 'fork-ts-checker-webpack-plugin';
     const Plugin = nodeRequire(getName());
     return new Plugin({
-      tsconfig,
       memoryLimit: 1024,
+      configFile: tsconfig,
       ...rest,
     });
   },
