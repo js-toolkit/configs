@@ -3,19 +3,21 @@ import path from 'path';
 import appEnv from '../appEnv';
 import apprc from '../apprc';
 import paths, { moduleExtensions } from '../paths';
-import loaders, { BaseTsOptions, TsLoaderType } from './loaders';
+import loaders, { TsLoaderType } from './loaders';
 import nodeRequire from './nodeRequire';
 
-export interface CommonConfigOptions extends Partial<BaseTsOptions>, Configuration {
+export interface CommonConfigOptions extends Configuration {
   outputPath: string;
   outputPublicPath: string;
   outputJsDir: string;
   hash?: boolean;
-  useTypeScript?: boolean;
-  tsLoaderType?: TsLoaderType;
-  useTsForkedChecks?: boolean;
-  /** Forked checks webpack plugin options */
-  tsCheckerOptions?: object;
+  typescript?: {
+    configFile?: string;
+    loader?: TsLoaderType;
+    forkedChecks?: boolean;
+    /** Forked checks webpack plugin options */
+    checkerOptions?: Record<string, any>;
+  };
 }
 
 export default ({
@@ -23,11 +25,7 @@ export default ({
   outputPublicPath,
   outputJsDir,
   hash,
-  useTypeScript,
-  tsLoaderType = TsLoaderType.Default,
-  useTsForkedChecks = false,
-  tsCheckerOptions = {},
-  tsconfig,
+  typescript,
   ...restOptions
 }: CommonConfigOptions): Configuration => ({
   // The base directory (absolute path!) for resolving the `entry` option.
@@ -89,12 +87,15 @@ export default ({
     ...appEnv.ifDevMode(() => [new webpack.HotModuleReplacementPlugin()], []),
 
     // Forked check for TS
-    ...(useTypeScript && useTsForkedChecks && tsconfig
+    ...(typescript && typescript.forkedChecks && typescript.configFile
       ? [
           loaders.getTsCheckerPlugin({
-            tsconfig,
-            ...tsCheckerOptions,
-            loaderType: tsLoaderType,
+            loaderType: typescript.loader ?? TsLoaderType.Default,
+            ...typescript.checkerOptions,
+            typescript: {
+              configFile: typescript.configFile,
+              ...typescript.checkerOptions?.typescript,
+            },
           }),
         ]
       : []),
@@ -108,7 +109,7 @@ export default ({
   resolve: {
     ...restOptions.resolve,
     extensions: [
-      ...(useTypeScript ? moduleExtensions : moduleExtensions.filter((ext) => !ext.includes('ts'))),
+      ...(typescript ? moduleExtensions : moduleExtensions.filter((ext) => !ext.includes('ts'))),
       ...((restOptions.resolve && restOptions.resolve.extensions) || []),
     ],
     modules: [
@@ -117,12 +118,12 @@ export default ({
       ...((restOptions.resolve && restOptions.resolve.modules) || []),
     ],
     plugins: [
-      ...(useTypeScript
+      ...(typescript
         ? [
             (() => {
               const getName = (): string => 'tsconfig-paths-webpack-plugin';
               const TSConfigPathsWebpackPlugin = nodeRequire(getName());
-              return new TSConfigPathsWebpackPlugin({ configFile: tsconfig });
+              return new TSConfigPathsWebpackPlugin({ configFile: typescript.configFile });
             })(),
           ]
         : []),
@@ -133,7 +134,7 @@ export default ({
   stats:
     restOptions.stats == null || typeof restOptions.stats === 'object'
       ? {
-          ...(useTypeScript
+          ...(typescript
             ? // https://github.com/TypeStrong/ts-loader#transpileonly-boolean-defaultfalse
               { warningsFilter: /export .* was not found in/ }
             : undefined),

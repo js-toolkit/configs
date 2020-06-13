@@ -54,10 +54,14 @@ export const clientDefaultRules: Record<
   },
 };
 
-export interface ClientConfigOptions extends CommonConfigOptions {
-  tsLoaderOptions?: {};
-  useTsThreadLoader?: boolean;
-  tsThreadLoaderOptions?: {};
+export interface ClientConfigOptions extends Omit<CommonConfigOptions, 'typescript'> {
+  typescript?:
+    | (CommonConfigOptions['typescript'] & {
+        loaderOptions?: Record<string, any>;
+        threadLoader?: boolean;
+        threadLoaderOptions?: Record<string, any>;
+      })
+    | boolean;
   rules?: Record<string, RuleSetRule>;
 }
 
@@ -80,32 +84,36 @@ export default ({
   outputPublicPath = apprc.client.output.publicPath,
   outputJsDir = apprc.client.output.js,
   hash = true,
-  useTypeScript,
-  tsLoaderType = TsLoaderType.Default,
-  tsconfig = paths.client.tsconfig,
-  useTsForkedChecks = false,
-  useTsThreadLoader = false,
-  tsLoaderOptions = {},
-  tsCheckerOptions = {},
-  tsThreadLoaderOptions = {},
+  typescript,
   entry,
   rules: { tsBaseRule, ...rules } = {},
   ...restOptions
 }: ClientConfigOptions): Configuration => {
   const { tsBaseRule: defaultTsBaseRule, ...restRules } = clientDefaultRules;
 
-  const preparedRules = useTypeScript
+  const tsConfig: Required<ClientConfigOptions['typescript']> = {
+    configFile: paths.client.tsconfig,
+    loader: TsLoaderType.Default,
+    loaderOptions: {},
+    forkedChecks: false,
+    checkerOptions: {},
+    threadLoader: false,
+    threadLoaderOptions: {},
+    ...(typeof typescript === 'object' ? typescript : undefined),
+  };
+
+  const preparedRules = typescript
     ? {
         tsRule: {
           ...defaultTsBaseRule,
           ...tsBaseRule,
           use: loaders.getTsLoader({
-            tsconfig,
-            forkedChecks: useTsForkedChecks,
-            useThreadLoader: useTsThreadLoader,
-            threadLoaderOptions: tsThreadLoaderOptions,
-            ...tsLoaderOptions,
-            loaderType: tsLoaderType,
+            tsconfig: tsConfig.configFile,
+            forkedChecks: tsConfig.forkedChecks,
+            useThreadLoader: tsConfig.threadLoader,
+            threadLoaderOptions: tsConfig.threadLoaderOptions,
+            ...tsConfig.loaderOptions,
+            loaderType: tsConfig.loader,
           }),
         },
         ...restRules,
@@ -119,14 +127,21 @@ export default ({
     outputPublicPath,
     outputJsDir,
     hash,
-    useTypeScript,
-    tsLoaderType,
-    tsconfig,
-    useTsForkedChecks,
-    tsCheckerOptions: {
-      checkSyntacticErrors: useTsThreadLoader, // ts-loader in happyPackMode will not check SyntacticErrors so let check it in this plugin
-      ...tsCheckerOptions,
-    },
+    typescript: typescript
+      ? {
+          ...tsConfig,
+          checkerOptions: {
+            ...tsConfig.checkerOptions,
+            typescript: {
+              ...tsConfig.checkerOptions.typescript,
+              diagnosticsOptions: {
+                syntactic: tsConfig.threadLoader, // ts-loader in happyPackMode will not check SyntacticErrors so let check it in this plugin
+                ...tsConfig.checkerOptions.typescript?.diagnosticsOptions,
+              },
+            },
+          },
+        }
+      : undefined,
 
     name: apprc.client.root,
     target: 'web',
@@ -218,7 +233,7 @@ export default ({
             fileName,
             filter: !isNeedFilter
               ? undefined
-              : (item: {}) =>
+              : (item: Record<string, any>) =>
                   Object.getOwnPropertyNames(filterTemplate).every(
                     (key) => !(key in item) || item[key] === filterTemplate[key]
                   ),
@@ -272,7 +287,6 @@ export default ({
       http2: 'empty',
       net: 'empty',
       tls: 'empty',
-      // eslint-disable-next-line @typescript-eslint/camelcase
       child_process: 'empty',
       ...restOptions.node,
     },

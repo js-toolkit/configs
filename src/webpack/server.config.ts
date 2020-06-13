@@ -53,14 +53,15 @@ export default ({
   outputPublicPath = apprc.server.output.publicPath,
   outputJsDir = '',
   hash = false,
-  useTypeScript,
-  tsLoaderType = TsLoaderType.Default,
-  tsconfig = paths.server.tsconfig,
-  useTsForkedChecks = false,
-  useTsThreadLoader = false,
-  tsLoaderOptions = {},
-  tsCheckerOptions = {},
-  tsThreadLoaderOptions = {},
+  typescript,
+  // useTypeScript,
+  // tsLoaderType = TsLoaderType.Default,
+  // tsconfig = paths.server.tsconfig,
+  // useTsForkedChecks = false,
+  // useTsThreadLoader = false,
+  // tsLoaderOptions = {},
+  // tsCheckerOptions = {},
+  // tsThreadLoaderOptions = {},
   entry,
   rules: { tsBaseRule, ...rules } = {},
   nodeExternalsOptions,
@@ -71,18 +72,29 @@ export default ({
     ? universalDefaultRules
     : serverDefaultRules;
 
-  const preparedRules = useTypeScript
+  const tsConfig: Required<ServerConfigOptions['typescript']> = {
+    configFile: paths.server.tsconfig,
+    loader: TsLoaderType.Default,
+    loaderOptions: {},
+    forkedChecks: false,
+    checkerOptions: {},
+    threadLoader: false,
+    threadLoaderOptions: {},
+    ...(typeof typescript === 'object' ? typescript : undefined),
+  };
+
+  const preparedRules = typescript
     ? {
         tsRule: {
           ...defaultTsBaseRule,
           ...tsBaseRule,
           use: loaders.getTsLoader({
-            tsconfig,
-            forkedChecks: useTsForkedChecks,
-            useThreadLoader: useTsThreadLoader,
-            threadLoaderOptions: tsThreadLoaderOptions,
-            ...tsLoaderOptions,
-            loaderType: tsLoaderType,
+            tsconfig: tsConfig.configFile,
+            forkedChecks: tsConfig.forkedChecks,
+            useThreadLoader: tsConfig.threadLoader,
+            threadLoaderOptions: tsConfig.threadLoaderOptions,
+            ...tsConfig.loaderOptions,
+            loaderType: tsConfig.loader,
           }),
         },
         ...restRules,
@@ -96,14 +108,21 @@ export default ({
     outputPublicPath,
     outputJsDir,
     hash,
-    useTypeScript,
-    tsLoaderType,
-    tsconfig,
-    useTsForkedChecks,
-    tsCheckerOptions: {
-      checkSyntacticErrors: useTsThreadLoader, // ts-loader in happyPackMode will not check SyntacticErrors so let check it in this plugin
-      ...tsCheckerOptions,
-    },
+    typescript: typescript
+      ? {
+          ...tsConfig,
+          checkerOptions: {
+            ...tsConfig.checkerOptions,
+            typescript: {
+              ...tsConfig.checkerOptions.typescript,
+              diagnosticsOptions: {
+                syntactic: tsConfig.threadLoader, // ts-loader in happyPackMode will not check SyntacticErrors so let check it in this plugin
+                ...tsConfig.checkerOptions.typescript?.diagnosticsOptions,
+              },
+            },
+          },
+        }
+      : undefined,
 
     name: apprc.server.root,
     target: 'node',

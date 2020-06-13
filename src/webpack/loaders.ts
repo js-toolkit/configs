@@ -22,20 +22,16 @@ interface GetTsDefaultLoaderOptions extends GetTsLoaderOptionsBase {
   loaderType: TsLoaderType.Default;
   forkedChecks?: boolean;
   useThreadLoader?: boolean;
-  threadLoaderOptions?: {};
+  threadLoaderOptions?: Record<string, any>;
   afterLoaders?: Loader[];
 }
 
-type TsDefaultLoaderOptions = Omit<GetTsDefaultLoaderOptions, 'loaderType'> & { [P: string]: any };
+type TsDefaultLoaderOptions = Omit<GetTsDefaultLoaderOptions, 'loaderType'> & Record<string, any>;
 
-export type GetTsLoaderOptions = (GetTsLoaderOptionsBase | GetTsDefaultLoaderOptions) & {
-  [P: string]: any;
-};
+export type GetTsLoaderOptions = (GetTsLoaderOptionsBase | GetTsDefaultLoaderOptions) &
+  Record<string, any>;
 
-export type GetTsCheckerPluginOptions = BaseTsOptions & {
-  loaderType: TsLoaderType;
-  [P: string]: any;
-};
+export type GetTsCheckerPluginOptions = { loaderType: TsLoaderType } & Record<string, any>;
 
 export default {
   getTsLoader({ loaderType, ...rest }: GetTsLoaderOptions) {
@@ -46,7 +42,7 @@ export default {
 
   getTsCheckerPlugin({ loaderType, ...rest }: GetTsCheckerPluginOptions) {
     if (loaderType === TsLoaderType.ATL) return this.atlCheckerPlugin();
-    return this.tsCheckerPlugin(rest as BaseTsOptions);
+    return this.tsCheckerPlugin(rest);
   },
 
   ts({
@@ -104,13 +100,22 @@ export default {
   },
 
   /** In order to runs typescript type checker on a separate process. */
-  tsCheckerPlugin({ tsconfig, ...rest }: BaseTsOptions & Record<string, any>) {
+  tsCheckerPlugin(options: Record<string, any> = {}) {
     const getName = (): string => 'fork-ts-checker-webpack-plugin';
     const Plugin = nodeRequire(getName());
     return new Plugin({
-      memoryLimit: 1024,
-      configFile: tsconfig,
-      ...rest,
+      ...options,
+      typescript: {
+        memoryLimit: 1024,
+        ...options.typescript,
+        diagnosticsOptions: {
+          syntactic: false,
+          semantic: true,
+          declaration: false,
+          global: false,
+          ...options.typescript?.diagnosticsOptions,
+        },
+      },
     });
   },
 
@@ -170,7 +175,7 @@ export default {
     pattern?: string;
     prodPattern?: string;
     postcss?: boolean;
-    modules?: object | boolean;
+    modules?: Record<string, any> | boolean;
   } & Record<string, any> = {}) {
     return [
       ...(!ssr ? [appEnv.ifDevMode('style-loader', this.cssExtractLoader)] : []),
