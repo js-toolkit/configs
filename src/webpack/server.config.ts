@@ -37,6 +37,10 @@ export const universalDefaultRules: typeof clientDefaultRules = {
     // process css in server side always in ssr mode
     use: loaders.cssNodeModules({ ssr: true }),
   },
+  svgRule: {
+    ...clientDefaultRules.svgRule,
+    use: loaders.assets({ limit: false, ssr: true }),
+  },
   assetsRule: {
     ...clientDefaultRules.assetsRule,
     use: loaders.assets({ ssr: true }),

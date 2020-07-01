@@ -8,7 +8,7 @@ import loaders, { TsLoaderType } from './loaders';
 import nodeRequire from './nodeRequire';
 
 export const clientDefaultRules: Record<
-  'jsRule' | 'tsBaseRule' | 'cssRule' | 'cssNodeModulesRule' | 'assetsRule',
+  'jsRule' | 'tsBaseRule' | 'cssRule' | 'cssNodeModulesRule' | 'svgRule' | 'assetsRule',
   RuleSetRule
 > = {
   jsRule: {
@@ -46,6 +46,11 @@ export const clientDefaultRules: Record<
       path.join(paths.nodeModules.root, 'reflexy'),
     ],
     use: loaders.cssNodeModules(),
+  },
+  svgRule: {
+    test: /\.svg$/,
+    include: [paths.client.sources, paths.nodeModules.root],
+    use: loaders.assets({ limit: false }),
   },
   assetsRule: {
     test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2|otf)$/,
