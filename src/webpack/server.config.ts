@@ -54,15 +54,6 @@ export default ({
   outputJsDir = '',
   hash = false,
   typescript,
-  // useTypeScript,
-  // tsLoaderType = TsLoaderType.Default,
-  // tsconfig = paths.server.tsconfig,
-  // useTsForkedChecks = false,
-  // useTsThreadLoader = false,
-  // tsLoaderOptions = {},
-  // tsCheckerOptions = {},
-  // tsThreadLoaderOptions = {},
-  entry,
   rules: { tsBaseRule, ...rules } = {},
   nodeExternalsOptions,
   isUniversal,
@@ -129,20 +120,22 @@ export default ({
 
     context: isUniversal ? paths.root : paths.server.sources,
 
-    entry,
-
-    stats: {
-      all: false,
-      errors: true,
-      errorDetails: true,
-      warnings: true,
-      version: true,
-      timings: true,
-      builtAt: true,
-      entrypoints: true,
-    },
-
     ...restOptions,
+
+    stats:
+      restOptions.stats === false || (restOptions.stats && typeof restOptions.stats !== 'object')
+        ? restOptions.stats
+        : {
+            all: false,
+            errors: true,
+            errorDetails: true,
+            warnings: true,
+            version: true,
+            timings: true,
+            builtAt: true,
+            entrypoints: true,
+            ...restOptions.stats,
+          },
 
     // http://jlongster.com/Backend-Apps-with-Webpack--Part-I
     externals: [

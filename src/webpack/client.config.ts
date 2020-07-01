@@ -85,7 +85,6 @@ export default ({
   outputJsDir = buildConfig.client.output.js,
   hash = true,
   typescript,
-  entry,
   rules: { tsBaseRule, ...rules } = {},
   ...restOptions
 }: ClientConfigOptions): Configuration => {
@@ -147,8 +146,6 @@ export default ({
     target: 'web',
 
     context: paths.client.sources,
-
-    entry,
 
     // recordsOutputPath: path.join(paths.output.path, 'webpack.client.stats.json'),
 
