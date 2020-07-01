@@ -53,7 +53,7 @@ export const clientDefaultRules: Record<
     use: loaders.assets({ limit: false }),
   },
   assetsRule: {
-    test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2|otf)$/,
+    test: /\.(png|jpg|gif|eot|ttf|woff|woff2|otf)$/,
     include: [paths.client.assets, paths.nodeModules.root],
     use: loaders.assets(),
   },
