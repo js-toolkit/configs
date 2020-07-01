@@ -2,7 +2,7 @@ import appEnv from '../appEnv';
 import paths from '../paths';
 
 export interface Options {
-  importPath?: string[] | string;
+  import?: { path: string[] | string } | false;
   presetEnv?: Record<string, any>;
   nested?: boolean;
   /** You need to install cssnano and cssnano-preset-default */
@@ -10,19 +10,17 @@ export interface Options {
   autoprefixer?: boolean;
 }
 
-const defaultImportPath = [paths.client.sources];
-
 export default ({
-  importPath = defaultImportPath,
+  import: importConfig = { path: [paths.client.sources] },
   presetEnv,
   nested = true,
   minimizer = appEnv.prod,
   autoprefixer = appEnv.prod,
-}: Options = {}): {} => ({
+}: Options = {}): Record<string, any> => ({
   sourceMap: appEnv.dev,
   plugins: {
     // Primarily use to override imported styles: import css file before css-loader process it and then process merged css by css-loader.
-    'postcss-import': importPath ? { path: importPath } : false, // https://github.com/postcss/postcss-import/issues/224
+    'postcss-import': importConfig, // https://github.com/postcss/postcss-import/issues/224
     ...(nested ? { 'postcss-nested': {} } : undefined),
     // https://preset-env.cssdb.org/
     'postcss-preset-env': {
