@@ -1,8 +1,15 @@
+import path from 'path';
+import paths from '../paths';
+
 module.exports = {
   extends: ['stylelint-config-standard', 'stylelint-config-css-modules'],
+
   plugins: ['stylelint-prettier'],
+
   defaultSeverity: 'error',
-  ignoreFiles: ['node_modules/**', 'dist/**'],
+
+  ignoreFiles: [path.join(paths.nodeModules.root, '/**'), path.join(paths.output.root, '/**')],
+
   rules: {
     'prettier/prettier': true,
     'comment-empty-line-before': null,
