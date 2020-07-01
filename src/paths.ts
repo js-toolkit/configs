@@ -1,59 +1,59 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import path from 'path';
-import { getAppRC } from './apprc';
+import { getBuildConfig } from './buildConfig';
 
 export const moduleExtensions = ['.js', '.jsx', '.ts', '.tsx', '.d.ts'];
 
-export function getPaths(baseDir = process.cwd(), apprc = getAppRC()) {
+export function getPaths(baseDir = process.cwd(), buildConfig = getBuildConfig()) {
   return Object.freeze({
     root: baseDir,
 
     nodeModules: {
       // dirname: 'node_modules',
-      root: path.resolve(baseDir, apprc.nodeModules),
+      root: path.resolve(baseDir, buildConfig.nodeModules),
     },
 
     output: {
-      root: path.resolve(baseDir, apprc.output.root),
+      root: path.resolve(baseDir, buildConfig.output.root),
     },
 
     client: {
-      root: path.resolve(baseDir, apprc.client.root),
-      sources: path.resolve(baseDir, apprc.client.root, apprc.client.sources),
-      assets: path.resolve(baseDir, apprc.client.root, apprc.client.assets),
-      staticContent: apprc.client.staticContent.map((p) =>
-        path.isAbsolute(p) ? p : path.resolve(baseDir, apprc.client.root, p)
+      root: path.resolve(baseDir, buildConfig.client.root),
+      sources: path.resolve(baseDir, buildConfig.client.root, buildConfig.client.sources),
+      assets: path.resolve(baseDir, buildConfig.client.root, buildConfig.client.assets),
+      staticContent: buildConfig.client.staticContent.map((p) =>
+        path.isAbsolute(p) ? p : path.resolve(baseDir, buildConfig.client.root, p)
       ),
 
-      tsconfig: path.resolve(baseDir, apprc.client.root, apprc.client.tsconfig),
+      tsconfig: path.resolve(baseDir, buildConfig.client.root, buildConfig.client.tsconfig),
 
       output: {
-        path: path.resolve(baseDir, apprc.output.root, apprc.client.output.root),
+        path: path.resolve(baseDir, buildConfig.output.root, buildConfig.client.output.root),
         jsPath: path.resolve(
           baseDir,
-          apprc.output.root,
-          apprc.client.output.root,
-          apprc.client.output.js
+          buildConfig.output.root,
+          buildConfig.client.output.root,
+          buildConfig.client.output.js
         ),
       },
     },
 
     server: {
-      root: path.resolve(baseDir, apprc.server.root),
-      sources: path.resolve(baseDir, apprc.server.root, apprc.server.sources),
+      root: path.resolve(baseDir, buildConfig.server.root),
+      sources: path.resolve(baseDir, buildConfig.server.root, buildConfig.server.sources),
 
-      tsconfig: path.resolve(baseDir, apprc.server.root, apprc.server.tsconfig),
+      tsconfig: path.resolve(baseDir, buildConfig.server.root, buildConfig.server.tsconfig),
 
       output: {
-        path: path.resolve(baseDir, apprc.output.root, apprc.server.output.root),
+        path: path.resolve(baseDir, buildConfig.output.root, buildConfig.server.output.root),
       },
     },
 
     shared: {
-      root: path.resolve(baseDir, apprc.shared.root),
-      sources: path.resolve(baseDir, apprc.shared.root, apprc.shared.sources),
-      tsconfig: path.resolve(baseDir, apprc.shared.root, apprc.shared.tsconfig),
+      root: path.resolve(baseDir, buildConfig.shared.root),
+      sources: path.resolve(baseDir, buildConfig.shared.root, buildConfig.shared.sources),
+      tsconfig: path.resolve(baseDir, buildConfig.shared.root, buildConfig.shared.tsconfig),
     },
   });
 }

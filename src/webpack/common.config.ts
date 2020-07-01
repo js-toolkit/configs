@@ -1,7 +1,7 @@
 import webpack, { Options, Configuration } from 'webpack';
 import path from 'path';
 import appEnv from '../appEnv';
-import apprc from '../apprc';
+import buildConfig from '../buildConfig';
 import paths, { moduleExtensions } from '../paths';
 import loaders, { TsLoaderType } from './loaders';
 import nodeRequire from './nodeRequire';
@@ -79,8 +79,8 @@ export default ({
     new webpack.DefinePlugin({
       // Replace process.env... and appEnv.raw... to static values in the bundle.
       ...appEnv.envStringify(),
-      // Replace apprc... to static values in the bundle.
-      ...apprc.envStringify(),
+      // Replace config... to static values in the bundle.
+      ...buildConfig.envStringify(),
     }),
 
     // Enable HMR in development.

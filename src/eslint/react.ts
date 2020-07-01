@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import apprc from '../apprc';
+import buildConfig from '../buildConfig';
 import paths, { moduleExtensions } from '../paths';
 import { eslintTsProject } from './consts';
 
@@ -19,8 +19,8 @@ const config: import('eslint').Linter.Config = {
 
   settings: {
     'import/resolver': {
-      ...(apprc.client.webpackConfig
-        ? { webpack: { config: apprc.client.webpackConfig } }
+      ...(buildConfig.client.webpackConfig
+        ? { webpack: { config: buildConfig.client.webpackConfig } }
         : undefined),
     },
   },

@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { Linter } from 'eslint';
-import apprc, { AppRC } from '../apprc';
+import buildConfig, { BuildConfig } from '../buildConfig';
 import paths, { moduleExtensions } from '../paths';
 import { eslintTsProject } from './consts';
 
@@ -9,10 +9,13 @@ function getFilesGlob(basePath: string): string[] {
   return moduleExtensions.map((e) => `${basePath}/**/*${e}`);
 }
 
-const filesGlobs: Record<keyof Pick<AppRC, 'client' | 'server' | 'shared'> | 'other', string[]> = {
-  client: getFilesGlob(apprc.client.root),
-  server: getFilesGlob(apprc.server.root),
-  shared: getFilesGlob(apprc.shared.root),
+const filesGlobs: Record<
+  keyof Pick<BuildConfig, 'client' | 'server' | 'shared'> | 'other',
+  string[]
+> = {
+  client: getFilesGlob(buildConfig.client.root),
+  server: getFilesGlob(buildConfig.server.root),
+  shared: getFilesGlob(buildConfig.shared.root),
   other: moduleExtensions.map((ext) => `*${ext}`),
 };
 

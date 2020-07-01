@@ -63,7 +63,7 @@ export function getSharedConfig(root = 'shared') {
   };
 }
 
-export type ApprcDefaults = {
+export type BuildConfigDefaults = {
   nodeModules: string;
 
   output: {
@@ -78,7 +78,7 @@ export type ApprcDefaults = {
   shared: ReturnType<typeof getSharedConfig>;
 };
 
-const apprcDefaults: ApprcDefaults = {
+const buildConfigDefaults: BuildConfigDefaults = {
   nodeModules: 'node_modules',
 
   output: {
@@ -93,4 +93,4 @@ const apprcDefaults: ApprcDefaults = {
   shared: getSharedConfig(),
 };
 
-export default Object.freeze(apprcDefaults);
+export default Object.freeze(buildConfigDefaults);
