@@ -39,7 +39,7 @@ export const universalDefaultRules: typeof clientDefaultRules = {
   },
   svgRule: {
     ...clientDefaultRules.svgRule,
-    use: loaders.assets({ limit: false, ssr: true }),
+    use: loaders.assets({ limit: undefined, ssr: true }),
   },
   assetsRule: {
     ...clientDefaultRules.assetsRule,

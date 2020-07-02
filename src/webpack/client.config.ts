@@ -50,7 +50,7 @@ export const clientDefaultRules: Record<
   svgRule: {
     test: /\.svg$/,
     include: [paths.client.sources, paths.nodeModules.root],
-    use: loaders.assets({ limit: false }),
+    use: loaders.assets({ limit: undefined }),
   },
   assetsRule: {
     test: /\.(png|jpg|gif|eot|ttf|woff|woff2|otf)$/,
