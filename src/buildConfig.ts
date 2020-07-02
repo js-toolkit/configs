@@ -1,8 +1,14 @@
-import buildConfigDefaults from './buildConfigDefaults';
+import buildConfigDefaults, { BuildConfigDefaults } from './buildConfigDefaults';
 
-export type BuildConfig = typeof buildConfigDefaults & {
+export interface BuildConfig extends Omit<BuildConfigDefaults, 'client' | 'server' | 'shared'> {
+  client: BuildConfigDefaults['client'] | false | undefined;
+  server: BuildConfigDefaults['server'] | false | undefined;
+  shared: BuildConfigDefaults['shared'] | false | undefined;
+
+  default: BuildConfigDefaults;
+
   envStringify(): { 'process.env.buildConfig': string };
-};
+}
 
 export function resolveConfigPath(
   moduleNames = ['build.config', 'apprc'],
@@ -23,15 +29,24 @@ export function resolveConfigPath(
   return module;
 }
 
-function merge<T1 extends {}, T2 extends Partial<T1>>(obj1: T1, obj2: T2): Omit<T1, keyof T2> & T2 {
+// eslint-disable-next-line @typescript-eslint/ban-types
+function merge<T1 extends object, T2 extends Partial<T1>>(
+  obj1: T1,
+  obj2: T2
+): Omit<T1, keyof T2> & T2 {
   return Array.from(
     new Set([...Object.getOwnPropertyNames(obj1), ...Object.getOwnPropertyNames(obj2)])
   ).reduce((acc, p) => {
+    // Merge arrays
     if (Array.isArray(obj1[p]) && Array.isArray(obj2[p])) {
       acc[p] = [...obj1[p], ...obj2[p]];
-    } else if (typeof obj1[p] === 'object' && typeof obj2[p] === 'object') {
+    }
+    // Merge objects
+    else if (typeof obj1[p] === 'object' && typeof obj2[p] === 'object') {
       acc[p] = merge(obj1[p], obj2[p]);
-    } else {
+    }
+    // Replace default values from obj2 if exists
+    else {
       acc[p] = p in obj2 ? obj2[p] : obj1[p];
     }
     return acc;
@@ -48,6 +63,8 @@ export function getBuildConfig(configPath = resolveConfigPath()): BuildConfig {
 
   return {
     ...buildConfig,
+
+    default: buildConfigDefaults,
 
     /** Stringify all values that we can feed into Webpack DefinePlugin. */
     envStringify() {

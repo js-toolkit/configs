@@ -224,7 +224,9 @@ export default {
         limit: 1024,
         fallback: 'file-loader',
         emitFile: !ssr,
-        name: `${buildConfig.client.output.assets}/[name].[hash:8].[ext]`, // Virtual hash useful for HRM during development.
+        name: `${
+          (buildConfig.client || buildConfig.default.client).output.assets
+        }/[name].[hash:8].[ext]`, // Virtual hash useful for HRM during development.
         ...restOptions,
       },
     };

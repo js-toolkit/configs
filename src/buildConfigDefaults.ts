@@ -70,9 +70,6 @@ export type BuildConfigDefaults = {
     root: string;
   };
 
-  // client: readonly ReturnType<typeof getClientConfig>[];
-  // server: readonly ReturnType<typeof getServerConfig>[];
-  // shared: readonly ReturnType<typeof getSharedConfig>[];
   client: ReturnType<typeof getClientConfig>;
   server: ReturnType<typeof getServerConfig>;
   shared: ReturnType<typeof getSharedConfig>;
@@ -85,9 +82,6 @@ const buildConfigDefaults: BuildConfigDefaults = {
     root: 'dist',
   },
 
-  // client: [getClientConfig()],
-  // server: [getServerConfig()],
-  // shared: [getSharedConfig()],
   client: getClientConfig(),
   server: getServerConfig(),
   shared: getSharedConfig(),

@@ -13,9 +13,9 @@ const filesGlobs: Record<
   keyof Pick<BuildConfig, 'client' | 'server' | 'shared'> | 'other',
   string[]
 > = {
-  client: getFilesGlob(buildConfig.client.root),
-  server: getFilesGlob(buildConfig.server.root),
-  shared: getFilesGlob(buildConfig.shared.root),
+  client: buildConfig.client ? getFilesGlob(buildConfig.client.root) : [],
+  server: buildConfig.server ? getFilesGlob(buildConfig.server.root) : [],
+  shared: buildConfig.shared ? getFilesGlob(buildConfig.shared.root) : [],
   other: moduleExtensions.map((ext) => `*${ext}`),
 };
 

@@ -52,9 +52,11 @@ export interface ServerConfigOptions extends ClientConfigOptions {
   isUniversal?: boolean;
 }
 
+const serverBuildConfig = buildConfig.server || buildConfig.default.server;
+
 export default ({
   outputPath = paths.server.output.path,
-  outputPublicPath = buildConfig.server.output.publicPath,
+  outputPublicPath = serverBuildConfig.output.publicPath,
   outputJsDir = '',
   hash = false,
   typescript,
@@ -119,7 +121,7 @@ export default ({
         }
       : undefined,
 
-    name: buildConfig.server.root,
+    name: serverBuildConfig.root,
     target: 'node',
 
     context: isUniversal ? paths.root : paths.server.sources,

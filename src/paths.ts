@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import path from 'path';
 import { getBuildConfig } from './buildConfig';
 
@@ -18,43 +17,88 @@ export function getPaths(baseDir = process.cwd(), buildConfig = getBuildConfig()
       root: path.resolve(baseDir, buildConfig.output.root),
     },
 
-    client: {
-      root: path.resolve(baseDir, buildConfig.client.root),
-      sources: path.resolve(baseDir, buildConfig.client.root, buildConfig.client.sources),
-      assets: path.resolve(baseDir, buildConfig.client.root, buildConfig.client.assets),
-      staticContent: buildConfig.client.staticContent.map((p) =>
-        path.isAbsolute(p) ? p : path.resolve(baseDir, buildConfig.client.root, p)
-      ),
+    client: (() => {
+      const { client } = buildConfig;
 
-      tsconfig: path.resolve(baseDir, buildConfig.client.root, buildConfig.client.tsconfig),
+      if (!client) {
+        return {
+          root: '',
+          sources: '',
+          assets: '',
+          staticContent: [],
+          tsconfig: '',
+          output: {
+            path: '',
+            jsPath: '',
+          },
+        };
+      }
 
-      output: {
-        path: path.resolve(baseDir, buildConfig.output.root, buildConfig.client.output.root),
-        jsPath: path.resolve(
-          baseDir,
-          buildConfig.output.root,
-          buildConfig.client.output.root,
-          buildConfig.client.output.js
+      return {
+        root: path.resolve(baseDir, client.root),
+        sources: path.resolve(baseDir, client.root, client.sources),
+        assets: path.resolve(baseDir, client.root, client.assets),
+        staticContent: client.staticContent.map((p) =>
+          path.isAbsolute(p) ? p : path.resolve(baseDir, client.root, p)
         ),
-      },
-    },
 
-    server: {
-      root: path.resolve(baseDir, buildConfig.server.root),
-      sources: path.resolve(baseDir, buildConfig.server.root, buildConfig.server.sources),
+        tsconfig: path.resolve(baseDir, client.root, client.tsconfig),
 
-      tsconfig: path.resolve(baseDir, buildConfig.server.root, buildConfig.server.tsconfig),
+        output: {
+          path: path.resolve(baseDir, buildConfig.output.root, client.output.root),
+          jsPath: path.resolve(
+            baseDir,
+            buildConfig.output.root,
+            client.output.root,
+            client.output.js
+          ),
+        },
+      };
+    })(),
 
-      output: {
-        path: path.resolve(baseDir, buildConfig.output.root, buildConfig.server.output.root),
-      },
-    },
+    server: (() => {
+      const { server } = buildConfig;
 
-    shared: {
-      root: path.resolve(baseDir, buildConfig.shared.root),
-      sources: path.resolve(baseDir, buildConfig.shared.root, buildConfig.shared.sources),
-      tsconfig: path.resolve(baseDir, buildConfig.shared.root, buildConfig.shared.tsconfig),
-    },
+      if (!server) {
+        return {
+          root: '',
+          sources: '',
+          tsconfig: '',
+          output: {
+            path: '',
+          },
+        };
+      }
+
+      return {
+        root: path.resolve(baseDir, server.root),
+        sources: path.resolve(baseDir, server.root, server.sources),
+
+        tsconfig: path.resolve(baseDir, server.root, server.tsconfig),
+
+        output: {
+          path: path.resolve(baseDir, buildConfig.output.root, server.output.root),
+        },
+      };
+    })(),
+
+    shared: (() => {
+      const { shared } = buildConfig;
+
+      if (!shared) {
+        return {
+          root: '',
+          sources: '',
+          tsconfig: '',
+        };
+      }
+
+      return {
+        root: path.resolve(baseDir, shared.root),
+        sources: path.resolve(baseDir, shared.root, shared.sources),
+        tsconfig: path.resolve(baseDir, shared.root, shared.tsconfig),
+      };
+    })(),
   });
 }
 

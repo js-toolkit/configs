@@ -13,7 +13,7 @@ const config: import('eslint').Linter.Config = {
 
   settings: {
     'import/resolver': {
-      ...(buildConfig.server.webpackConfig
+      ...(buildConfig.server && buildConfig.server.webpackConfig
         ? { webpack: { config: buildConfig.server.webpackConfig } }
         : undefined),
     },
