@@ -13,12 +13,12 @@ export const clientDefaultRules: Record<
 > = {
   jsRule: {
     test: /\.jsx?$/,
-    include: [paths.client.sources, paths.shared.sources],
+    include: [paths.client.sources, paths.shared.sources].filter((v) => !!v),
     use: loaders.babel(),
   },
   tsBaseRule: {
     test: /\.tsx?$/,
-    include: [paths.client.sources, paths.shared.sources],
+    include: [paths.client.sources, paths.shared.sources].filter((v) => !!v),
   },
   cssRule: {
     test: /\.css$/,
@@ -166,7 +166,7 @@ export default ({
       ],
       alias: {
         // for universal projects
-        shared: paths.shared.sources,
+        ...(paths.shared.sources ? { shared: paths.shared.sources } : undefined),
         ...((restOptions.resolve && restOptions.resolve.alias) || undefined),
       },
     },

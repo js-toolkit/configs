@@ -10,11 +10,11 @@ import loaders, { TsLoaderType } from './loaders';
 export const serverDefaultRules = {
   jsRule: {
     ...clientDefaultRules.jsRule,
-    include: [paths.server.sources, paths.shared.sources],
+    include: [paths.server.sources, paths.shared.sources].filter((v) => !!v),
   },
   tsBaseRule: {
     ...clientDefaultRules.tsBaseRule,
-    include: [paths.server.sources, paths.shared.sources],
+    include: [paths.server.sources, paths.shared.sources].filter((v) => !!v),
   },
 };
 
@@ -157,14 +157,16 @@ export default ({
         isUniversal ? paths.client.sources : paths.server.sources,
         ...((restOptions.resolve && restOptions.resolve.modules) || []),
       ],
-      alias: isUniversal
-        ? {
-            server: paths.server.sources,
-            shared: paths.shared.sources,
-            client: paths.client.sources,
-            ...((restOptions.resolve && restOptions.resolve.alias) || undefined),
-          }
-        : undefined,
+      alias: {
+        ...(isUniversal
+          ? {
+              server: paths.server.sources,
+              client: paths.client.sources,
+            }
+          : undefined),
+        ...(paths.shared.sources ? { shared: paths.shared.sources } : undefined),
+        ...((restOptions.resolve && restOptions.resolve.alias) || undefined),
+      },
     },
 
     module: {

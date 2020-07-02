@@ -33,7 +33,7 @@ const config: Linter.Config = {
           paths.client.sources,
           paths.server.sources,
           paths.shared.sources,
-        ],
+        ].filter((v) => !!v),
       },
     },
   },

@@ -11,7 +11,7 @@ export interface Options {
 }
 
 export default ({
-  import: importConfig = { path: [paths.client.sources] },
+  import: importConfig = paths.client.sources ? { path: [paths.client.sources] } : false,
   presetEnv,
   nested = true,
   minimizer = appEnv.prod,
