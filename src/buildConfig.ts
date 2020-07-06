@@ -31,23 +31,24 @@ export function resolveConfigPath(
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 function merge<T1 extends object, T2 extends Partial<T1>>(
-  obj1: T1,
-  obj2: T2
+  defaults: T1,
+  nextValues: T2
 ): Omit<T1, keyof T2> & T2 {
   return Array.from(
-    new Set([...Object.getOwnPropertyNames(obj1), ...Object.getOwnPropertyNames(obj2)])
+    new Set([...Object.getOwnPropertyNames(defaults), ...Object.getOwnPropertyNames(nextValues)])
   ).reduce((acc, p) => {
     // Merge arrays
-    if (Array.isArray(obj1[p]) && Array.isArray(obj2[p])) {
-      acc[p] = [...obj1[p], ...obj2[p]];
+    if (Array.isArray(defaults[p]) && Array.isArray(nextValues[p])) {
+      // Apply empty array if nextValues[p] is empty otherwise merge them
+      acc[p] = nextValues[p].length === 0 ? nextValues[p] : [...defaults[p], ...nextValues[p]];
     }
     // Merge objects
-    else if (typeof obj1[p] === 'object' && typeof obj2[p] === 'object') {
-      acc[p] = merge(obj1[p], obj2[p]);
+    else if (typeof defaults[p] === 'object' && typeof nextValues[p] === 'object') {
+      acc[p] = merge(defaults[p], nextValues[p]);
     }
     // Replace default values from obj2 if exists
     else {
-      acc[p] = p in obj2 ? obj2[p] : obj1[p];
+      acc[p] = p in nextValues ? nextValues[p] : defaults[p];
     }
     return acc;
   }, {} as Omit<T1, keyof T2> & T2);
