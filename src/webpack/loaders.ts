@@ -168,6 +168,7 @@ export default {
     pattern = '[name]__[local]--[hash:5]',
     prodPattern = '[hash:5]',
     postcss = true,
+    extractor = true,
     modules,
     ...cssLoaderOptions
   }: {
@@ -175,10 +176,11 @@ export default {
     pattern?: string;
     prodPattern?: string;
     postcss?: boolean;
+    extractor?: boolean;
     modules?: Record<string, any> | boolean;
   } & Record<string, any> = {}) {
     return [
-      ...(!ssr ? [appEnv.ifDevMode('style-loader', this.cssExtractLoader)] : []),
+      ...(!ssr ? [appEnv.dev || !extractor ? 'style-loader' : this.cssExtractLoader] : []),
       {
         loader: 'css-loader',
         options: {
