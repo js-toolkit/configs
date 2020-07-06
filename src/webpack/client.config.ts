@@ -268,8 +268,8 @@ export default ({
         })(),
 
       // Copy public static content to output dir
-      appEnv.prod &&
-        paths.client.staticContent.length > 0 &&
+      // appEnv.prod &&
+      paths.client.staticContent.length > 0 &&
         (() => {
           // Exclude root and sources dirs
           const staticContent = paths.client.staticContent.filter(
