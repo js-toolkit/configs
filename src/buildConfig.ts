@@ -40,7 +40,8 @@ function merge<T1 extends object, T2 extends Partial<T1>>(
     // Merge arrays
     if (Array.isArray(defaults[p]) && Array.isArray(nextValues[p])) {
       // Apply empty array if nextValues[p] is empty otherwise merge them
-      acc[p] = nextValues[p].length === 0 ? nextValues[p] : [...defaults[p], ...nextValues[p]];
+      // acc[p] = nextValues[p].length === 0 ? nextValues[p] : [...defaults[p], ...nextValues[p]];
+      acc[p] = nextValues[p];
     }
     // Merge objects
     else if (typeof defaults[p] === 'object' && typeof nextValues[p] === 'object') {
