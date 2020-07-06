@@ -269,13 +269,18 @@ export default ({
 
       // Copy public static content to output dir
       appEnv.prod &&
-        clientBuildConfig.staticContent.length > 0 &&
+        paths.client.staticContent.length > 0 &&
         (() => {
+          // Exclude root and sources dirs
+          const staticContent = paths.client.staticContent.filter(
+            (p) => p !== paths.client.root && p !== paths.client.sources
+          );
+          if (staticContent.length === 0) {
+            return undefined;
+          }
           const getName = (): string => 'copy-webpack-plugin';
           const CopyPlugin = nodeRequire(getName());
-          return new CopyPlugin({
-            patterns: paths.client.staticContent.map((p) => ({ from: p })),
-          });
+          return new CopyPlugin({ patterns: staticContent.map((p) => ({ from: p })) });
         })(),
 
       ...(restOptions.plugins || []),
