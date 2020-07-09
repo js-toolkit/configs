@@ -59,6 +59,7 @@ export default ({
   outputPublicPath = serverBuildConfig.output.publicPath,
   outputJsDir = '',
   hash = false,
+  chunkSuffix = '.chunk',
   typescript,
   rules: { tsBaseRule, ...rules } = {},
   nodeExternalsOptions,
@@ -105,6 +106,7 @@ export default ({
     outputPublicPath,
     outputJsDir,
     hash,
+    chunkSuffix,
     typescript: typescript
       ? {
           ...tsConfig,

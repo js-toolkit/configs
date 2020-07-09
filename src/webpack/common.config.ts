@@ -10,7 +10,8 @@ export interface CommonConfigOptions extends Configuration {
   outputPath: string;
   outputPublicPath: string;
   outputJsDir: string;
-  hash?: boolean;
+  hash?: boolean | { entry: boolean; chunk: boolean };
+  chunkSuffix?: string;
   typescript?: {
     configFile?: string;
     loader?: TsLoaderType;
@@ -25,130 +26,139 @@ export default ({
   outputPublicPath,
   outputJsDir,
   hash,
+  chunkSuffix = '.chunk',
   typescript,
   ...restOptions
-}: CommonConfigOptions): Configuration => ({
-  // The base directory (absolute path!) for resolving the `entry` option.
-  context: paths.root,
+}: CommonConfigOptions): Configuration => {
+  const entryHash = hash === true || (typeof hash === 'object' && hash.entry);
+  const chunkHash = hash === true || (typeof hash === 'object' && hash.chunk);
 
-  mode: appEnv.raw.NODE_ENV,
+  return {
+    // The base directory (absolute path!) for resolving the `entry` option.
+    context: paths.root,
 
-  // Stop compilation early in production
-  bail: appEnv.prod,
+    mode: appEnv.raw.NODE_ENV,
 
-  // http://cheng.logdown.com/posts/2016/03/25/679045
-  devtool: appEnv.ifDevMode<Options.Devtool>('cheap-module-eval-source-map', false),
+    // Stop compilation early in production
+    bail: appEnv.prod,
 
-  ...restOptions,
+    // http://cheng.logdown.com/posts/2016/03/25/679045
+    devtool: appEnv.ifDevMode<Options.Devtool>('cheap-module-eval-source-map', false),
 
-  output: {
-    path: outputPath,
-    publicPath: outputPublicPath,
-    pathinfo: false, // For speed up
-    filename: path.join(outputJsDir, `[name]${appEnv.prod && hash ? '.[contenthash:8]' : ''}.js`),
-    chunkFilename: path.join(
-      outputJsDir,
-      `[name]${appEnv.prod && hash ? '.[contenthash:8]' : ''}.chunk.js`
-    ),
-    ...restOptions.output,
-  },
+    ...restOptions,
 
-  optimization: {
-    ...restOptions.optimization,
-    ...appEnv.ifProdMode(
-      () => ({
-        minimizer: [
-          new (nodeRequire('terser-webpack-plugin'))({
-            extractComments: false,
-            terserOptions: {
-              output: {
-                comments: false,
+    output: {
+      path: outputPath,
+      publicPath: outputPublicPath,
+      pathinfo: false, // For speed up
+      filename: path.join(
+        outputJsDir,
+        `[name]${appEnv.prod && entryHash ? '.[contenthash:8]' : ''}.js`
+      ),
+      chunkFilename: path.join(
+        outputJsDir,
+        `[name]${appEnv.prod && chunkHash ? '.[contenthash:8]' : ''}${chunkSuffix ?? ''}.js`
+      ),
+      ...restOptions.output,
+    },
+
+    optimization: {
+      ...restOptions.optimization,
+      ...appEnv.ifProdMode(
+        () => ({
+          minimizer: [
+            new (nodeRequire('terser-webpack-plugin'))({
+              extractComments: false,
+              terserOptions: {
+                output: {
+                  comments: false,
+                },
               },
-            },
-          }),
-          ...(restOptions.optimization?.minimizer || []),
-        ],
-      }),
-      undefined
-    ),
-  },
+            }),
+            ...(restOptions.optimization?.minimizer || []),
+          ],
+        }),
+        undefined
+      ),
+    },
 
-  plugins: [
-    // In order for the specified environment variables to be available in the JS code.
-    // EnvironmentPlugin not working on client side with ssr because environment variables not passed to webpackDevMiddleware?
-    new webpack.DefinePlugin({
-      // Replace process.env... and appEnv.raw... to static values in the bundle.
-      ...appEnv.envStringify(),
-      // Replace config... to static values in the bundle.
-      ...buildConfig.envStringify(),
-    }),
-
-    // Enable HMR in development.
-    ...appEnv.ifDevMode(() => [new webpack.HotModuleReplacementPlugin()], []),
-
-    // Forked check for TS
-    ...(typescript && typescript.forkedChecks && typescript.configFile
-      ? [
-          loaders.getTsCheckerPlugin({
-            loaderType: typescript.loader ?? TsLoaderType.Default,
-            ...typescript.checkerOptions,
-            typescript: {
-              configFile: typescript.configFile,
-              ...typescript.checkerOptions?.typescript,
-            },
-          }),
-        ]
-      : []),
-
-    // Ignore all locale files of moment.js
-    // https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
-    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-    ...(restOptions.plugins || []),
-  ],
-
-  resolve: {
-    ...restOptions.resolve,
-    extensions: [
-      ...(typescript ? moduleExtensions : moduleExtensions.filter((ext) => !ext.includes('ts'))),
-      ...((restOptions.resolve && restOptions.resolve.extensions) || []),
-    ],
-    modules: [
-      paths.nodeModules.root,
-      paths.root,
-      ...((restOptions.resolve && restOptions.resolve.modules) || []),
-    ],
     plugins: [
-      ...(typescript
+      // In order for the specified environment variables to be available in the JS code.
+      // EnvironmentPlugin not working on client side with ssr because environment variables not passed to webpackDevMiddleware?
+      new webpack.DefinePlugin({
+        // Replace process.env... and appEnv.raw... to static values in the bundle.
+        ...appEnv.envStringify(),
+        // Replace config... to static values in the bundle.
+        ...buildConfig.envStringify(),
+      }),
+
+      // Enable HMR in development.
+      ...appEnv.ifDevMode(() => [new webpack.HotModuleReplacementPlugin()], []),
+
+      // Forked check for TS
+      ...(typescript && typescript.forkedChecks && typescript.configFile
         ? [
-            (() => {
-              const getName = (): string => 'tsconfig-paths-webpack-plugin';
-              const TSConfigPathsWebpackPlugin = nodeRequire(getName());
-              return new TSConfigPathsWebpackPlugin({ configFile: typescript.configFile });
-            })(),
+            loaders.getTsCheckerPlugin({
+              loaderType: typescript.loader ?? TsLoaderType.Default,
+              ...typescript.checkerOptions,
+              typescript: {
+                configFile: typescript.configFile,
+                ...typescript.checkerOptions?.typescript,
+              },
+            }),
           ]
         : []),
-      ...((restOptions.resolve && restOptions.resolve.plugins) || []),
+
+      // Ignore all locale files of moment.js
+      // https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
+      new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+      ...(restOptions.plugins || []),
     ],
-  },
 
-  stats:
-    restOptions.stats == null || typeof restOptions.stats === 'object'
-      ? {
-          ...(typescript
-            ? // https://github.com/TypeStrong/ts-loader#transpileonly-boolean-defaultfalse
-              { warningsFilter: /export .* was not found in/ }
-            : undefined),
-          ...restOptions.stats,
-        }
-      : restOptions.stats,
+    resolve: {
+      ...restOptions.resolve,
+      extensions: [
+        ...(typescript ? moduleExtensions : moduleExtensions.filter((ext) => !ext.includes('ts'))),
+        ...((restOptions.resolve && restOptions.resolve.extensions) || []),
+      ],
+      modules: [
+        paths.nodeModules.root,
+        paths.root,
+        ...((restOptions.resolve && restOptions.resolve.modules) || []),
+      ],
+      plugins: [
+        ...(typescript
+          ? [
+              (() => {
+                const getName = (): string => 'tsconfig-paths-webpack-plugin';
+                const TSConfigPathsWebpackPlugin = nodeRequire(getName());
+                return new TSConfigPathsWebpackPlugin({ configFile: typescript.configFile });
+              })(),
+            ]
+          : []),
+        ...((restOptions.resolve && restOptions.resolve.plugins) || []),
+      ],
+    },
 
-  module: {
-    // Suppress warnings of dynamic requiring in configs:
-    // To suppress warning with 'Critical dependency: require function is used in a way in which dependencies cannot be statically extracted'
-    exprContextCritical: false,
-    // To suppress warning with 'Critical dependency: the request of a dependency is an expression'
-    unknownContextCritical: false,
-    ...restOptions.module,
-    rules: (restOptions.module && restOptions.module.rules) || [],
-  },
-});
+    stats:
+      restOptions.stats == null || typeof restOptions.stats === 'object'
+        ? {
+            ...(typescript
+              ? // https://github.com/TypeStrong/ts-loader#transpileonly-boolean-defaultfalse
+                { warningsFilter: /export .* was not found in/ }
+              : undefined),
+            ...restOptions.stats,
+          }
+        : restOptions.stats,
+
+    module: {
+      // Suppress warnings of dynamic requiring in configs:
+      // To suppress warning with 'Critical dependency: require function is used in a way in which dependencies cannot be statically extracted'
+      exprContextCritical: false,
+      // To suppress warning with 'Critical dependency: the request of a dependency is an expression'
+      unknownContextCritical: false,
+      ...restOptions.module,
+      rules: (restOptions.module && restOptions.module.rules) || [],
+    },
+  };
+};

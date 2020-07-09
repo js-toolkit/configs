@@ -91,6 +91,7 @@ export default ({
   outputPublicPath = clientBuildConfig.output.publicPath,
   outputJsDir = clientBuildConfig.output.js,
   hash = true,
+  chunkSuffix = '.chunk',
   typescript,
   rules: { tsBaseRule, ...rules } = {},
   ...restOptions
@@ -133,6 +134,7 @@ export default ({
     outputPublicPath,
     outputJsDir,
     hash,
+    chunkSuffix,
     typescript: typescript
       ? {
           ...tsConfig,
@@ -203,10 +205,14 @@ export default ({
           // const getName = (): string => 'mini-css-extract-plugin';
           const getName = (): string => 'extract-css-chunks-webpack-plugin';
           const ExtractCssPlugin = nodeRequire(getName());
-          const hashStr = appEnv.prod && hash ? '.[contenthash:8]' : '';
+          const entryHash = hash === true || (typeof hash === 'object' && hash.entry);
+          const chunkHash = hash === true || (typeof hash === 'object' && hash.chunk);
+          const entryHashStr = appEnv.prod && entryHash ? '.[contenthash:8]' : '';
+          const chunkHashStr = appEnv.prod && chunkHash ? '.[contenthash:8]' : '';
+          const dir = clientBuildConfig.output.styles;
           return new ExtractCssPlugin({
-            filename: `${clientBuildConfig.output.styles}/[name]${hashStr}.css`,
-            chunkFilename: `${clientBuildConfig.output.styles}/[name]${hashStr}.chunk.css`,
+            filename: `${dir}/[name]${entryHashStr}.css`,
+            chunkFilename: `${dir}/[name]${chunkHashStr}${chunkSuffix ?? ''}.css`,
           });
         })(),
       // Minimize css
