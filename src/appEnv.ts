@@ -2,11 +2,42 @@ export type NodeEnv = 'development' | 'production';
 
 export type EnvVarType = string | number | boolean | undefined;
 
-export interface RawAppEnv {
+/** Useful with module augmentation */
+export interface AppEnvVars {
   NODE_ENV: NodeEnv;
   APP_SSR: boolean;
   APP_DEV_SERVER: boolean;
-  [P: string]: EnvVarType;
+  // [P: string]: EnvVarType;
+}
+
+export interface AppEnvironment extends AppEnvVars {
+  raw: AppEnvVars;
+
+  /** Stringify all values that we can feed into Webpack DefinePlugin. */
+  envStringify(): { 'process.env': Record<string, string | undefined> };
+
+  get<T extends keyof AppEnvVars>(envVarName: T): AppEnvVars[T];
+
+  /** Use APP_SSR environment variable */
+  ssr: boolean;
+
+  /** Use NODE_ENV environment variable */
+  dev: boolean;
+
+  /** Use NODE_ENV environment variable */
+  prod: boolean;
+
+  /** Use NODE_ENV environment variable */
+  ifDevMode<T>(devModeValue: (() => T) | T, elseValue: (() => T) | T): T;
+
+  /** Use NODE_ENV environment variable */
+  ifProdMode<T>(prodModeValue: (() => T) | T, elseValue: (() => T) | T): T;
+
+  /** Use APP_DEV_SERVER environment variable */
+  devServer: boolean;
+
+  /** Use APP_DEV_SERVER environment variable */
+  ifDevServer<T>(devServerValue: T, elseValue: T): T;
 }
 
 const APP = /^APP_/i;
@@ -24,9 +55,9 @@ function tryParse(value?: string): EnvVarType {
 // Grab NODE_ENV and APP_* environment variables and prepare them to be
 // injected into the application via DefinePlugin in Webpack configuration.
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function getAppEnvironment() {
+export function getAppEnvironment(): AppEnvironment {
   // Object with keys and their default values so we can feed into Webpack EnvironmentPlugin
-  const raw: RawAppEnv = Object.keys(process.env)
+  const raw: AppEnvVars = Object.keys(process.env)
     .filter((key) => APP.test(key))
     .reduce((env, key) => ({ ...env, [key]: tryParse(process.env[key]) }), {
       // Useful for determining whether we’re running in production mode.
@@ -36,12 +67,12 @@ export function getAppEnvironment() {
       APP_DEV_SERVER: false,
     });
 
-  return {
+  const appEnv = {
     /** Object with keys and their default values so we can feed into Webpack EnvironmentPlugin. */
     raw,
 
     /** Stringify all values that we can feed into Webpack DefinePlugin. */
-    envStringify(): { 'process.env': Record<string, string | undefined> } {
+    envStringify(): ReturnType<AppEnvironment['envStringify']> {
       const stringified = Object.keys(this.raw).reduce(
         (env, key) => ({ ...env, [key]: JSON.stringify(this.raw[key]) }),
         {}
@@ -49,8 +80,8 @@ export function getAppEnvironment() {
       return { 'process.env': stringified };
     },
 
-    get<A extends EnvVarType>(envVarName: string): A {
-      return raw[envVarName] as A;
+    get<T extends keyof AppEnvVars>(envVarName: T): AppEnvVars[T] {
+      return raw[envVarName];
     },
 
     /** Use APP_SSR environment variable */
@@ -94,6 +125,19 @@ export function getAppEnvironment() {
       return this.devServer ? devServerValue : elseValue;
     },
   };
+
+  return new Proxy(appEnv as AppEnvironment, {
+    // prop always is string or symbol, not number
+    get(target, prop) {
+      if (typeof prop === 'string' && !(prop in target)) {
+        return target.raw[prop];
+      }
+      return target[prop];
+    },
+    has(target, prop) {
+      return prop in target || prop in target.raw;
+    },
+  });
 }
 
 /**
