@@ -41,7 +41,7 @@ const config: Linter.Config = {
   rules: {
     'no-console': 'off',
     'no-unused-expressions': ['error', { allowShortCircuit: true }],
-    'lines-between-class-members': ['error', { exceptAfterSingleLine: true }],
+    'lines-between-class-members': ['error', 'always', { exceptAfterSingleLine: true }],
     'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
     'import/extensions': [
       'error',
