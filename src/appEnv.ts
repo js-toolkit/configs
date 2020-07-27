@@ -126,18 +126,22 @@ export function getAppEnvironment(): AppEnvironment {
     },
   };
 
-  return new Proxy(appEnv as AppEnvironment, {
-    // prop always is string or symbol, not number
-    get(target, prop) {
-      if (typeof prop === 'string' && !(prop in target)) {
-        return target.raw[prop];
-      }
-      return target[prop];
-    },
-    has(target, prop) {
-      return prop in target || prop in target.raw;
-    },
-  });
+  if (window.Proxy) {
+    return new Proxy(appEnv as AppEnvironment, {
+      // prop always is string or symbol, not number
+      get(target, prop) {
+        if (typeof prop === 'string' && !(prop in target)) {
+          return target.raw[prop];
+        }
+        return target[prop];
+      },
+      has(target, prop) {
+        return prop in target || prop in target.raw;
+      },
+    });
+  }
+
+  return appEnv as AppEnvironment;
 }
 
 /**
