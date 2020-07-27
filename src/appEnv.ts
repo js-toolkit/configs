@@ -126,7 +126,7 @@ export function getAppEnvironment(): AppEnvironment {
     },
   };
 
-  if (window.Proxy) {
+  if ((typeof window === 'undefined' ? global : window).Proxy) {
     return new Proxy(appEnv as AppEnvironment, {
       // prop always is string or symbol, not number
       get(target, prop) {
