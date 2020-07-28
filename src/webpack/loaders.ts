@@ -186,18 +186,17 @@ export default {
         options: {
           modules:
             modules != null && typeof modules !== 'object'
-              ? // override if provided string or boolean
+              ? // use provided string or boolean
                 modules
-              : // merge if provided object
+              : // merge with defaults if provided object
                 {
                   mode: 'local',
                   localIdentName: appEnv.ifDevMode(pattern, prodPattern),
-                  context: paths.root, // https://github.com/webpack-contrib/css-loader/issues/267
+                  localIdentContext: paths.root, // https://github.com/webpack-contrib/css-loader/issues/267
+                  exportOnlyLocals: ssr,
                   ...modules,
                 },
           importLoaders: postcss ? 1 : undefined,
-          sourceMap: appEnv.dev,
-          onlyLocals: ssr,
           ...cssLoaderOptions,
         },
       },
