@@ -59,6 +59,13 @@ export const clientDefaultRules: Record<
   },
 };
 
+type DefaultRuleValue = RuleSetRule | ((defaults: RuleSetRule) => RuleSetRule);
+
+type ClientDefaultRules = Record<
+  Exclude<keyof typeof clientDefaultRules, 'tsBaseRule'>,
+  DefaultRuleValue
+> & { tsRule: (defaults: RuleSetRule) => RuleSetRule };
+
 export interface ClientConfigOptions extends Omit<CommonConfigOptions, 'typescript'> {
   typescript?:
     | (CommonConfigOptions['typescript'] & {
@@ -67,7 +74,7 @@ export interface ClientConfigOptions extends Omit<CommonConfigOptions, 'typescri
         threadLoaderOptions?: Record<string, any>;
       })
     | boolean;
-  rules?: Record<string, RuleSetRule>;
+  rules?: Partial<ClientDefaultRules> & Record<string, RuleSetRule>;
 }
 
 function containsLoader(rules: Record<string, RuleSetRule>, loader: string): boolean {
@@ -84,6 +91,20 @@ function containsLoader(rules: Record<string, RuleSetRule>, loader: string): boo
   });
 }
 
+export function prepareRules(
+  rules: Record<string, DefaultRuleValue>,
+  defaultRules: Record<string, RuleSetRule>
+): Record<string, RuleSetRule> {
+  return Object.entries<DefaultRuleValue>(rules).reduce((acc, [key, value]) => {
+    if (typeof value === 'function' && key in defaultRules) {
+      acc[key] = value(defaultRules[key]);
+    } else {
+      acc[key] = value;
+    }
+    return acc;
+  }, {});
+}
+
 const clientBuildConfig = buildConfig.client || buildConfig.default.client;
 
 export default ({
@@ -96,8 +117,6 @@ export default ({
   rules: { tsBaseRule, ...rules } = {},
   ...restOptions
 }: ClientConfigOptions): Configuration => {
-  const { tsBaseRule: defaultTsBaseRule, ...restRules } = clientDefaultRules;
-
   const tsConfig: Required<ClientConfigOptions['typescript']> = {
     configFile: paths.client.tsconfig,
     loader: TsLoaderType.Default,
@@ -109,25 +128,27 @@ export default ({
     ...(typeof typescript === 'object' ? typescript : undefined),
   };
 
-  const preparedRules = typescript
-    ? {
-        tsRule: {
-          ...defaultTsBaseRule,
-          ...tsBaseRule,
-          use: loaders.getTsLoader({
-            tsconfig: tsConfig.configFile,
-            forkedChecks: tsConfig.forkedChecks,
-            useThreadLoader: tsConfig.threadLoader,
-            threadLoaderOptions: tsConfig.threadLoaderOptions,
-            ...tsConfig.loaderOptions,
-            loaderType: tsConfig.loader,
-          }),
-        },
-        ...restRules,
-      }
-    : { ...restRules };
+  const { tsBaseRule: defaultTsBaseRule, ...restDefaultRules } = clientDefaultRules;
 
-  const moduleRules = { ...preparedRules, ...rules };
+  const defaultRules: Omit<typeof clientDefaultRules, 'tsBaseRule'> & { tsRule: RuleSetRule } = {
+    tsRule: {
+      ...defaultTsBaseRule,
+      ...tsBaseRule,
+      use: loaders.getTsLoader({
+        tsconfig: tsConfig.configFile,
+        forkedChecks: tsConfig.forkedChecks,
+        useThreadLoader: tsConfig.threadLoader,
+        threadLoaderOptions: tsConfig.threadLoaderOptions,
+        ...tsConfig.loaderOptions,
+        loaderType: tsConfig.loader,
+      }),
+    },
+    ...restDefaultRules,
+  };
+
+  const preparedRules = prepareRules(rules, defaultRules);
+
+  const moduleRules = { ...defaultRules, ...preparedRules };
 
   return commonConfig({
     outputPath,

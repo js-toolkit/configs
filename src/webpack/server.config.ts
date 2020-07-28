@@ -4,10 +4,10 @@ import appEnv from '../appEnv';
 import paths from '../paths';
 import buildConfig from '../buildConfig';
 import commonConfig from './common.config';
-import { clientDefaultRules, ClientConfigOptions } from './client.config';
+import { clientDefaultRules, ClientConfigOptions, prepareRules } from './client.config';
 import loaders, { TsLoaderType } from './loaders';
 
-export const serverDefaultRules = {
+export const serverDefaultRules: Pick<typeof clientDefaultRules, 'jsRule' | 'tsBaseRule'> = {
   jsRule: {
     ...clientDefaultRules.jsRule,
     include: [paths.server.sources, paths.shared.sources].filter((v) => !!v),
@@ -66,10 +66,6 @@ export default ({
   isUniversal,
   ...restOptions
 }: ServerConfigOptions): Configuration => {
-  const { tsBaseRule: defaultTsBaseRule, ...restRules } = isUniversal
-    ? universalDefaultRules
-    : serverDefaultRules;
-
   const tsConfig: Required<ServerConfigOptions['typescript']> = {
     configFile: paths.server.tsconfig,
     loader: TsLoaderType.Default,
@@ -81,23 +77,27 @@ export default ({
     ...(typeof typescript === 'object' ? typescript : undefined),
   };
 
-  const preparedRules = typescript
-    ? {
-        tsRule: {
-          ...defaultTsBaseRule,
-          ...tsBaseRule,
-          use: loaders.getTsLoader({
-            tsconfig: tsConfig.configFile,
-            forkedChecks: tsConfig.forkedChecks,
-            useThreadLoader: tsConfig.threadLoader,
-            threadLoaderOptions: tsConfig.threadLoaderOptions,
-            ...tsConfig.loaderOptions,
-            loaderType: tsConfig.loader,
-          }),
-        },
-        ...restRules,
-      }
-    : { ...restRules };
+  const { tsBaseRule: defaultTsBaseRule, ...restDefaultRules } = isUniversal
+    ? universalDefaultRules
+    : serverDefaultRules;
+
+  const defaultRules = {
+    tsRule: {
+      ...defaultTsBaseRule,
+      ...tsBaseRule,
+      use: loaders.getTsLoader({
+        tsconfig: tsConfig.configFile,
+        forkedChecks: tsConfig.forkedChecks,
+        useThreadLoader: tsConfig.threadLoader,
+        threadLoaderOptions: tsConfig.threadLoaderOptions,
+        ...tsConfig.loaderOptions,
+        loaderType: tsConfig.loader,
+      }),
+    },
+    ...restDefaultRules,
+  };
+
+  const preparedRules = prepareRules(rules, defaultRules);
 
   const moduleRules = { ...preparedRules, ...rules };
 
