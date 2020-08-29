@@ -11,7 +11,7 @@ export function getClientConfig(root = 'client') {
       template: '',
       filename: 'index.html',
       title: '',
-    },
+    } as import('html-webpack-plugin').Options,
 
     /** Used by eslint webpack resolver */
     webpackConfig: '',
