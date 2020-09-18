@@ -20,7 +20,7 @@ export default ({
   sourceMap: appEnv.dev,
   plugins: [
     // Primarily use to override imported styles: import css file before css-loader process it and then process merged css by css-loader.
-    importConfig && 'postcss-import', // https://github.com/postcss/postcss-import/issues/224
+    importConfig && ['postcss-import', importConfig], // https://github.com/postcss/postcss-import/issues/224
     nested && 'postcss-nested',
     // https://preset-env.cssdb.org/
     [
