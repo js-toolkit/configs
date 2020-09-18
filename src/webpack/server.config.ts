@@ -99,7 +99,7 @@ export default ({
 
   const preparedRules = prepareRules(rules, defaultRules);
 
-  const moduleRules = { ...preparedRules, ...rules };
+  const moduleRules = { ...defaultRules, ...preparedRules };
 
   return commonConfig({
     outputPath,
