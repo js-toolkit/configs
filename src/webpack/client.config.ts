@@ -105,6 +105,11 @@ export function prepareRules(
   }, {});
 }
 
+function getPnpWebpackPlugin() {
+  const getName = (): string => 'pnp-webpack-plugin';
+  return nodeRequire(getName());
+}
+
 const clientBuildConfig = buildConfig.client || buildConfig.default.client;
 
 export default ({
@@ -192,6 +197,20 @@ export default ({
         ...(paths.shared.sources ? { shared: paths.shared.sources } : undefined),
         ...((restOptions.resolve && restOptions.resolve.alias) || undefined),
       },
+      plugins: [
+        ...(clientBuildConfig.webpackPnpEnabled ? [getPnpWebpackPlugin()] : []),
+        ...((restOptions.resolve && restOptions.resolve.plugins) || []),
+      ],
+    },
+
+    resolveLoader: {
+      ...restOptions.resolveLoader,
+      plugins: [
+        ...(clientBuildConfig.webpackPnpEnabled
+          ? [getPnpWebpackPlugin().moduleLoader(module)]
+          : []),
+        ...((restOptions.resolveLoader && restOptions.resolveLoader.plugins) || []),
+      ],
     },
 
     module: {

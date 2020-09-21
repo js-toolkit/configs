@@ -17,6 +17,8 @@ export function getClientConfig(root = 'client') {
     webpackConfig: '',
     /** Used by webpack loaders and plugins */
     tsconfig: 'tsconfig.json',
+    /** Plug'n'Play resolver for Webpack */
+    webpackPnpEnabled: false,
 
     output: {
       root,
