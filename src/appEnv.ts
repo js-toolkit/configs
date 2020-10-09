@@ -57,12 +57,13 @@ function tryParse(value?: string): EnvVarType {
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function getAppEnvironment(): AppEnvironment {
   // Object with keys and their default values so we can feed into Webpack EnvironmentPlugin
-  const raw: AppEnvVars = Object.keys(process.env)
+  const variables = process.env;
+  const raw: AppEnvVars = Object.keys(variables)
     .filter((key) => APP.test(key))
-    .reduce((env, key) => ({ ...env, [key]: tryParse(process.env[key]) }), {
+    .reduce((env, key) => ({ ...env, [key]: tryParse(variables[key]) }), {
       // Useful for determining whether we’re running in production mode.
       // Most importantly, it switches React into the correct mode.
-      NODE_ENV: tryParse(process.env.NODE_ENV || 'development') as NodeEnv,
+      NODE_ENV: tryParse(variables.NODE_ENV || 'development') as NodeEnv,
       APP_SSR: false,
       APP_DEV_SERVER: false,
     });
