@@ -14,7 +14,7 @@ export interface AppEnvironment extends AppEnvVars {
   raw: AppEnvVars;
 
   /** Stringify all values that we can feed into Webpack DefinePlugin. */
-  envStringify(): { 'process.env': Record<string, string | undefined> };
+  envStringify(): { 'process.env': Record<string, string> };
 
   get<T extends keyof AppEnvVars>(envVarName: T): AppEnvVars[T];
 

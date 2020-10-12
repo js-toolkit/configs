@@ -1,4 +1,4 @@
-import { Configuration, RuleSetRule, RuleSetUse } from 'webpack';
+import { Configuration, RuleSetRule, RuleSetUse, version } from 'webpack';
 import path from 'path';
 import appEnv from '../appEnv';
 import paths from '../paths';
@@ -87,7 +87,7 @@ function containsLoader(rules: Record<string, RuleSetRule>, loader: string): boo
 
   return Object.getOwnPropertyNames(rules).some((key) => {
     const rule = rules[key];
-    return checkRule(rule.loader || rule.loaders || rule.use);
+    return checkRule(rule.loader || rule.use);
   });
 }
 
@@ -105,7 +105,7 @@ export function prepareRules(
   }, {});
 }
 
-function getPnpWebpackPlugin() {
+function getPnpWebpackPlugin(): any {
   const getName = (): string => 'pnp-webpack-plugin';
   return nodeRequire(getName());
 }
@@ -301,7 +301,9 @@ export default ({
             clientsClaim: true,
             importWorkboxFrom: 'cdn',
             exclude: [/\.map$/, new RegExp(`${clientBuildConfig.output.assetManifest.fileName}$`)],
-            navigateFallback: `${clientBuildConfig.output.publicPath}${clientBuildConfig.html.filename}`,
+            navigateFallback: `${clientBuildConfig.output.publicPath}${
+              clientBuildConfig.html.filename ?? ''
+            }`,
             navigateFallbackBlacklist: [
               // Exclude URLs starting with /_, as they're likely an API call
               new RegExp('^/_'),
@@ -332,19 +334,23 @@ export default ({
       ...(restOptions.plugins || []),
     ].filter(Boolean),
 
-    // Some libraries import Node modules but don't use them in the browser.
-    // Tell Webpack to provide empty mocks for them so importing them works.
-    // node: {
-    //   module: 'empty',
-    //   dgram: 'empty',
-    //   dns: 'mock',
-    //   fs: 'empty',
-    //   http2: 'empty',
-    //   net: 'empty',
-    //   tls: 'empty',
-    //   child_process: 'empty',
-    //   ...restOptions.node,
-    // },
+    ...((version ?? '').startsWith('5')
+      ? undefined
+      : {
+          // Some libraries import Node modules but don't use them in the browser.
+          // Tell Webpack to provide empty mocks for them so importing them works.
+          node: {
+            module: 'empty',
+            dgram: 'empty',
+            dns: 'mock',
+            fs: 'empty',
+            http2: 'empty',
+            net: 'empty',
+            tls: 'empty',
+            child_process: 'empty',
+            ...restOptions.node,
+          } as any,
+        }),
 
     devServer: {
       contentBase: paths.client.staticContent, // Static content which not processed by webpack and loadable from disk.

@@ -1,4 +1,4 @@
-import { Loader } from 'webpack';
+import { RuleSetUseItem } from 'webpack';
 import appEnv from '../appEnv';
 import paths from '../paths';
 import buildConfig from '../buildConfig';
@@ -23,7 +23,7 @@ interface GetTsDefaultLoaderOptions extends GetTsLoaderOptionsBase {
   forkedChecks?: boolean;
   useThreadLoader?: boolean;
   threadLoaderOptions?: Record<string, any>;
-  afterLoaders?: Loader[];
+  afterLoaders?: RuleSetUseItem[];
 }
 
 type TsDefaultLoaderOptions = Omit<GetTsDefaultLoaderOptions, 'loaderType'> & Record<string, any>;

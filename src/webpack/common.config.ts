@@ -1,4 +1,4 @@
-import webpack, { Options, Configuration } from 'webpack';
+import webpack, { Configuration } from 'webpack';
 import path from 'path';
 import appEnv from '../appEnv';
 import buildConfig from '../buildConfig';
@@ -43,7 +43,10 @@ export default ({
     bail: appEnv.prod,
 
     // http://cheng.logdown.com/posts/2016/03/25/679045
-    devtool: appEnv.ifDevMode<Options.Devtool>('cheap-module-eval-source-map', false),
+    devtool: appEnv.ifDevMode<NonNullable<webpack.Configuration['devtool']>>(
+      'cheap-module-eval-source-map',
+      false
+    ),
 
     ...restOptions,
 
@@ -111,7 +114,10 @@ export default ({
 
       // Ignore all locale files of moment.js
       // https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
-      new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+      (webpack.version ?? '').startsWith('5')
+        ? new webpack.IgnorePlugin({ contextRegExp: /moment$/, resourceRegExp: /^\.\/locale$/ })
+        : // @ts-ignore
+          new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
       ...(restOptions.plugins || []),
     ],
 

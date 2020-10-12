@@ -6,7 +6,8 @@
     "isolatedModules": false,
     "declaration": true,
     "sourceMap": false,
-    "incremental": true
+    "incremental": true,
+    "skipLibCheck": true
   },
   "include": ["./src/"]
 }
