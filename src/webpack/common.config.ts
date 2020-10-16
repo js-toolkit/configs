@@ -44,7 +44,9 @@ export default ({
 
     // http://cheng.logdown.com/posts/2016/03/25/679045
     devtool: appEnv.ifDevMode<NonNullable<webpack.Configuration['devtool']>>(
-      'cheap-module-eval-source-map',
+      webpack.version.startsWith('5')
+        ? 'eval-cheap-module-source-map'
+        : 'cheap-module-eval-source-map',
       false
     ),
 
