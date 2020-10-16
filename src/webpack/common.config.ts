@@ -148,16 +148,26 @@ export default ({
       ],
     },
 
-    stats:
-      restOptions.stats == null || typeof restOptions.stats === 'object'
-        ? {
-            ...(typescript
-              ? // https://github.com/TypeStrong/ts-loader#transpileonly-boolean-defaultfalse
-                { warningsFilter: /export .* was not found in/ }
-              : undefined),
-            ...restOptions.stats,
-          }
-        : restOptions.stats,
+    ...((webpack.version ?? '').startsWith('5')
+      ? {
+          ignoreWarnings: [
+            // https://github.com/TypeStrong/ts-loader#transpileonly-boolean-defaultfalse
+            ...(typescript ? [/export .* was not found in/] : []),
+            ...(restOptions.ignoreWarnings ?? []),
+          ],
+        }
+      : {
+          stats:
+            restOptions.stats == null || typeof restOptions.stats === 'object'
+              ? {
+                  ...(typescript
+                    ? // https://github.com/TypeStrong/ts-loader#transpileonly-boolean-defaultfalse
+                      { warningsFilter: /export .* was not found in/ }
+                    : undefined),
+                  ...restOptions.stats,
+                }
+              : restOptions.stats,
+        }),
 
     module: {
       // Suppress warnings of dynamic requiring in configs:
