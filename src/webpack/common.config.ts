@@ -19,6 +19,7 @@ export interface CommonConfigOptions extends Configuration {
     /** Forked checks webpack plugin options */
     checkerOptions?: Record<string, any>;
   };
+  terserPluginOptions?: Record<string, any>;
 }
 
 export default ({
@@ -28,6 +29,7 @@ export default ({
   hash,
   chunkSuffix = '.chunk',
   typescript,
+  terserPluginOptions,
   ...restOptions
 }: CommonConfigOptions): Configuration => {
   const entryHash = hash === true || (typeof hash === 'object' && hash.entry);
@@ -74,9 +76,12 @@ export default ({
           minimizer: [
             new (nodeRequire('terser-webpack-plugin'))({
               extractComments: false,
+              ...terserPluginOptions,
               terserOptions: {
+                ...terserPluginOptions?.terserOptions,
                 output: {
                   comments: false,
+                  ...terserPluginOptions?.terserOptions?.output,
                 },
               },
             }),
