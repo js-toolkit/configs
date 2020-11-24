@@ -19,6 +19,7 @@ const config: import('eslint').Linter.Config = {
 
   settings: {
     'import/resolver': {
+      node: {}, // Add priority
       ...(buildConfig.client && buildConfig.client.webpackConfig
         ? { webpack: { config: buildConfig.client.webpackConfig } }
         : undefined),
