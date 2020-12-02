@@ -2,7 +2,7 @@
   "name": "@vzh/configs",
   "version": "3.70.1",
   "description": "Preconfigured configurations",
-  "author": "Vladimir Zhukov",
+  "author": "VZH",
   "license": "MIT",
   "main": "./",
   "scripts": {
