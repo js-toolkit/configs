@@ -184,6 +184,8 @@ export default ({
 
     // recordsOutputPath: path.join(paths.output.path, 'webpack.client.stats.json'),
 
+    stats: appEnv.ifDevMode('minimal', undefined),
+
     ...restOptions,
 
     resolve: {
@@ -354,15 +356,14 @@ export default ({
         }),
 
     devServer: {
-      contentBase: paths.client.staticContent, // Static content which not processed by webpack and loadable from disk.
-      publicPath: clientBuildConfig.output.publicPath,
+      static: paths.client.staticContent, // Static content which not processed by webpack and loadable from disk.
       historyApiFallback: true, // For react subpages handling with webpack-dev-server
       host: '0.0.0.0',
       port: 9000,
-      hotOnly: true,
-      noInfo: false,
-      stats: 'minimal',
+      // @ts-ignore
+      hot: 'only',
       ...restOptions.devServer,
+      // dev: { publicPath: clientBuildConfig.output.publicPath },
     },
   });
 };
