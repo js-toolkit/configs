@@ -60,13 +60,20 @@ export function getAppEnvironment(): AppEnvironment {
   const variables = process.env;
   const raw: AppEnvVars = Object.keys(variables)
     .filter((key) => APP.test(key))
-    .reduce((env, key) => ({ ...env, [key]: tryParse(variables[key]) }), {
-      // Useful for determining whether we’re running in production mode.
-      // Most importantly, it switches React into the correct mode.
-      NODE_ENV: tryParse(variables.NODE_ENV || 'development') as NodeEnv,
-      APP_SSR: false,
-      APP_DEV_SERVER: false,
-    });
+    .reduce(
+      (env, key) => {
+        // eslint-disable-next-line no-param-reassign
+        env[key] = tryParse(variables[key]);
+        return env;
+      },
+      {
+        // Useful for determining whether we’re running in production mode.
+        // Most importantly, it switches React into the correct mode.
+        NODE_ENV: tryParse(variables.NODE_ENV || 'development') as NodeEnv,
+        APP_SSR: false,
+        APP_DEV_SERVER: false,
+      }
+    );
 
   const appEnv = {
     /** Object with keys and their default values so we can feed into Webpack EnvironmentPlugin. */
@@ -74,10 +81,11 @@ export function getAppEnvironment(): AppEnvironment {
 
     /** Stringify all values that we can feed into Webpack DefinePlugin. */
     envStringify(): ReturnType<AppEnvironment['envStringify']> {
-      const stringified = Object.keys(this.raw).reduce(
-        (env, key) => ({ ...env, [key]: JSON.stringify(this.raw[key]) }),
-        {}
-      );
+      const stringified = Object.keys(this.raw).reduce((env, key) => {
+        // eslint-disable-next-line no-param-reassign
+        env[key] = JSON.stringify(this.raw[key]);
+        return env;
+      }, {});
       return { 'process.env': stringified };
     },
 
