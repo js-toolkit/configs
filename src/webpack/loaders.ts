@@ -170,6 +170,8 @@ export default {
     postcss = true,
     extractor = true,
     modules,
+    styleLoaderOptions,
+    postcssLoaderOptions,
     ...cssLoaderOptions
   }: {
     ssr?: boolean;
@@ -178,9 +180,17 @@ export default {
     postcss?: boolean;
     extractor?: boolean;
     modules?: Record<string, any> | boolean;
+    styleLoaderOptions?: Record<string, unknown>;
+    postcssLoaderOptions?: Record<string, unknown>;
   } & Record<string, any> = {}) {
     return [
-      ...(!ssr ? [appEnv.dev || !extractor ? 'style-loader' : this.cssExtractLoader] : []),
+      ...(!ssr
+        ? [
+            appEnv.dev || !extractor
+              ? { loader: 'style-loader', options: styleLoaderOptions }
+              : this.cssExtractLoader,
+          ]
+        : []),
       {
         loader: 'css-loader',
         options: {
@@ -200,7 +210,7 @@ export default {
           ...cssLoaderOptions,
         },
       },
-      ...(postcss ? ['postcss-loader'] : []),
+      ...(postcss ? [{ loader: 'postcss-loader', options: postcssLoaderOptions }] : []),
     ];
   },
 
