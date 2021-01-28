@@ -8,7 +8,13 @@ import loaders, { TsLoaderType } from './loaders';
 import nodeRequire from './nodeRequire';
 
 export const clientDefaultRules: Record<
-  'jsRule' | 'tsBaseRule' | 'cssRule' | 'cssNodeModulesRule' | 'svgRule' | 'assetsRule',
+  | 'jsRule'
+  | 'tsBaseRule'
+  | 'cssRule'
+  | 'cssNodeModulesRule'
+  | 'svgRule'
+  | 'fontRule'
+  | 'assetsRule',
   RuleSetRule
 > = {
   jsRule: {
@@ -52,8 +58,13 @@ export const clientDefaultRules: Record<
     include: [paths.client.sources, paths.nodeModules.root],
     use: loaders.assets({ limit: undefined }),
   },
+  fontRule: {
+    test: /\.(eot|ttf|woff|woff2|otf)$/,
+    include: [paths.client.assets, paths.nodeModules.root],
+    use: loaders.assets(),
+  },
   assetsRule: {
-    test: /\.(png|jpg|gif|eot|ttf|woff|woff2|otf)$/,
+    test: /\.(png|jpg|gif|ico)$/,
     include: [paths.client.assets, paths.nodeModules.root],
     use: loaders.assets(),
   },
