@@ -6,8 +6,6 @@ export type EnvVarType = string | number | boolean | undefined;
 export interface AppEnvVars {
   NODE_ENV: NodeEnv;
   APP_SSR: boolean;
-  // APP_DEV_SERVER: boolean;
-  // [P: string]: EnvVarType;
 }
 
 type ValueGetter<T> = () => T;
@@ -50,9 +48,10 @@ function tryParse(value?: string): EnvVarType {
   }
 }
 
-// Grab NODE_ENV and APP_* environment variables and prepare them to be
-// injected into the application via DefinePlugin in Webpack configuration.
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+/**
+ * Grab NODE_ENV and APP_* environment variables and prepare them to be
+ * injected into the application via DefinePlugin in Webpack configuration.
+ */
 export function getAppEnvironment(): AppEnvironment {
   const rawEnv = process.env;
 
