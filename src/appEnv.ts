@@ -6,9 +6,12 @@ export type EnvVarType = string | number | boolean | undefined;
 export interface AppEnvVars {
   NODE_ENV: NodeEnv;
   APP_SSR: boolean;
-  APP_DEV_SERVER: boolean;
+  // APP_DEV_SERVER: boolean;
   // [P: string]: EnvVarType;
 }
+
+type ValueGetter<T> = () => T;
+type ValueOrGetter<T> = T | ValueGetter<T>;
 
 export interface AppEnvironment extends AppEnvVars {
   raw: AppEnvVars;
@@ -28,10 +31,10 @@ export interface AppEnvironment extends AppEnvVars {
   prod: boolean;
 
   /** Use NODE_ENV environment variable */
-  ifDevMode<T>(devModeValue: (() => T) | T, elseValue: (() => T) | T): T;
+  ifDevMode<T>(devModeValue: ValueOrGetter<T>, elseValue: ValueOrGetter<T>): T;
 
   /** Use NODE_ENV environment variable */
-  ifProdMode<T>(prodModeValue: (() => T) | T, elseValue: (() => T) | T): T;
+  ifProdMode<T>(prodModeValue: ValueOrGetter<T>, elseValue: ValueOrGetter<T>): T;
 
   /** Use APP_DEV_SERVER environment variable */
   devServer: boolean;
@@ -56,22 +59,22 @@ function tryParse(value?: string): EnvVarType {
 // injected into the application via DefinePlugin in Webpack configuration.
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function getAppEnvironment(): AppEnvironment {
+  const rawEnv = process.env;
+
   // Object with keys and their default values so we can feed into Webpack EnvironmentPlugin
-  const variables = process.env;
-  const raw: AppEnvVars = Object.keys(variables)
+  const raw: AppEnvVars = Object.keys(rawEnv)
     .filter((key) => APP.test(key))
     .reduce(
       (env, key) => {
         // eslint-disable-next-line no-param-reassign
-        env[key] = tryParse(variables[key]);
+        env[key] = tryParse(rawEnv[key]);
         return env;
       },
       {
         // Useful for determining whether we’re running in production mode.
         // Most importantly, it switches React into the correct mode.
-        NODE_ENV: tryParse(variables.NODE_ENV || 'development') as NodeEnv,
+        NODE_ENV: tryParse(rawEnv.NODE_ENV || 'development') as NodeEnv,
         APP_SSR: false,
-        APP_DEV_SERVER: false,
       }
     );
 
@@ -109,29 +112,23 @@ export function getAppEnvironment(): AppEnvironment {
     },
 
     /** Use NODE_ENV environment variable */
-    ifDevMode<T>(devModeValue: (() => T) | T, elseValue: (() => T) | T): T {
+    ifDevMode<T>(devModeValue: ValueOrGetter<T>, elseValue: ValueOrGetter<T>): T {
       if (this.dev) {
-        return typeof devModeValue === 'function' ? (devModeValue as Function)() : devModeValue;
+        return typeof devModeValue === 'function'
+          ? (devModeValue as ValueGetter<T>)()
+          : devModeValue;
       }
-      return typeof elseValue === 'function' ? (elseValue as Function)() : elseValue;
+      return typeof elseValue === 'function' ? (elseValue as ValueGetter<T>)() : elseValue;
     },
 
     /** Use NODE_ENV environment variable */
-    ifProdMode<T>(prodModeValue: (() => T) | T, elseValue: (() => T) | T): T {
+    ifProdMode<T>(prodModeValue: ValueOrGetter<T>, elseValue: ValueOrGetter<T>): T {
       if (this.prod) {
-        return typeof prodModeValue === 'function' ? (prodModeValue as Function)() : prodModeValue;
+        return typeof prodModeValue === 'function'
+          ? (prodModeValue as ValueGetter<T>)()
+          : prodModeValue;
       }
-      return typeof elseValue === 'function' ? (elseValue as Function)() : elseValue;
-    },
-
-    /** Use APP_DEV_SERVER environment variable */
-    get devServer(): boolean {
-      return this.raw.APP_DEV_SERVER === true;
-    },
-
-    /** Use APP_DEV_SERVER environment variable */
-    ifDevServer<T>(devServerValue: T, elseValue: T): T {
-      return this.devServer ? devServerValue : elseValue;
+      return typeof elseValue === 'function' ? (elseValue as ValueGetter<T>)() : elseValue;
     },
   };
 
