@@ -13,7 +13,8 @@ export interface AppEnvVars {
 type ValueGetter<T> = () => T;
 type ValueOrGetter<T> = T | ValueGetter<T>;
 
-export interface AppEnvironment extends AppEnvVars {
+export interface AppEnvironment {
+  /** Object with keys and their default values so we can feed into Webpack EnvironmentPlugin. */
   raw: AppEnvVars;
 
   /** Stringify all values that we can feed into Webpack DefinePlugin. */
@@ -35,12 +36,6 @@ export interface AppEnvironment extends AppEnvVars {
 
   /** Use NODE_ENV environment variable */
   ifProdMode<T>(prodModeValue: ValueOrGetter<T>, elseValue: ValueOrGetter<T>): T;
-
-  /** Use APP_DEV_SERVER environment variable */
-  devServer: boolean;
-
-  /** Use APP_DEV_SERVER environment variable */
-  ifDevServer<T>(devServerValue: T, elseValue: T): T;
 }
 
 const APP = /^APP_/i;
@@ -78,12 +73,10 @@ export function getAppEnvironment(): AppEnvironment {
       }
     );
 
-  const appEnv = {
-    /** Object with keys and their default values so we can feed into Webpack EnvironmentPlugin. */
+  const appEnv: AppEnvironment = {
     raw,
 
-    /** Stringify all values that we can feed into Webpack DefinePlugin. */
-    envStringify(): ReturnType<AppEnvironment['envStringify']> {
+    envStringify() {
       const stringified = Object.keys(this.raw).reduce((env, key) => {
         // eslint-disable-next-line no-param-reassign
         env[key] = JSON.stringify(this.raw[key]);
@@ -96,22 +89,18 @@ export function getAppEnvironment(): AppEnvironment {
       return raw[envVarName];
     },
 
-    /** Use APP_SSR environment variable */
-    get ssr(): boolean {
+    get ssr() {
       return this.raw.APP_SSR === true;
     },
 
-    /** Use NODE_ENV environment variable */
-    get dev(): boolean {
+    get dev() {
       return this.raw.NODE_ENV === 'development';
     },
 
-    /** Use NODE_ENV environment variable */
-    get prod(): boolean {
+    get prod() {
       return this.raw.NODE_ENV === 'production';
     },
 
-    /** Use NODE_ENV environment variable */
     ifDevMode<T>(devModeValue: ValueOrGetter<T>, elseValue: ValueOrGetter<T>): T {
       if (this.dev) {
         return typeof devModeValue === 'function'
@@ -121,7 +110,6 @@ export function getAppEnvironment(): AppEnvironment {
       return typeof elseValue === 'function' ? (elseValue as ValueGetter<T>)() : elseValue;
     },
 
-    /** Use NODE_ENV environment variable */
     ifProdMode<T>(prodModeValue: ValueOrGetter<T>, elseValue: ValueOrGetter<T>): T {
       if (this.prod) {
         return typeof prodModeValue === 'function'
@@ -133,7 +121,7 @@ export function getAppEnvironment(): AppEnvironment {
   };
 
   if ((typeof window === 'undefined' ? global : window).Proxy) {
-    return new Proxy(appEnv as AppEnvironment, {
+    return new Proxy(appEnv, {
       // prop always is string or symbol, not number
       get(target, prop) {
         if (typeof prop === 'string' && !(prop in target)) {
@@ -147,7 +135,7 @@ export function getAppEnvironment(): AppEnvironment {
     });
   }
 
-  return appEnv as AppEnvironment;
+  return appEnv;
 }
 
 /**
