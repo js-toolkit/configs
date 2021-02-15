@@ -45,7 +45,7 @@ export default ({
     bail: appEnv.prod,
 
     // http://cheng.logdown.com/posts/2016/03/25/679045
-    devtool: appEnv.ifDevMode<NonNullable<webpack.Configuration['devtool']>>(
+    devtool: appEnv.ifDev<NonNullable<webpack.Configuration['devtool']>>(
       webpack.version.startsWith('5')
         ? 'eval-cheap-module-source-map'
         : 'cheap-module-eval-source-map',
@@ -71,7 +71,7 @@ export default ({
 
     optimization: {
       ...restOptions.optimization,
-      ...appEnv.ifProdMode(
+      ...appEnv.ifProd(
         () => ({
           minimizer: [
             new (nodeRequire('terser-webpack-plugin'))({
@@ -103,7 +103,7 @@ export default ({
       }),
 
       // Enable HMR in development.
-      ...appEnv.ifDevMode(() => [new webpack.HotModuleReplacementPlugin()], []),
+      ...appEnv.ifDev(() => [new webpack.HotModuleReplacementPlugin()], []),
 
       // Forked check for TS
       ...(typescript && typescript.forkedChecks && typescript.configFile

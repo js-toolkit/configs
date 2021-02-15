@@ -63,7 +63,7 @@ export default {
               options: {
                 // there should be 1 cpu for the fork-ts-checker-webpack-plugin
                 workers: 1, // best for universal builds on my machine (2 core * 2 hyperthreads)
-                poolTimeout: appEnv.ifDevMode(Infinity, undefined),
+                poolTimeout: appEnv.ifDev(Infinity, undefined),
                 ...threadLoaderOptions,
               },
             },
@@ -81,7 +81,7 @@ export default {
           ...rest,
           compilerOptions: {
             // disable sourceMap in production by default
-            ...appEnv.ifProdMode(() => ({ sourceMap: false }), undefined),
+            ...appEnv.ifProd(() => ({ sourceMap: false }), undefined),
             ...rest.compilerOptions,
           },
         },
@@ -93,7 +93,7 @@ export default {
     return this.ts({
       afterLoaders: [
         ...(afterLoaders || []),
-        ...appEnv.ifDevMode(() => [{ loader: 'babel-loader' }], []),
+        ...appEnv.ifDev(() => [{ loader: 'babel-loader' }], []),
       ],
       ...rest,
     });
@@ -133,7 +133,7 @@ export default {
 
   atsRHL({ tsconfig, ...rest }: BaseTsOptions & Record<string, any>) {
     return [
-      ...appEnv.ifDevMode(() => [{ loader: 'babel-loader' }], []),
+      ...appEnv.ifDev(() => [{ loader: 'babel-loader' }], []),
       this.atl({ tsconfig, ...rest }),
     ];
   },
@@ -201,7 +201,7 @@ export default {
               : // merge with defaults if provided object
                 {
                   mode: 'local',
-                  localIdentName: appEnv.ifDevMode(pattern, prodPattern),
+                  localIdentName: appEnv.ifDev(pattern, prodPattern),
                   localIdentContext: paths.root, // https://github.com/webpack-contrib/css-loader/issues/267
                   exportOnlyLocals: ssr,
                   ...modules,

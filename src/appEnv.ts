@@ -30,10 +30,10 @@ export interface AppEnvironment {
   prod: boolean;
 
   /** Use NODE_ENV environment variable */
-  ifDevMode<T>(devModeValue: ValueOrGetter<T>, elseValue: ValueOrGetter<T>): T;
+  ifDev<T>(devModeValue: ValueOrGetter<T>, elseValue: ValueOrGetter<T>): T;
 
   /** Use NODE_ENV environment variable */
-  ifProdMode<T>(prodModeValue: ValueOrGetter<T>, elseValue: ValueOrGetter<T>): T;
+  ifProd<T>(prodModeValue: ValueOrGetter<T>, elseValue: ValueOrGetter<T>): T;
 }
 
 const APP = /^APP_/i;
@@ -100,7 +100,7 @@ export function getAppEnvironment(): AppEnvironment {
       return this.raw.NODE_ENV === 'production';
     },
 
-    ifDevMode<T>(devModeValue: ValueOrGetter<T>, elseValue: ValueOrGetter<T>): T {
+    ifDev<T>(devModeValue: ValueOrGetter<T>, elseValue: ValueOrGetter<T>): T {
       if (this.dev) {
         return typeof devModeValue === 'function'
           ? (devModeValue as ValueGetter<T>)()
@@ -109,7 +109,7 @@ export function getAppEnvironment(): AppEnvironment {
       return typeof elseValue === 'function' ? (elseValue as ValueGetter<T>)() : elseValue;
     },
 
-    ifProdMode<T>(prodModeValue: ValueOrGetter<T>, elseValue: ValueOrGetter<T>): T {
+    ifProd<T>(prodModeValue: ValueOrGetter<T>, elseValue: ValueOrGetter<T>): T {
       if (this.prod) {
         return typeof prodModeValue === 'function'
           ? (prodModeValue as ValueGetter<T>)()

@@ -195,7 +195,7 @@ export default ({
 
     // recordsOutputPath: path.join(paths.output.path, 'webpack.client.stats.json'),
 
-    stats: appEnv.ifDevMode('minimal', undefined),
+    stats: appEnv.ifDev('minimal', undefined),
 
     ...restOptions,
 
