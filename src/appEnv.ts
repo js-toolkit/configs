@@ -18,6 +18,8 @@ export interface AppEnvironment {
   /** Stringify all values that we can feed into Webpack DefinePlugin. */
   envStringify(): { 'process.env': Record<string, string> };
 
+  has<T extends keyof AppEnvVars>(envVarName: T): boolean;
+
   get<T extends keyof AppEnvVars>(envVarName: T): AppEnvVars[T];
 
   /** Use APP_SSR environment variable */
@@ -82,6 +84,10 @@ export function getAppEnvironment(): AppEnvironment {
         return env;
       }, {});
       return { 'process.env': stringified };
+    },
+
+    has<T extends keyof AppEnvVars>(envVarName: T) {
+      return envVarName in raw;
     },
 
     get<T extends keyof AppEnvVars>(envVarName: T): AppEnvVars[T] {
