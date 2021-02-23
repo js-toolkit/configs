@@ -12,6 +12,7 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "suppressImplicitAnyIndexErrors": true,
+    "skipLibCheck": true,
     "jsx": "react",
     "importHelpers": true,
     "incremental": true
