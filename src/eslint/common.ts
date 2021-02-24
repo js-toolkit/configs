@@ -64,7 +64,6 @@ const config: Linter.Config = {
         'plugin:import/typescript',
         'plugin:@typescript-eslint/recommended',
         'plugin:@typescript-eslint/recommended-requiring-type-checking',
-        'prettier/@typescript-eslint',
       ],
 
       parser: '@typescript-eslint/parser',

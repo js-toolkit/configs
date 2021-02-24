@@ -10,7 +10,6 @@ const config: import('eslint').Linter.Config = {
     'airbnb',
     require.resolve('./common'),
     'plugin:react-hooks/recommended',
-    'prettier/react',
   ],
 
   env: {
