@@ -12,7 +12,7 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "suppressImplicitAnyIndexErrors": true,
-    "noUncheckedIndexedAccess": true,
+    "noUncheckedIndexedAccess": false,
     "skipLibCheck": true,
     "jsx": "react",
     "importHelpers": true,
