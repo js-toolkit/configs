@@ -98,7 +98,7 @@ function containsLoader(rules: Record<string, RuleSetRule>, loader: string): boo
 
   return Object.getOwnPropertyNames(rules).some((key) => {
     const rule = rules[key];
-    return checkRule(rule.loader || rule.use);
+    return rule && checkRule(rule.loader || rule.use);
   });
 }
 
@@ -107,8 +107,9 @@ export function prepareRules(
   defaultRules: Record<string, RuleSetRule>
 ): Record<string, RuleSetRule> {
   return Object.entries<DefaultRuleValue>(rules).reduce((acc, [key, value]) => {
-    if (typeof value === 'function' && key in defaultRules) {
-      acc[key] = value(defaultRules[key]);
+    if (typeof value === 'function' && key in defaultRules && defaultRules[key]) {
+      const rule = defaultRules[key];
+      if (rule) acc[key] = value(rule);
     } else {
       acc[key] = value;
     }
