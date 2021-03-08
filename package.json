@@ -1,10 +1,17 @@
 {
-  "name": "@vzh/configs",
+  "name": "@vlazh/configs",
   "version": "3.73.8",
   "description": "Preconfigured configurations",
   "author": "VZH",
   "license": "MIT",
   "main": "./",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vlazh/configs"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
   "scripts": {
     "clean": "rimraf dist/*",
     "copy:configs": "copyfiles package.json .npmignore README.md LICENSE ./dist/",
@@ -15,9 +22,9 @@
     "build-to-react-components": "tsc --project ./tsconfig.json --outDir '../react-components/node_modules/@vzh/configs/' && copyfiles --exclude './src/**/*.ts' --up 1 './src/**/*' '../react-components/node_modules/@vzh/configs/'",
     "build-to-player": "tsc --project ./tsconfig.json --outDir '/home/vladimir/dev/sources/player/node_modules/@vzh/configs' && copyfiles --exclude './src/**/*.ts' --up 1 './src/**/*' '/home/vladimir/dev/sources/player/node_modules/@vzh/configs'",
     "build-to-player-old": "tsc --project ./tsconfig.json --outDir '/home/vladimir/dev/sources/player-old/node_modules/@vzh/configs' && copyfiles --exclude './src/**/*.ts' --up 1 './src/**/*' '/home/vladimir/dev/sources/player-old/node_modules/@vzh/configs'",
-    "patch-publish": "npm run build && npm version patch && npm run copy && npm publish ./dist --access public && git push --follow-tags",
-    "minor-publish": "npm run build && npm version minor && npm run copy && npm publish ./dist --access public && git push --follow-tags",
-    "major-publish": "npm run build && npm version major && npm run copy && npm publish ./dist --access public && git push --follow-tags"
+    "patch-publish": "npm run build && npm version patch && npm run copy && npm publish ./dist && git push --follow-tags",
+    "minor-publish": "npm run build && npm version minor && npm run copy && npm publish ./dist && git push --follow-tags",
+    "major-publish": "npm run build && npm version major && npm run copy && npm publish ./dist && git push --follow-tags"
   },
   "devDependencies": {
     "@types/eslint": "^7.2.6",
