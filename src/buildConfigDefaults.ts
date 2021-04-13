@@ -66,8 +66,6 @@ export function getSharedConfig(root = 'shared') {
 }
 
 export type BuildConfigDefaults = {
-  nodeModules: string;
-
   output: {
     root: string;
   };
@@ -78,8 +76,6 @@ export type BuildConfigDefaults = {
 };
 
 const buildConfigDefaults: BuildConfigDefaults = {
-  nodeModules: 'node_modules',
-
   output: {
     root: 'dist',
   },

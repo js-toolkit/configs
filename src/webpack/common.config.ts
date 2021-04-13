@@ -135,7 +135,7 @@ export default ({
         ...((restOptions.resolve && restOptions.resolve.extensions) || []),
       ],
       modules: [
-        buildConfig.nodeModules,
+        'node_modules',
         paths.root,
         ...((restOptions.resolve && restOptions.resolve.modules) || []),
       ],
