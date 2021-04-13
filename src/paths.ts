@@ -9,8 +9,14 @@ export function getPaths(baseDir = process.cwd(), buildConfig = getBuildConfig()
     root: baseDir,
 
     nodeModules: {
-      // dirname: 'node_modules',
-      root: path.resolve(baseDir, buildConfig.nodeModules),
+      root: (() => {
+        try {
+          const dir = 'node_modules';
+          return __dirname.substring(0, __dirname.indexOf(dir) + dir.length);
+        } catch {
+          return path.resolve(baseDir, 'node_modules');
+        }
+      })(),
     },
 
     output: {
