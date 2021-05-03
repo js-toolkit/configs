@@ -79,12 +79,13 @@ const config: Linter.Config = {
         'import/parsers': {
           '@typescript-eslint/parser': moduleExtensions,
         },
-
         'import/resolver': {
           node: {
             extensions: moduleExtensions,
           },
         },
+        'import/extensions': moduleExtensions,
+        'import/external-module-folders': ['node_modules', 'node_modules/@types'],
       },
 
       rules: {
