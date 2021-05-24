@@ -4,6 +4,9 @@ import buildConfig from '../buildConfig';
 import paths, { moduleExtensions } from '../paths';
 import { eslintTsProject } from './consts';
 
+const enabled =
+  buildConfig.client && buildConfig.client.root && fs.existsSync(buildConfig.client.root);
+
 const config: import('eslint').Linter.Config = {
   extends: [
     // Adds eslint-plugin-react, eslint-plugin-jsx-a11y
@@ -19,7 +22,7 @@ const config: import('eslint').Linter.Config = {
   settings: {
     'import/resolver': {
       node: {}, // Add priority
-      ...(buildConfig.client && buildConfig.client.webpackConfig
+      ...(enabled && buildConfig.client && buildConfig.client.webpackConfig
         ? { webpack: { config: buildConfig.client.webpackConfig } }
         : undefined),
     },
@@ -42,9 +45,11 @@ const config: import('eslint').Linter.Config = {
 
       parserOptions: {
         project: (() => {
-          if (fs.existsSync(path.join(paths.client.root, eslintTsProject)))
-            return path.join(paths.client.root, eslintTsProject);
-          if (fs.existsSync(paths.client.tsconfig)) return paths.client.tsconfig;
+          if (enabled) {
+            const config = path.join(paths.client.root, eslintTsProject);
+            if (fs.existsSync(config)) return config;
+            if (fs.existsSync(paths.client.tsconfig)) return paths.client.tsconfig;
+          }
           return fs.existsSync(eslintTsProject) ? eslintTsProject : 'tsconfig.json';
         })(),
       },

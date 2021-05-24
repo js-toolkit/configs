@@ -7,7 +7,9 @@ export function getClientConfig(root = 'client') {
     assets: 'src/assets',
     staticContent: ['public'],
 
+    /** Generating html options */
     html: {
+      /** For example: `assets/index.html` */
       template: '',
       filename: 'index.html',
       title: '',
@@ -30,12 +32,16 @@ export function getClientConfig(root = 'client') {
 
       /** Generated asset manifest */
       assetManifest: {
-        fileName: 'asset-manifest.json',
+        /** For example: `asset-manifest.json` */
+        fileName: '',
         filterTemplate: {},
       },
 
       /** Generating service worker options (workbox-webpack-plugin) */
-      sw: { swDest: 'service-worker.js' },
+      sw: {
+        /** For example: `service-worker.js` */
+        swDest: '',
+      },
     },
   };
 }

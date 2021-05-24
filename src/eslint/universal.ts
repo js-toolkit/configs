@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { Linter } from 'eslint';
+import type { Linter } from 'eslint';
 import buildConfig, { BuildConfig } from '../buildConfig';
 import paths, { moduleExtensions } from '../paths';
 import { eslintTsProject } from './consts';
@@ -13,9 +13,18 @@ const filesGlobs: Record<
   keyof Pick<BuildConfig, 'client' | 'server' | 'shared'> | 'other',
   string[]
 > = {
-  client: buildConfig.client ? getFilesGlob(buildConfig.client.root) : [],
-  server: buildConfig.server ? getFilesGlob(buildConfig.server.root) : [],
-  shared: buildConfig.shared ? getFilesGlob(buildConfig.shared.root) : [],
+  client:
+    buildConfig.client && buildConfig.client.root && fs.existsSync(buildConfig.client.root)
+      ? getFilesGlob(buildConfig.client.root)
+      : [],
+  server:
+    buildConfig.server && buildConfig.server.root && fs.existsSync(buildConfig.server.root)
+      ? getFilesGlob(buildConfig.server.root)
+      : [],
+  shared:
+    buildConfig.shared && buildConfig.shared.root && fs.existsSync(buildConfig.shared.root)
+      ? getFilesGlob(buildConfig.shared.root)
+      : [],
   other: moduleExtensions.map((ext) => `*${ext}`),
 };
 
@@ -54,8 +63,8 @@ const config: Linter.Config = {
             },
             parserOptions: {
               project: (() => {
-                if (fs.existsSync(path.join(paths.shared.root, eslintTsProject)))
-                  return path.join(paths.shared.root, eslintTsProject);
+                const config = path.join(paths.shared.root, eslintTsProject);
+                if (fs.existsSync(config)) return config;
                 if (fs.existsSync(paths.shared.tsconfig)) return paths.shared.tsconfig;
                 return fs.existsSync(eslintTsProject) ? eslintTsProject : 'tsconfig.json';
               })(),
