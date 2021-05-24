@@ -10,11 +10,11 @@ export function getPaths(baseDir = process.cwd(), buildConfig = getBuildConfig()
 
     nodeModules: {
       root: (() => {
+        const dir = 'node_modules';
         try {
-          const dir = 'node_modules';
           return __dirname.substring(0, __dirname.indexOf(dir) + dir.length);
         } catch {
-          return path.resolve(baseDir, 'node_modules');
+          return path.resolve(baseDir, dir);
         }
       })(),
     },
