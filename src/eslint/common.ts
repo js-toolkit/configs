@@ -52,6 +52,10 @@ const config: Linter.Config = {
         { '': 'never' } // Fix error on import user type declaration folder such as `client/types`
       ),
     ],
+    'import/order': [
+      'error',
+      { groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index', 'object'] },
+    ],
   },
 
   overrides: [
