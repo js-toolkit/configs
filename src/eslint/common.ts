@@ -112,6 +112,7 @@ const config: Linter.Config = {
             allowExpressions: true,
             allowTypedFunctionExpressions: true,
             allowHigherOrderFunctions: true,
+            allowDirectConstAssertionInArrowFunctions: true,
             allowConciseArrowFunctionExpressionsStartingWithVoid: true,
           },
         ],
