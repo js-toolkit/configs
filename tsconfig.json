@@ -6,6 +6,7 @@
     "isolatedModules": false,
     "declaration": true,
     "sourceMap": false,
+    "importHelpers": false,
     "incremental": true,
     "skipLibCheck": true
   },
