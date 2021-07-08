@@ -118,6 +118,12 @@ function getPnpWebpackPlugin(): any {
   return nodeRequire(getName());
 }
 
+function normalizeHtml(
+  html: typeof buildConfig.default.client.html
+): Extract<typeof buildConfig.default.client.html, Array<any>> {
+  return Array.isArray(html) ? html : [html];
+}
+
 const clientBuildConfig = buildConfig.client || buildConfig.default.client;
 
 export default ({
@@ -228,26 +234,31 @@ export default ({
       rules: [
         ...Object.getOwnPropertyNames(moduleRules).map((name) => moduleRules[name] || {}),
         // Provide pug loader if html template is pug template
-        ...(clientBuildConfig.html.template && clientBuildConfig.html.template.endsWith('.pug')
-          ? [{ test: /\.pug$/, use: { loader: 'pug-loader' } }]
-          : []),
+        ...(() => {
+          const html = normalizeHtml(clientBuildConfig.html);
+          const hasPug = html.some(({ template }) => template && template.endsWith('.pug'));
+          return hasPug ? [{ test: /\.pug$/, use: { loader: 'pug-loader' } }] : [];
+        })(),
         ...((restOptions.module && restOptions.module.rules) || []),
       ],
     },
 
     plugins: [
       // Generate html if needed
-      clientBuildConfig.html.template &&
-        (() => {
-          const { template, ...rest } = clientBuildConfig.html;
-          const getName = (): string => 'html-webpack-plugin';
-          const HtmlWebpackPlugin = nodeRequire(getName());
-          return new HtmlWebpackPlugin({
-            inject: false,
-            template: path.join(paths.client.sources, template),
-            ...rest,
+      ...(() => {
+        const html = normalizeHtml(clientBuildConfig.html);
+        const getName = (): string => 'html-webpack-plugin';
+        return html
+          .filter(({ template }) => !!template)
+          .map(({ template, ...rest }) => {
+            const HtmlWebpackPlugin = nodeRequire(getName());
+            return new HtmlWebpackPlugin({
+              inject: false,
+              template: path.join(paths.client.sources, template!),
+              ...rest,
+            });
           });
-        })(),
+      })(),
 
       // Extract css if has corresponding loader
       containsLoader(moduleRules, loaders.cssExtractLoader) &&
@@ -307,13 +318,17 @@ export default ({
         (() => {
           const getName = (): string => 'workbox-webpack-plugin';
           const { GenerateSW } = nodeRequire(getName());
+          const html = normalizeHtml(clientBuildConfig.html);
+          const filename =
+            html.length === 1 ? html[0].filename : html.find(({ main }) => !!main)?.filename;
           return new GenerateSW({
             clientsClaim: true,
             importWorkboxFrom: 'cdn',
             exclude: [/\.map$/, new RegExp(`${clientBuildConfig.output.assetManifest.fileName}$`)],
-            navigateFallback: `${clientBuildConfig.output.publicPath}${
-              clientBuildConfig.html.filename ?? ''
-            }`,
+            navigateFallback:
+              filename && typeof filename === 'string'
+                ? `${clientBuildConfig.output.publicPath}${filename}`
+                : undefined,
             navigateFallbackBlacklist: [
               // Exclude URLs starting with /_, as they're likely an API call
               new RegExp('^/_'),

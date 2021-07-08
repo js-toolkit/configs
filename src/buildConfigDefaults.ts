@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 
+type HtmlOptions = import('html-webpack-plugin').Options & { readonly main?: boolean };
+
 export function getClientConfig(root = 'client') {
   return {
     root,
@@ -8,12 +10,7 @@ export function getClientConfig(root = 'client') {
     staticContent: ['public'],
 
     /** Generating html options */
-    html: {
-      /** For example: `assets/index.html` */
-      template: '',
-      filename: 'index.html',
-      title: '',
-    } as import('html-webpack-plugin').Options,
+    html: [] as HtmlOptions | HtmlOptions[],
 
     /** Used by eslint webpack resolver */
     webpackConfig: '',

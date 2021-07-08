@@ -38,9 +38,10 @@ function merge<T1 extends object, T2 extends Partial<T1>>(
     new Set([...Object.getOwnPropertyNames(defaults), ...Object.getOwnPropertyNames(nextValues)])
   ).reduce((acc, p) => {
     // Merge arrays
-    if (Array.isArray(defaults[p]) && Array.isArray(nextValues[p])) {
+    if (Array.isArray(defaults[p]) || Array.isArray(nextValues[p])) {
       // Apply empty array if nextValues[p] is empty otherwise merge them
       // acc[p] = nextValues[p].length === 0 ? nextValues[p] : [...defaults[p], ...nextValues[p]];
+      // If at least on value is array just rewrite
       acc[p] = nextValues[p];
     }
     // Merge objects
