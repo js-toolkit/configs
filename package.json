@@ -20,7 +20,7 @@
     "build-to-tutoron": "tsc --project ./tsconfig.json --outDir '/home/vladimir/dev/sources/tutoron/node_modules/@js-toolkit/configs/' && copyfiles --exclude './src/**/*.ts' --up 1 './src/**/*' '/home/vladimir/dev/sources/tutoron/node_modules/@js-toolkit/configs/'",
     "build-to-reflexy": "tsc --project ./tsconfig.json --outDir '/home/vladimir/dev/sources/reflexy/node_modules/@js-toolkit/configs/' && copyfiles --exclude './src/**/*.ts' --up 1 './src/**/*' '/home/vladimir/dev/sources/reflexy/node_modules/@js-toolkit/configs/'",
     "build-to-react-components": "tsc --project ./tsconfig.json --outDir '../react-components/node_modules/@js-toolkit/configs/' && copyfiles --exclude './src/**/*.ts' --up 1 './src/**/*' '../react-components/node_modules/@js-toolkit/configs/'",
-    "build-to-player": "tsc --project ./tsconfig.json --outDir '/home/vladimir/dev/sources/player/modules/configs' && copyfiles --exclude './src/**/*.ts' --up 1 './src/**/*' '/home/vladimir/dev/sources/player/node_modules/modules'",
+    "build-to-player": "tsc --project ./tsconfig.json --outDir '/home/vladimir/dev/sources/player/modules/configs' && copyfiles --exclude './src/**/*.ts' --up 1 './src/**/*' '/home/vladimir/dev/sources/player/modules'",
     "patch-publish": "yarn run build && yarn version --patch && yarn run copy && npm publish ./dist && git push --follow-tags",
     "minor-publish": "yarn run build && yarn version --minor && yarn run copy && npm publish ./dist && git push --follow-tags"
   },
