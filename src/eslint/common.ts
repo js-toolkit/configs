@@ -35,6 +35,8 @@ const config: Linter.Config = {
           paths.shared.sources,
         ].filter((v) => !!v),
       },
+      // For `eslint-import-resolver-typescript` plugin
+      typescript: {},
     },
   },
 
