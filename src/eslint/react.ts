@@ -4,8 +4,7 @@ import buildConfig from '../buildConfig';
 import paths, { moduleExtensions } from '../paths';
 import { eslintTsProject } from './consts';
 
-const enabled =
-  buildConfig.client && buildConfig.client.root && fs.existsSync(buildConfig.client.root);
+const enabled = buildConfig.client && fs.existsSync(paths.client.root);
 
 const config: import('eslint').Linter.Config = {
   extends: [

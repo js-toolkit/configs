@@ -14,15 +14,15 @@ const filesGlobs: Record<
   string[]
 > = {
   client:
-    buildConfig.client && buildConfig.client.root && fs.existsSync(buildConfig.client.root)
+    buildConfig.client && fs.existsSync(paths.client.root)
       ? getFilesGlob(buildConfig.client.root)
       : [],
   server:
-    buildConfig.server && buildConfig.server.root && fs.existsSync(buildConfig.server.root)
+    buildConfig.server && fs.existsSync(paths.server.root)
       ? getFilesGlob(buildConfig.server.root)
       : [],
   shared:
-    buildConfig.shared && buildConfig.shared.root && fs.existsSync(buildConfig.shared.root)
+    buildConfig.shared && fs.existsSync(paths.shared.root)
       ? getFilesGlob(buildConfig.shared.root)
       : [],
   other: moduleExtensions.map((ext) => `*${ext}`),

@@ -36,8 +36,8 @@ const config: Linter.Config = {
         ].filter((v) => !!v),
       },
 
-      // For `eslint-import-resolver-typescript` plugin
-      // It needs if uses `paths` in `tsconfig.json`
+      // For `eslint-import-resolver-typescript` plugin.
+      // It needs if uses `paths` in `tsconfig.json` but not used `eslint-import-resolver-webpack`.
       typescript: {},
     },
   },

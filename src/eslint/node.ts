@@ -4,8 +4,7 @@ import buildConfig from '../buildConfig';
 import paths, { moduleExtensions } from '../paths';
 import { eslintTsProject } from './consts';
 
-const enabled =
-  buildConfig.server && buildConfig.server.root && fs.existsSync(buildConfig.server.root);
+const enabled = buildConfig.server && fs.existsSync(paths.server.root);
 
 const config: import('eslint').Linter.Config = {
   extends: [require.resolve('./common')],
