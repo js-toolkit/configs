@@ -128,30 +128,36 @@ export default ({
       ...(restOptions.plugins || []),
     ],
 
-    resolve: {
-      ...restOptions.resolve,
-      extensions: [
+    resolve: (() => {
+      const extensions = [
         ...(typescript ? moduleExtensions : moduleExtensions.filter((ext) => !ext.includes('ts'))),
         ...((restOptions.resolve && restOptions.resolve.extensions) || []),
-      ],
-      modules: [
-        'node_modules',
-        paths.root,
-        ...((restOptions.resolve && restOptions.resolve.modules) || []),
-      ],
-      plugins: [
-        ...(typescript
-          ? [
-              (() => {
-                const getName = (): string => 'tsconfig-paths-webpack-plugin';
-                const TSConfigPathsWebpackPlugin = nodeRequire(getName());
-                return new TSConfigPathsWebpackPlugin({ configFile: typescript.configFile });
-              })(),
-            ]
-          : []),
-        ...((restOptions.resolve && restOptions.resolve.plugins) || []),
-      ],
-    },
+      ];
+      return {
+        ...restOptions.resolve,
+        extensions,
+        modules: [
+          'node_modules',
+          paths.root,
+          ...((restOptions.resolve && restOptions.resolve.modules) || []),
+        ],
+        plugins: [
+          ...(typescript
+            ? [
+                (() => {
+                  const getName = (): string => 'tsconfig-paths-webpack-plugin';
+                  const TSConfigPathsWebpackPlugin = nodeRequire(getName());
+                  return new TSConfigPathsWebpackPlugin({
+                    configFile: typescript.configFile,
+                    extensions,
+                  });
+                })(),
+              ]
+            : []),
+          ...((restOptions.resolve && restOptions.resolve.plugins) || []),
+        ],
+      };
+    })(),
 
     ...((webpack.version ?? '').startsWith('5')
       ? {
