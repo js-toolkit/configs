@@ -18,7 +18,7 @@ export const clientDefaultRules: Record<
   RuleSetRule
 > = {
   jsRule: {
-    test: /\.jsx?$/,
+    test: /\.m?jsx?$/,
     include: [paths.client.sources, paths.shared.sources].filter((v) => !!v),
     use: loaders.babel(),
   },
