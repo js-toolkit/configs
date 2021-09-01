@@ -102,9 +102,6 @@ export default ({
         ...buildConfig.envStringify(),
       }),
 
-      // Enable HMR in development.
-      ...appEnv.ifDev(() => [new webpack.HotModuleReplacementPlugin()], []),
-
       // Forked check for TS
       ...(typescript && typescript.forkedChecks && typescript.configFile
         ? [
