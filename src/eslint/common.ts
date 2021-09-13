@@ -60,6 +60,8 @@ const config: Linter.Config = {
       'error',
       { groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index', 'object'] },
     ],
+    'import/prefer-default-export': 'off',
+    // 'import/no-default-export': 'warn',
   },
 
   overrides: [
