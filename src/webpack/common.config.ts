@@ -46,7 +46,7 @@ export default ({
 
     // http://cheng.logdown.com/posts/2016/03/25/679045
     devtool: appEnv.ifDev<NonNullable<webpack.Configuration['devtool']>>(
-      webpack.version.startsWith('5')
+      (webpack.version ?? '')[0] === '5'
         ? 'eval-cheap-module-source-map'
         : 'cheap-module-eval-source-map',
       false
@@ -118,7 +118,7 @@ export default ({
 
       // Ignore all locale files of moment.js
       // https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
-      (webpack.version ?? '').startsWith('5')
+      (webpack.version ?? '')[0] === '5'
         ? new webpack.IgnorePlugin({ contextRegExp: /moment$/, resourceRegExp: /^\.\/locale$/ })
         : // @ts-ignore
           new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
@@ -156,7 +156,7 @@ export default ({
       };
     })(),
 
-    ...((webpack.version ?? '').startsWith('5')
+    ...((webpack.version ?? '')[0] === '5'
       ? {
           ignoreWarnings: [
             // https://github.com/TypeStrong/ts-loader#transpileonly-boolean-defaultfalse

@@ -249,12 +249,12 @@ export default ({
         const html = normalizeHtml(clientBuildConfig.html);
         const getName = (): string => 'html-webpack-plugin';
         return html
-          .filter(({ template }) => !!template)
-          .map(({ template, ...rest }) => {
+          .filter((opts): opts is Required<typeof opts> => !!opts.template)
+          .map(({ inject, template, ...rest }) => {
             const HtmlWebpackPlugin = nodeRequire(getName());
             return new HtmlWebpackPlugin({
-              inject: false,
-              template: path.join(paths.client.sources, template!),
+              inject: inject ?? false,
+              template: path.join(paths.client.sources, template),
               ...rest,
             });
           });
@@ -360,7 +360,7 @@ export default ({
       ...(restOptions.plugins || []),
     ].filter(Boolean),
 
-    ...((version ?? '').startsWith('5')
+    ...((version ?? '')[0] === '5'
       ? undefined
       : {
           // Some libraries import Node modules but don't use them in the browser.
@@ -383,7 +383,6 @@ export default ({
       historyApiFallback: true, // For react subpages handling with webpack-dev-server
       host: '0.0.0.0',
       port: 9000,
-      // @ts-ignore
       hot: 'only',
       ...restOptions.devServer,
       // dev: { publicPath: clientBuildConfig.output.publicPath },
