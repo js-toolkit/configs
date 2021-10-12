@@ -1,17 +1,31 @@
 import fs from 'fs';
 import path from 'path';
+import airbnbConfig from 'eslint-config-airbnb';
 import buildConfig from '../buildConfig';
 import paths, { moduleExtensions } from '../paths';
+import getInstalledPlugin from '../babel/getInstalledPlugin';
 import { eslintTsProject } from './consts';
 
 const enabled = buildConfig.client && fs.existsSync(paths.client.root);
 
+const hasReactPlugin = !!getInstalledPlugin('eslint-plugin-react');
+const hasA11yPlugin = !!getInstalledPlugin('eslint-plugin-jsx-a11y');
+const hasReactHooksPlugin = !!getInstalledPlugin('eslint-plugin-react-hooks');
+
+const airbnbExtends = airbnbConfig.extends.filter(
+  (item) =>
+    !item.includes('eslint-config-airbnb-base') &&
+    (hasReactPlugin ? true : !item.includes('rules/react.js')) &&
+    (hasA11yPlugin ? true : !item.includes('rules/react-a11y.js'))
+);
+
 const config: import('eslint').Linter.Config = {
   extends: [
-    // Adds eslint-plugin-react, eslint-plugin-jsx-a11y
-    'airbnb',
+    // Adds eslint-plugin-react, eslint-plugin-jsx-a11y, rules
+    // https://github.com/airbnb/javascript/blob/master/packages/eslint-config-airbnb/index.js
+    ...airbnbExtends,
     require.resolve('./common'),
-    'plugin:react-hooks/recommended',
+    ...(hasReactHooksPlugin ? ['plugin:react-hooks/recommended'] : []),
   ],
 
   env: {
@@ -28,14 +42,23 @@ const config: import('eslint').Linter.Config = {
   },
 
   rules: {
-    'react-hooks/exhaustive-deps': 'error',
-    'react/sort-comp': 'off',
-    'react/destructuring-assignment': ['error', 'always', { ignoreClassFields: true }],
-    'react/jsx-filename-extension': ['error', { extensions: ['.jsx'] }],
-    'react/jsx-wrap-multilines': 'off',
-    'react/jsx-props-no-spreading': 'off',
-    'jsx-a11y/anchor-is-valid': ['error', { specialLink: ['to'] }],
-    'jsx-a11y/label-has-for': ['error', { allowChildren: true }],
+    ...(hasReactPlugin && {
+      'react/prop-types': 'off',
+      'react/sort-comp': 'off',
+      'react/destructuring-assignment': ['error', 'always', { ignoreClassFields: true }],
+      'react/jsx-filename-extension': ['error', { extensions: ['.jsx'] }],
+      'react/jsx-wrap-multilines': 'off',
+      'react/jsx-props-no-spreading': 'off',
+    }),
+
+    ...(hasA11yPlugin && {
+      'jsx-a11y/anchor-is-valid': ['error', { specialLink: ['to'] }],
+      'jsx-a11y/label-has-for': ['error', { allowChildren: true }],
+    }),
+
+    ...(hasReactHooksPlugin && {
+      'react-hooks/exhaustive-deps': 'error',
+    }),
   },
 
   overrides: [
@@ -45,8 +68,8 @@ const config: import('eslint').Linter.Config = {
       parserOptions: {
         project: (() => {
           if (enabled) {
-            const config = path.join(paths.client.root, eslintTsProject);
-            if (fs.existsSync(config)) return config;
+            const tsconfig = path.join(paths.client.root, eslintTsProject);
+            if (fs.existsSync(tsconfig)) return tsconfig;
             if (fs.existsSync(paths.client.tsconfig)) return paths.client.tsconfig;
           }
           return fs.existsSync(eslintTsProject) ? eslintTsProject : 'tsconfig.json';
@@ -54,10 +77,12 @@ const config: import('eslint').Linter.Config = {
       },
 
       rules: {
-        'react/jsx-filename-extension': [
-          'error',
-          { extensions: moduleExtensions.filter((ext) => ext.includes('sx')) },
-        ],
+        ...(hasReactPlugin && {
+          'react/jsx-filename-extension': [
+            'error',
+            { extensions: moduleExtensions.filter((ext) => ext.includes('sx')) },
+          ],
+        }),
       },
     },
   ],

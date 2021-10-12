@@ -29,8 +29,8 @@ const config: import('eslint').Linter.Config = {
       parserOptions: {
         project: (() => {
           if (enabled) {
-            const config = path.join(paths.server.root, eslintTsProject);
-            if (fs.existsSync(config)) return config;
+            const tsconfig = path.join(paths.server.root, eslintTsProject);
+            if (fs.existsSync(tsconfig)) return tsconfig;
             if (fs.existsSync(paths.server.tsconfig)) return paths.server.tsconfig;
           }
           return fs.existsSync(eslintTsProject) ? eslintTsProject : 'tsconfig.json';

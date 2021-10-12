@@ -63,8 +63,8 @@ const config: Linter.Config = {
             },
             parserOptions: {
               project: (() => {
-                const config = path.join(paths.shared.root, eslintTsProject);
-                if (fs.existsSync(config)) return config;
+                const tsconfig = path.join(paths.shared.root, eslintTsProject);
+                if (fs.existsSync(tsconfig)) return tsconfig;
                 if (fs.existsSync(paths.shared.tsconfig)) return paths.shared.tsconfig;
                 return fs.existsSync(eslintTsProject) ? eslintTsProject : 'tsconfig.json';
               })(),
