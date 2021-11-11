@@ -49,6 +49,10 @@ const config: import('eslint').Linter.Config = {
       'react/jsx-filename-extension': ['error', { extensions: ['.jsx'] }],
       'react/jsx-wrap-multilines': 'off',
       'react/jsx-props-no-spreading': 'off',
+      'react/function-component-definition': [
+        'error',
+        { namedComponents: 'function-declaration', unnamedComponents: 'arrow-function' },
+      ],
     }),
 
     ...(hasA11yPlugin && {
