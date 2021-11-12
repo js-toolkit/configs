@@ -46,13 +46,15 @@ module.exports = {
     'no-inner-declarations': ['off', 'functions'],
     'no-console': 'off',
     'class-methods-use-this': 'off',
-    //
     'global-require': 'off',
+
+    'import/prefer-default-export': 'off',
     'import/named': 'off',
     'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
     'import/no-unresolved': 'off',
     'import/no-dynamic-require': 'off',
     'import/extensions': ['error', 'ignorePackages', { js: 'never', ts: 'never' }],
+
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/explicit-function-return-type': [
       'warn',

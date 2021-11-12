@@ -3,14 +3,14 @@ import path from 'path';
 import airbnbConfig from 'eslint-config-airbnb';
 import buildConfig from '../buildConfig';
 import paths, { moduleExtensions } from '../paths';
-import getInstalledPlugin from '../babel/getInstalledPlugin';
+import { getInstalledPackage } from '../getInstalledPackage';
 import { eslintTsProject } from './consts';
 
 const enabled = buildConfig.client && fs.existsSync(paths.client.root);
 
-const hasReactPlugin = !!getInstalledPlugin('eslint-plugin-react');
-const hasA11yPlugin = !!getInstalledPlugin('eslint-plugin-jsx-a11y');
-const hasReactHooksPlugin = !!getInstalledPlugin('eslint-plugin-react-hooks');
+const hasReactPlugin = !!getInstalledPackage('eslint-plugin-react');
+const hasA11yPlugin = !!getInstalledPackage('eslint-plugin-jsx-a11y');
+const hasReactHooksPlugin = !!getInstalledPackage('eslint-plugin-react-hooks');
 
 const airbnbExtends = airbnbConfig.extends.filter(
   (item) =>

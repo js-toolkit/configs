@@ -3,11 +3,11 @@ import { Linter } from 'eslint';
 import airbnbBaseConfig from 'eslint-config-airbnb-base';
 import airbnbBaseStyleConfig from 'eslint-config-airbnb-base/rules/style';
 import paths, { moduleExtensions } from '../paths';
-import getInstalledPlugin from '../babel/getInstalledPlugin';
+import { getInstalledPackage } from '../getInstalledPackage';
 import { eslintTsProject } from './consts';
 
-const hasImportPlugin = !!getInstalledPlugin('eslint-plugin-import');
-const hasTsDocPlugin = !!getInstalledPlugin('eslint-plugin-tsdoc');
+const hasImportPlugin = !!getInstalledPackage('eslint-plugin-import');
+const hasTsDocPlugin = !!getInstalledPackage('eslint-plugin-tsdoc');
 
 const airbnbExtends = hasImportPlugin
   ? airbnbBaseConfig.extends

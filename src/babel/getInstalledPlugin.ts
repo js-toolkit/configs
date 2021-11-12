@@ -1,11 +1,7 @@
-export default function getInstalledPlugin(
-  name: string,
-  options?: {}
-): string | [string, {}] | undefined {
-  try {
-    require(name);
-    return options ? [name, options] : name;
-  } catch {
-    return undefined;
-  }
+import { getInstalledPackage } from '../getInstalledPackage';
+
+export function getInstalledPlugin(name: string, options?: {}): string | [string, {}] | undefined {
+  const plugin = getInstalledPackage(name);
+  if (!plugin) return undefined;
+  return options ? [plugin, options] : plugin;
 }

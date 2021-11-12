@@ -1,4 +1,4 @@
-import getInstalledPlugin from './getInstalledPlugin';
+import { getInstalledPlugin } from './getInstalledPlugin';
 
 module.exports = {
   presets: [['@babel/preset-env', { loose: true }]],
