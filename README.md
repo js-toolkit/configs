@@ -2,9 +2,9 @@
 
 ![GitHub package.json version](https://img.shields.io/github/package-json/v/js-toolkit/configs)
 
-Preconfigured configurations for Webpack, CSS, JavaScript, TypeScript, etc.
+Preconfigured configurations for Webpack, ESLint, Babel, Prettier, TypeScript, JavaScript, CSS, etc.
 
-Utilities for project custom environment variables and project configuration file.
+Utilities for project custom environment variables and useful project configuration file.
 
 ## Installation
 
