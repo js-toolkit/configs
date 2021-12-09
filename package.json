@@ -16,13 +16,14 @@
     "clean": "rimraf dist/*",
     "copy:configs": "copyfiles package.json .npmignore README.md LICENSE ./dist/",
     "copy": "copyfiles --exclude './src/**/*.ts' --up 1 './src/**/*' ./dist/ && npm run copy:configs",
-    "build": "npm run clean && tsc --project ./tsconfig.json",
+    "minify": "node ../node-utils/dist/bin/minify.js --replace ./dist",
+    "build": "yarn run clean && tsc --project ./tsconfig.json",
     "build-to-tutoron": "tsc --project ./tsconfig.json --outDir '/home/vladimir/dev/sources/tutoron/node_modules/@js-toolkit/configs/' && copyfiles --exclude './src/**/*.ts' --up 1 './src/**/*' '/home/vladimir/dev/sources/tutoron/node_modules/@js-toolkit/configs/'",
     "build-to-reflexy": "tsc --project ./tsconfig.json --outDir '/home/vladimir/dev/sources/reflexy/node_modules/@js-toolkit/configs/' && copyfiles --exclude './src/**/*.ts' --up 1 './src/**/*' '/home/vladimir/dev/sources/reflexy/node_modules/@js-toolkit/configs/'",
     "build-to-react-components": "tsc --project ./tsconfig.json --outDir '../react-components/node_modules/@js-toolkit/configs/' && copyfiles --exclude './src/**/*.ts' --up 1 './src/**/*' '../react-components/node_modules/@js-toolkit/configs/'",
-    "build-to-player": "tsc --project ./tsconfig.json --outDir '/home/vladimir/dev/sources/player/modules/configs' && copyfiles --exclude './src/**/*.ts' --up 1 './src/**/*' '/home/vladimir/dev/sources/player/modules/configs'",
-    "patch-publish": "yarn run build && yarn version --patch && yarn run copy && npm publish ./dist && git push --follow-tags",
-    "minor-publish": "yarn run build && yarn version --minor && yarn run copy && npm publish ./dist && git push --follow-tags"
+    "build-to-player": "tsc --project ./tsconfig.json && npm run minify && copyfiles -e './dist/*(package.json|README.md|LICENSE)' -u 1 './dist/**/*' '/home/vladimir/dev/sources/player/modules/configs'",
+    "patch-publish": "yarn run build && yarn run minify && yarn version --patch && yarn run copy && npm publish ./dist && git push --follow-tags",
+    "minor-publish": "yarn run build && yarn run minify && yarn version --minor && yarn run copy && npm publish ./dist && git push --follow-tags"
   },
   "devDependencies": {
     "@types/eslint": "^8.2.1",
