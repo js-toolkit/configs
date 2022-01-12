@@ -15,6 +15,7 @@
     "noUncheckedIndexedAccess": false,
     "suppressImplicitAnyIndexErrors": true,
     "skipLibCheck": true,
+    "importsNotUsedAsValues": "error",
     "jsx": "react",
     "importHelpers": true,
     "incremental": true
