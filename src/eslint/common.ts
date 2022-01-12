@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { Linter } from 'eslint';
+import type { Linter } from 'eslint';
 import airbnbBaseConfig from 'eslint-config-airbnb-base';
 import airbnbBaseStyleConfig from 'eslint-config-airbnb-base/rules/style';
 import paths, { moduleExtensions } from '../paths';

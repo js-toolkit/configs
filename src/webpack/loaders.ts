@@ -1,4 +1,4 @@
-import { RuleSetUseItem } from 'webpack';
+import type { RuleSetUseItem } from 'webpack';
 import appEnv from '../appEnv';
 import paths from '../paths';
 import buildConfig from '../buildConfig';

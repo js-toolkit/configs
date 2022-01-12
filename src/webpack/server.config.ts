@@ -1,4 +1,4 @@
-import { Configuration } from 'webpack';
+import type { Configuration } from 'webpack';
 import webpackNodeExternals from 'webpack-node-externals';
 import appEnv from '../appEnv';
 import paths from '../paths';

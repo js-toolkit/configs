@@ -1,4 +1,5 @@
-import { Configuration, RuleSetRule, RuleSetUse, version } from 'webpack';
+import 'webpack-dev-server/types/lib/Server';
+import type { Configuration, RuleSetRule, RuleSetUse } from 'webpack';
 import path from 'path';
 import appEnv from '../appEnv';
 import paths from '../paths';
@@ -359,24 +360,6 @@ export default ({
 
       ...(restOptions.plugins || []),
     ].filter(Boolean),
-
-    ...((version ?? '')[0] === '5'
-      ? undefined
-      : {
-          // Some libraries import Node modules but don't use them in the browser.
-          // Tell Webpack to provide empty mocks for them so importing them works.
-          node: {
-            module: 'empty',
-            dgram: 'empty',
-            dns: 'mock',
-            fs: 'empty',
-            http2: 'empty',
-            net: 'empty',
-            tls: 'empty',
-            child_process: 'empty',
-            ...restOptions.node,
-          } as any,
-        }),
 
     devServer: {
       static: paths.client.staticContent, // Static content which not processed by webpack and loadable from disk.

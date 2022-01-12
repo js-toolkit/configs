@@ -1,4 +1,4 @@
-import webpack, { Configuration } from 'webpack';
+import webpack from 'webpack';
 import path from 'path';
 import appEnv from '../appEnv';
 import buildConfig from '../buildConfig';
@@ -6,7 +6,7 @@ import paths, { moduleExtensions } from '../paths';
 import loaders, { TsLoaderType } from './loaders';
 import nodeRequire from './nodeRequire';
 
-export interface CommonConfigOptions extends Configuration {
+export interface CommonConfigOptions extends webpack.Configuration {
   outputPath: string;
   outputPublicPath: string;
   outputJsDir: string;
@@ -31,7 +31,7 @@ export default ({
   typescript,
   terserPluginOptions,
   ...restOptions
-}: CommonConfigOptions): Configuration => {
+}: CommonConfigOptions): webpack.Configuration => {
   const entryHash = hash === true || (typeof hash === 'object' && hash.entry);
   const chunkHash = hash === true || (typeof hash === 'object' && hash.chunk);
 
@@ -46,9 +46,7 @@ export default ({
 
     // http://cheng.logdown.com/posts/2016/03/25/679045
     devtool: appEnv.ifDev<NonNullable<webpack.Configuration['devtool']>>(
-      (webpack.version ?? '')[0] === '5'
-        ? 'eval-cheap-module-source-map'
-        : 'cheap-module-eval-source-map',
+      'eval-cheap-module-source-map',
       false
     ),
 
@@ -118,10 +116,8 @@ export default ({
 
       // Ignore all locale files of moment.js
       // https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
-      (webpack.version ?? '')[0] === '5'
-        ? new webpack.IgnorePlugin({ contextRegExp: /moment$/, resourceRegExp: /^\.\/locale$/ })
-        : // @ts-ignore
-          new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+      new webpack.IgnorePlugin({ contextRegExp: /moment$/, resourceRegExp: /^\.\/locale$/ }),
+
       ...(restOptions.plugins || []),
     ],
 
@@ -156,26 +152,11 @@ export default ({
       };
     })(),
 
-    ...((webpack.version ?? '')[0] === '5'
-      ? {
-          ignoreWarnings: [
-            // https://github.com/TypeStrong/ts-loader#transpileonly-boolean-defaultfalse
-            ...(typescript ? [/export .* was not found in/] : []),
-            ...(restOptions.ignoreWarnings ?? []),
-          ],
-        }
-      : {
-          stats:
-            restOptions.stats == null || typeof restOptions.stats === 'object'
-              ? {
-                  ...(typescript
-                    ? // https://github.com/TypeStrong/ts-loader#transpileonly-boolean-defaultfalse
-                      { warningsFilter: /export .* was not found in/ }
-                    : undefined),
-                  ...restOptions.stats,
-                }
-              : restOptions.stats,
-        }),
+    ignoreWarnings: [
+      // https://github.com/TypeStrong/ts-loader#transpileonly-boolean-defaultfalse
+      ...(typescript ? [/export .* was not found in/] : []),
+      ...(restOptions.ignoreWarnings ?? []),
+    ],
 
     module: {
       // Suppress warnings of dynamic requiring in configs:
