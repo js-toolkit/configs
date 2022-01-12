@@ -1,5 +1,5 @@
-import 'webpack-dev-server/types/lib/Server';
 import type { Configuration, RuleSetRule, RuleSetUse } from 'webpack';
+import type {} from 'webpack-dev-server';
 import path from 'path';
 import appEnv from '../appEnv';
 import paths from '../paths';
