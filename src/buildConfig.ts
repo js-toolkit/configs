@@ -1,5 +1,4 @@
 import buildConfigDefaults, { BuildConfigDefaults } from './buildConfigDefaults';
-import { getInstalledPackage } from './getInstalledPackage';
 
 export interface BuildConfig extends Omit<BuildConfigDefaults, 'client' | 'server' | 'shared'> {
   client: BuildConfigDefaults['client'] | false | undefined;
@@ -66,13 +65,11 @@ export function getBuildConfig(configPath = resolveConfigPath()): BuildConfig {
       ? // eslint-disable-next-line @typescript-eslint/no-var-requires
         merge(buildConfigDefaults, require(configPath))
       : (() => {
-          const client = getInstalledPackage('react-dom') ? buildConfigDefaults.client : false;
-          const server = getInstalledPackage('express') ? buildConfigDefaults.server : false;
           return {
             output: buildConfigDefaults.output,
-            client,
-            server,
-            shared: client && server,
+            client: false,
+            server: false,
+            shared: false,
           };
         })());
 
