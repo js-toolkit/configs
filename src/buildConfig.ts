@@ -64,14 +64,12 @@ export function getBuildConfig(configPath = resolveConfigPath()): BuildConfig {
     (configPath
       ? // eslint-disable-next-line @typescript-eslint/no-var-requires
         merge(buildConfigDefaults, require(configPath))
-      : (() => {
-          return {
-            output: buildConfigDefaults.output,
-            client: false,
-            server: false,
-            shared: false,
-          };
-        })());
+      : {
+          output: buildConfigDefaults.output,
+          client: false,
+          server: false,
+          shared: false,
+        });
 
   return {
     ...buildConfig,
