@@ -68,7 +68,7 @@ const config: Linter.Config = {
         'ignorePackages',
         // never allow to use of the module extensions.
         moduleExtensions.reduce(
-          (acc, ext) => ({ ...acc, [ext.substr(1)]: 'never' }),
+          (acc, ext) => ({ ...acc, [ext.substring(1)]: 'never' }),
           { '': 'never' } // Fix error on import user type declaration folder such as `client/types`
         ),
       ],
