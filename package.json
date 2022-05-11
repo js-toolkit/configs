@@ -1,5 +1,5 @@
 {
-  "name": "@js-toolkit/configs",
+  "name": "@jstoolkit/configs",
   "version": "3.84.4",
   "description": "Preconfigured configurations",
   "author": "VZH",
@@ -9,40 +9,37 @@
     "type": "git",
     "url": "https://github.com/js-toolkit/configs"
   },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
-  },
   "scripts": {
     "clean": "rimraf dist/*",
     "copy:configs": "copyfiles package.json .npmignore README.md LICENSE ./dist/",
     "copy": "copyfiles --exclude './src/**/*.ts' --up 1 './src/**/*' ./dist/ && npm run copy:configs",
     "minify": "node ../node-utils/dist/bin/minify.js --replace ./dist",
     "build": "yarn run clean && tsc --project ./tsconfig.json",
-    "build-to-tutoron": "tsc --project ./tsconfig.json --outDir '/../../../tutoron/node_modules/@js-toolkit/configs/' && copyfiles --exclude './src/**/*.ts' --up 1 './src/**/*' '../../../tutoron/node_modules/@js-toolkit/configs/'",
-    "build-to-reflexy": "tsc --project ./tsconfig.json --outDir '../reflexy/node_modules/@js-toolkit/configs/' && copyfiles --exclude './src/**/*.ts' --up 1 './src/**/*' '../reflexy/node_modules/@js-toolkit/configs/'",
-    "build-to-react-components": "tsc --project ./tsconfig.json --outDir '../react-components/node_modules/@js-toolkit/configs/' && copyfiles --exclude './src/**/*.ts' --up 1 './src/**/*' '../react-components/node_modules/@js-toolkit/configs/'",
+    "build-to-tutoron": "tsc --project ./tsconfig.json --outDir '/../../../tutoron/node_modules/@jstoolkit/configs/' && copyfiles --exclude './src/**/*.ts' --up 1 './src/**/*' '../../../tutoron/node_modules/@jstoolkit/configs/'",
+    "build-to-reflexy": "tsc --project ./tsconfig.json --outDir '../reflexy/node_modules/@jstoolkit/configs/' && copyfiles --exclude './src/**/*.ts' --up 1 './src/**/*' '../reflexy/node_modules/@jstoolkit/configs/'",
+    "build-to-react-components": "tsc --project ./tsconfig.json --outDir '../react-components/node_modules/@jstoolkit/configs/' && copyfiles --exclude './src/**/*.ts' --up 1 './src/**/*' '../react-components/node_modules/@jstoolkit/configs/'",
     "build-to-player": "tsc --project ./tsconfig.json && npm run minify && copyfiles -e './dist/*(package.json|README.md|LICENSE)' -u 1 './dist/**/*' '../../../player/modules/configs'",
-    "patch-publish": "yarn run build && yarn run minify && yarn version --patch && yarn run copy && npm publish ./dist && git push --follow-tags",
-    "minor-publish": "yarn run build && yarn run minify && yarn version --minor && yarn run copy && npm publish ./dist && git push --follow-tags"
+    "patch-publish": "yarn run build && yarn run minify && yarn version --patch && yarn run copy && npm publish ./dist --access public && git push --follow-tags",
+    "minor-publish": "yarn run build && yarn run minify && yarn version --minor && yarn run copy && npm publish ./dist --access public && git push --follow-tags"
   },
   "devDependencies": {
-    "@types/eslint": "^8.4.1",
+    "@types/eslint": "^8.4.2",
     "@types/webpack-node-externals": "^2.5.3",
-    "@typescript-eslint/eslint-plugin": "^5.18.0",
-    "@typescript-eslint/parser": "^5.18.0",
+    "@typescript-eslint/eslint-plugin": "^5.23.0",
+    "@typescript-eslint/parser": "^5.23.0",
     "copyfiles": "^2.4.1",
-    "eslint": "^8.12.0",
+    "eslint": "^8.15.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-prettier": "^4.0.0",
     "html-webpack-plugin": "^5.5.0",
     "prettier": "^2.6.2",
     "rimraf": "^3.0.2",
-    "typescript": "^4.6.3",
-    "webpack": "^5.71.0",
-    "webpack-dev-server": "^4.7.4",
+    "typescript": "^4.6.4",
+    "webpack": "^5.72.1",
+    "webpack-dev-server": "^4.9.0",
     "webpack-node-externals": "^3.0.0"
   }
 }

@@ -33,8 +33,8 @@ export const clientDefaultRules: Record<
       paths.client.sources,
       // Because this packages are require css-modules.
       // And to avoid duplicating css classes when composes process in the same loaders.
-      path.join(paths.nodeModules.root, '@js-toolkit/react-components'),
-      path.join(paths.nodeModules.root, '@js-toolkit/editors'),
+      path.join(paths.nodeModules.root, '@jstoolkit/react-components'),
+      path.join(paths.nodeModules.root, '@jstoolkit/editors'),
       path.join(paths.nodeModules.root, 'reflexy'),
     ],
     use: loaders.css(),
@@ -44,8 +44,8 @@ export const clientDefaultRules: Record<
     include: [paths.nodeModules.root],
     // because this packages included in cssRule
     exclude: [
-      path.join(paths.nodeModules.root, '@js-toolkit/react-components'),
-      path.join(paths.nodeModules.root, '@js-toolkit/editors'),
+      path.join(paths.nodeModules.root, '@jstoolkit/react-components'),
+      path.join(paths.nodeModules.root, '@jstoolkit/editors'),
       path.join(paths.nodeModules.root, 'reflexy'),
     ],
     use: loaders.cssNodeModules(),
