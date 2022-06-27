@@ -48,9 +48,12 @@ export function getPaths(baseDir = process.cwd(), buildConfig = getBuildConfig()
         root: path.resolve(baseDir, client.root),
         sources: path.resolve(baseDir, client.root, client.sources),
         assets: path.resolve(baseDir, client.root, client.assets),
-        staticContent: client.staticContent.map((p) =>
-          path.isAbsolute(p) ? p : path.resolve(baseDir, client.root, p)
-        ),
+        staticContent: client.staticContent.map((item) => {
+          const p = typeof item === 'string' ? { path: item } : item;
+          return path.isAbsolute(p.path)
+            ? p
+            : { ...p, path: path.resolve(baseDir, client.root, p.path) };
+        }),
 
         tsconfig: path.resolve(baseDir, client.root, client.tsconfig),
 

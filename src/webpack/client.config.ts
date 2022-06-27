@@ -347,22 +347,24 @@ export default ({
         paths.client.staticContent.length > 0 &&
         (() => {
           // Exclude root and sources dirs
-          const staticContent = paths.client.staticContent.filter(
-            (p) => p !== paths.client.root && p !== paths.client.sources
-          );
+          const staticContent = paths.client.staticContent.filter((p) => {
+            return p.path !== paths.client.root && p.path !== paths.client.sources;
+          });
           if (staticContent.length === 0) {
             return undefined;
           }
           const getName = (): string => 'copy-webpack-plugin';
           const CopyPlugin = nodeRequire(getName());
-          return new CopyPlugin({ patterns: staticContent.map((p) => ({ from: p })) });
+          return new CopyPlugin({
+            patterns: staticContent.map(({ path: from, ...rest }) => ({ from, ...rest })),
+          });
         })(),
 
       ...(restOptions.plugins || []),
     ].filter(Boolean),
 
     devServer: {
-      static: paths.client.staticContent, // Static content which not processed by webpack and loadable from disk.
+      static: paths.client.staticContent.map(({ path: p }) => p), // Static content which not processed by webpack and loadable from disk.
       historyApiFallback: true, // For react subpages handling with webpack-dev-server
       host: '0.0.0.0',
       port: 9000,

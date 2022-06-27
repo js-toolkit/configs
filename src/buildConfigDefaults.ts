@@ -2,12 +2,17 @@
 
 type HtmlOptions = import('html-webpack-plugin').Options & { readonly main?: boolean };
 
+type StaticContentOptions = (
+  | string
+  | ({ path: string } & Pick<import('copy-webpack-plugin').ObjectPattern, 'globOptions'>)
+)[];
+
 export function getClientConfig(root = 'client') {
   return {
     root,
     sources: 'src',
     assets: 'src/assets',
-    staticContent: ['public'],
+    staticContent: ['public'] as StaticContentOptions,
 
     /** Generating html options */
     html: [] as HtmlOptions | HtmlOptions[],
