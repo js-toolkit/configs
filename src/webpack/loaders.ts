@@ -20,10 +20,10 @@ interface GetTsLoaderOptionsBase extends BaseTsOptions {
 
 interface GetTsDefaultLoaderOptions extends GetTsLoaderOptionsBase {
   loaderType: TsLoaderType.Default;
-  forkedChecks?: boolean;
-  useThreadLoader?: boolean;
-  threadLoaderOptions?: Record<string, any>;
-  afterLoaders?: RuleSetUseItem[];
+  forkedChecks?: boolean | undefined;
+  useThreadLoader?: boolean | undefined;
+  threadLoaderOptions?: Record<string, any> | undefined;
+  afterLoaders?: RuleSetUseItem[] | undefined;
 }
 
 type TsDefaultLoaderOptions = Omit<GetTsDefaultLoaderOptions, 'loaderType'> & Record<string, any>;
@@ -145,7 +145,7 @@ export default {
     return new CheckerPlugin();
   },
 
-  babel(options?: Record<PropertyKey, any>) {
+  babel(options?: Record<PropertyKey, any> | undefined) {
     return {
       loader: 'babel-loader',
       options: {
@@ -174,15 +174,15 @@ export default {
     postcssLoaderOptions,
     ...cssLoaderOptions
   }: {
-    ssr?: boolean;
-    pattern?: string;
-    prodPattern?: string;
-    postcss?: boolean;
-    extractor?: boolean;
-    modules?: Record<string, any> | boolean;
-    styleLoaderOptions?: Record<string, unknown>;
-    postcssLoaderOptions?: Record<string, unknown>;
-  } & Record<string, any> = {}) {
+    ssr?: boolean | undefined;
+    pattern?: string | undefined;
+    prodPattern?: string | undefined;
+    postcss?: boolean | undefined;
+    extractor?: boolean | undefined;
+    modules?: Record<string, any> | boolean | undefined;
+    styleLoaderOptions?: Record<string, unknown> | undefined;
+    postcssLoaderOptions?: Record<string, unknown> | undefined;
+  } & Record<string, any> = {}): RuleSetUseItem[] {
     return [
       ...(!ssr
         ? [
@@ -211,7 +211,7 @@ export default {
         },
       },
       ...(postcss ? [{ loader: 'postcss-loader', options: postcssLoaderOptions }] : []),
-    ];
+    ] as RuleSetUseItem[];
   },
 
   cssNodeModules(options: Record<string, any> = {}) {

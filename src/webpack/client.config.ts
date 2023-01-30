@@ -77,16 +77,17 @@ type ClientDefaultRules = Record<
 export interface ClientConfigOptions extends Omit<CommonConfigOptions, 'typescript'> {
   typescript?:
     | (CommonConfigOptions['typescript'] & {
-        loaderOptions?: Record<string, any>;
-        threadLoader?: boolean;
-        threadLoaderOptions?: Record<string, any>;
+        loaderOptions?: Record<string, any> | undefined;
+        threadLoader?: boolean | undefined;
+        threadLoaderOptions?: Record<string, any> | undefined;
       })
-    | boolean;
-  rules?: Partial<ClientDefaultRules> & Record<string, RuleSetRule>;
+    | boolean
+    | undefined;
+  rules?: (Partial<ClientDefaultRules> & Record<string, RuleSetRule>) | undefined;
 }
 
 function containsLoader(rules: Record<string, RuleSetRule>, loader: string): boolean {
-  const checkRule = (use?: RuleSetUse): boolean => {
+  const checkRule = (use?: RuleSetUse | undefined): boolean => {
     if (typeof use === 'string') return use.includes(loader);
     if (Array.isArray(use)) return use.some(checkRule);
     if (typeof use !== 'function' && use && use.loader) return use.loader.includes(loader);
@@ -137,7 +138,7 @@ export default ({
   rules: { tsBaseRule, ...rules } = {},
   ...restOptions
 }: ClientConfigOptions): Configuration => {
-  const tsConfig: Required<ClientConfigOptions['typescript']> = {
+  const tsConfig: RequiredStrict<Extract<ClientConfigOptions['typescript'], object>> = {
     configFile: paths.client.tsconfig,
     loader: TsLoaderType.Default,
     loaderOptions: {},
@@ -145,7 +146,9 @@ export default ({
     checkerOptions: {},
     threadLoader: false,
     threadLoaderOptions: {},
-    ...(typeof typescript === 'object' ? typescript : undefined),
+    ...(typeof typescript === 'object'
+      ? (typescript as RequiredStrict<typeof typescript>)
+      : undefined),
   };
 
   const { tsBaseRule: defaultTsBaseRule, ...restDefaultRules } = clientDefaultRules;

@@ -40,7 +40,7 @@ export interface AppEnvironment {
 
 const APP = /^APP_/i;
 
-function tryParse(value?: string): EnvVarType {
+function tryParse(value?: string | undefined): EnvVarType {
   if (value == null) return value;
   try {
     return JSON.parse(value) as EnvVarType;

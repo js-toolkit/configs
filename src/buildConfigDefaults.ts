@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 
-type HtmlOptions = import('html-webpack-plugin').Options & { readonly main?: boolean };
+type HtmlOptions = import('html-webpack-plugin').Options & { readonly main?: boolean | undefined };
 
 type StaticContentOptions = (
   | string

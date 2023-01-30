@@ -52,8 +52,8 @@ export const universalDefaultRules: typeof clientDefaultRules = {
 };
 
 export interface ServerConfigOptions extends ClientConfigOptions {
-  nodeExternalsOptions?: webpackNodeExternals.Options;
-  isUniversal?: boolean;
+  nodeExternalsOptions?: webpackNodeExternals.Options | undefined;
+  isUniversal?: boolean | undefined;
 }
 
 const serverBuildConfig = buildConfig.server || buildConfig.default.server;
@@ -70,7 +70,7 @@ export default ({
   isUniversal,
   ...restOptions
 }: ServerConfigOptions): Configuration => {
-  const tsConfig: Required<ServerConfigOptions['typescript']> = {
+  const tsConfig: RequiredStrict<Extract<ServerConfigOptions['typescript'], object>> = {
     configFile: paths.server.tsconfig,
     loader: TsLoaderType.Default,
     loaderOptions: {},
@@ -78,7 +78,9 @@ export default ({
     checkerOptions: {},
     threadLoader: false,
     threadLoaderOptions: {},
-    ...(typeof typescript === 'object' ? typescript : undefined),
+    ...(typeof typescript === 'object'
+      ? (typescript as RequiredStrict<typeof typescript>)
+      : undefined),
   };
 
   const { tsBaseRule: defaultTsBaseRule, ...restDefaultRules } = isUniversal
