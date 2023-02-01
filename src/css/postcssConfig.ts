@@ -2,12 +2,12 @@ import appEnv from '../appEnv';
 import paths from '../paths';
 
 export interface Options {
-  import?: { path: string[] | string } | false;
-  presetEnv?: Record<string, any>;
-  nested?: boolean;
+  import?: { path: string[] | string } | false | undefined;
+  presetEnv?: Record<string, any> | undefined;
+  nested?: boolean | undefined;
   /** You need to install cssnano and cssnano-preset-default */
-  minimizer?: boolean;
-  autoprefixer?: boolean;
+  minimizer?: boolean | undefined;
+  autoprefixer?: boolean | undefined;
 }
 
 export default ({

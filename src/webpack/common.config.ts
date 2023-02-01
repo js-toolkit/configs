@@ -6,20 +6,22 @@ import paths, { moduleExtensions } from '../paths';
 import loaders, { TsLoaderType } from './loaders';
 import nodeRequire from './nodeRequire';
 
-export interface CommonConfigOptions extends webpack.Configuration {
+export interface CommonConfigOptions extends OptionalToUndefined<webpack.Configuration> {
   outputPath: string;
   outputPublicPath: string;
   outputJsDir: string;
-  hash?: boolean | { entry: boolean; chunk: boolean };
-  chunkSuffix?: string;
-  typescript?: {
-    configFile?: string;
-    loader?: TsLoaderType;
-    forkedChecks?: boolean;
-    /** Forked checks webpack plugin options */
-    checkerOptions?: Record<string, any>;
-  };
-  terserPluginOptions?: Record<string, any>;
+  hash?: boolean | { entry: boolean; chunk: boolean } | undefined;
+  chunkSuffix?: string | undefined;
+  typescript?:
+    | {
+        configFile?: string | undefined;
+        loader?: TsLoaderType | undefined;
+        forkedChecks?: boolean | undefined;
+        /** Forked checks webpack plugin options */
+        checkerOptions?: Record<string, any> | undefined;
+      }
+    | undefined;
+  terserPluginOptions?: Record<string, any> | undefined;
 }
 
 export default ({
@@ -167,5 +169,5 @@ export default ({
       ...restOptions.module,
       rules: (restOptions.module && restOptions.module.rules) || [],
     },
-  };
+  } as webpack.Configuration;
 };
