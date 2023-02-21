@@ -11,6 +11,7 @@ const enabled = buildConfig.client && fs.existsSync(paths.client.root);
 const hasReactPlugin = !!getInstalledPackage('eslint-plugin-react');
 const hasA11yPlugin = !!getInstalledPackage('eslint-plugin-jsx-a11y');
 const hasReactHooksPlugin = !!getInstalledPackage('eslint-plugin-react-hooks');
+const hasMobxPlugin = !!getInstalledPackage('eslint-plugin-mobx');
 
 const airbnbExtends = airbnbConfig.extends.filter(
   (item) =>
@@ -26,6 +27,7 @@ const config: import('eslint').Linter.Config = {
     ...airbnbExtends,
     require.resolve('./common'),
     ...(hasReactHooksPlugin ? ['plugin:react-hooks/recommended'] : []),
+    ...(hasMobxPlugin ? ['plugin:mobx/recommended'] : []),
   ],
 
   env: {
