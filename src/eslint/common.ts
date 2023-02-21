@@ -61,6 +61,19 @@ const config: Linter.Config = {
     'no-unused-expressions': ['error', { allowShortCircuit: true }],
     'lines-between-class-members': ['error', 'always', { exceptAfterSingleLine: true }],
 
+    'no-restricted-exports': [
+      'error',
+      {
+        restrictedNamedExports: ['then'],
+        restrictDefaultExports: {
+          named: true,
+          namedFrom: true,
+          namespaceFrom: true,
+          defaultFrom: false,
+        },
+      },
+    ],
+
     ...(hasImportPlugin && {
       'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
       'import/extensions': [
