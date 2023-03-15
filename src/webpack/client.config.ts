@@ -106,8 +106,7 @@ export function prepareRules(
 ): Record<string, RuleSetRule> {
   return Object.entries<DefaultRuleValue>(rules).reduce((acc, [key, value]) => {
     if (typeof value === 'function' && key in defaultRules && defaultRules[key]) {
-      const rule = defaultRules[key];
-      if (rule) acc[key] = value(rule);
+      acc[key] = value(defaultRules[key]);
     } else {
       acc[key] = value;
     }
@@ -335,10 +334,10 @@ export default ({
                 : undefined,
             navigateFallbackBlacklist: [
               // Exclude URLs starting with /_, as they're likely an API call
-              new RegExp('^/_'),
+              /^\/_/,
               // Exclude URLs containing a dot, as they're likely a resource in
               // public/ and not a SPA route
-              new RegExp('/[^/]+\\.[^/]+$'),
+              /\/[^/]+\.[^/]+$/,
             ],
             ...clientBuildConfig.output.sw,
           });
