@@ -1,4 +1,4 @@
-import buildConfigDefaults, { BuildConfigDefaults } from './buildConfigDefaults';
+import buildConfigDefaults, { type BuildConfigDefaults } from './buildConfigDefaults';
 
 export interface BuildConfig extends Omit<BuildConfigDefaults, 'client' | 'server' | 'shared'> {
   client: BuildConfigDefaults['client'] | false | undefined;
@@ -30,13 +30,14 @@ export function resolveConfigPath(
 }
 
 // eslint-disable-next-line @typescript-eslint/ban-types
-function merge<T1 extends object, T2 extends Partial<T1>>(
+function merge<T1 extends AnyObject, T2 extends Partial<T1>>(
   defaults: T1,
   nextValues: T2
 ): Omit<T1, keyof T2> & T2 {
   return Array.from(
     new Set([...Object.getOwnPropertyNames(defaults), ...Object.getOwnPropertyNames(nextValues)])
-  ).reduce((acc, p) => {
+  ).reduce((acc, key) => {
+    const p = key as keyof (T1 | T2);
     // Merge arrays
     if (Array.isArray(defaults[p]) || Array.isArray(nextValues[p])) {
       // Apply empty array if nextValues[p] is empty otherwise merge them
@@ -46,11 +47,11 @@ function merge<T1 extends object, T2 extends Partial<T1>>(
     }
     // Merge objects
     else if (typeof defaults[p] === 'object' && typeof nextValues[p] === 'object') {
-      acc[p] = merge(defaults[p], nextValues[p]);
+      acc[p] = merge(defaults[p], nextValues[p] ?? {}) as any;
     }
     // Replace default values from obj2 if exists
     else {
-      acc[p] = p in nextValues ? nextValues[p] : defaults[p];
+      acc[p] = (p in nextValues ? nextValues[p] : defaults[p]) as (typeof acc)[typeof p];
     }
     return acc;
   }, {} as Omit<T1, keyof T2> & T2);

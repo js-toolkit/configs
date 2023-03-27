@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import type { Linter } from 'eslint';
-import buildConfig, { BuildConfig } from '../buildConfig';
+import buildConfig, { type BuildConfig } from '../buildConfig';
 import paths, { moduleExtensions } from '../paths';
 import { eslintTsProject } from './consts';
 

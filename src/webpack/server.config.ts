@@ -4,7 +4,7 @@ import appEnv from '../appEnv';
 import paths from '../paths';
 import buildConfig from '../buildConfig';
 import commonConfig from './common.config';
-import { clientDefaultRules, ClientConfigOptions, prepareRules } from './client.config';
+import { clientDefaultRules, type ClientConfigOptions, prepareRules } from './client.config';
 import loaders, { TsLoaderType } from './loaders';
 
 export const serverDefaultRules: Pick<typeof clientDefaultRules, 'jsRule' | 'tsBaseRule'> = {
@@ -180,7 +180,9 @@ export default ({
     module: {
       ...restOptions.module,
       rules: [
-        ...Object.getOwnPropertyNames(moduleRules).map((name) => moduleRules[name] || {}),
+        ...Object.getOwnPropertyNames(moduleRules).map(
+          (name) => moduleRules[name as keyof typeof moduleRules] || {}
+        ),
         ...((restOptions.module && restOptions.module.rules) || []),
       ],
     },
