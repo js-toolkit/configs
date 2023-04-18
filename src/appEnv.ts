@@ -13,7 +13,7 @@ type ValueOrGetter<T> = T | ValueGetter<T>;
 
 export interface AppEnvironment {
   /** Object with keys and their default values so we can feed into Webpack EnvironmentPlugin. */
-  raw: AppEnvVars;
+  raw: AppEnvVars & AnyObject;
 
   /** Stringify all values that we can feed into Webpack DefinePlugin. */
   envStringify(): { 'process.env': Record<string, string> };
@@ -58,7 +58,7 @@ export function getAppEnvironment(): AppEnvironment {
   const rawEnv = process.env;
 
   // Object with keys and their default values so we can feed into Webpack EnvironmentPlugin
-  const raw: AppEnvVars = Object.keys(rawEnv)
+  const raw = Object.keys(rawEnv)
     .filter((key) => APP.test(key))
     .reduce(
       (env, key) => {
@@ -71,7 +71,7 @@ export function getAppEnvironment(): AppEnvironment {
         // Most importantly, it switches React into the correct mode.
         NODE_ENV: tryParse(rawEnv.NODE_ENV || 'development') as NodeEnv,
         APP_SSR: false,
-      }
+      } as AppEnvVars & AnyObject
     );
 
   const appEnv: AppEnvironment = {
@@ -82,7 +82,7 @@ export function getAppEnvironment(): AppEnvironment {
         // eslint-disable-next-line no-param-reassign
         env[key] = JSON.stringify(this.raw[key]);
         return env;
-      }, {});
+      }, {} as AnyObject);
       return { 'process.env': stringified };
     },
 
@@ -132,7 +132,7 @@ export function getAppEnvironment(): AppEnvironment {
         if (typeof prop === 'string' && !(prop in target)) {
           return target.raw[prop];
         }
-        return target[prop];
+        return target[prop as keyof typeof target];
       },
       has(target, prop) {
         return prop in target || prop in target.raw;

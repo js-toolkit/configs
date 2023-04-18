@@ -1,15 +1,15 @@
 {
   "extends": "./src/ts/common.tsconfig.json",
   "compilerOptions": {
+    "module": "CommonJS",
+    "verbatimModuleSyntax": false,
+    "isolatedModules": true,
     "baseUrl": "./src",
     "outDir": "./dist",
-    "isolatedModules": false,
     "exactOptionalPropertyTypes": true,
     "declaration": true,
     "sourceMap": false,
-    "importHelpers": false,
-    "incremental": true,
-    "skipLibCheck": true
+    "importHelpers": false
   },
   "include": ["./src/"]
 }

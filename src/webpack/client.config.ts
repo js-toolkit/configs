@@ -4,7 +4,7 @@ import path from 'path';
 import appEnv from '../appEnv';
 import paths from '../paths';
 import buildConfig from '../buildConfig';
-import commonConfig, { CommonConfigOptions } from './common.config';
+import commonConfig, { type CommonConfigOptions } from './common.config';
 import loaders, { TsLoaderType } from './loaders';
 import nodeRequire from './nodeRequire';
 
@@ -106,13 +106,12 @@ export function prepareRules(
 ): Record<string, RuleSetRule> {
   return Object.entries<DefaultRuleValue>(rules).reduce((acc, [key, value]) => {
     if (typeof value === 'function' && key in defaultRules && defaultRules[key]) {
-      const rule = defaultRules[key];
-      if (rule) acc[key] = value(rule);
+      acc[key] = value(defaultRules[key]);
     } else {
       acc[key] = value;
     }
     return acc;
-  }, {});
+  }, {} as AnyObject);
 }
 
 function getPnpWebpackPlugin(): any {
@@ -236,7 +235,9 @@ export default ({
     module: {
       ...restOptions.module,
       rules: [
-        ...Object.getOwnPropertyNames(moduleRules).map((name) => moduleRules[name] || {}),
+        ...Object.getOwnPropertyNames(moduleRules).map(
+          (name) => moduleRules[name as keyof typeof moduleRules] || {}
+        ),
         // Provide pug loader if html template is pug template
         ...(() => {
           const html = normalizeHtml(clientBuildConfig.html);
@@ -310,7 +311,9 @@ export default ({
               ? undefined
               : (item: Record<string, any>) =>
                   Object.getOwnPropertyNames(filterTemplate).every(
-                    (key) => !(key in item) || item[key] === filterTemplate[key]
+                    (key) =>
+                      !(key in item) ||
+                      item[key] === filterTemplate[key as keyof typeof filterTemplate]
                   ),
           });
         })(),
@@ -335,10 +338,10 @@ export default ({
                 : undefined,
             navigateFallbackBlacklist: [
               // Exclude URLs starting with /_, as they're likely an API call
-              new RegExp('^/_'),
+              /^\/_/,
               // Exclude URLs containing a dot, as they're likely a resource in
               // public/ and not a SPA route
-              new RegExp('/[^/]+\\.[^/]+$'),
+              /\/[^/]+\.[^/]+$/,
             ],
             ...clientBuildConfig.output.sw,
           });

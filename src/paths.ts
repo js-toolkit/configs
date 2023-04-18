@@ -2,7 +2,7 @@
 import path from 'path';
 import { getBuildConfig } from './buildConfig';
 
-export const moduleExtensions = ['.js', '.jsx', '.ts', '.tsx', '.d.ts'];
+export const moduleExtensions = ['.js', '.mjs', '.cjs', '.jsx', '.ts', '.tsx', '.d.ts'];
 
 export function getPaths(baseDir = process.cwd(), buildConfig = getBuildConfig()) {
   return Object.freeze({

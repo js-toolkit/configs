@@ -1,4 +1,6 @@
-/* eslint-disable no-var, no-underscore-dangle, @typescript-eslint/camelcase */
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable camelcase */
+/* eslint-disable no-var */
 
 declare var __webpack_require__: typeof require;
 declare var __non_webpack_require__: typeof require;
