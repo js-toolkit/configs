@@ -5,7 +5,7 @@ import paths from '../paths';
 import buildConfig from '../buildConfig';
 import commonConfig from './common.config';
 import { clientDefaultRules, type ClientConfigOptions, prepareRules } from './client.config';
-import loaders, { TsLoaderType } from './loaders';
+import { TsLoaderType, assets, css, cssNodeModules, getTsLoader } from './loaders';
 
 export const serverDefaultRules: Pick<typeof clientDefaultRules, 'jsRule' | 'tsBaseRule'> = {
   jsRule: {
@@ -30,24 +30,24 @@ export const universalDefaultRules: typeof clientDefaultRules = {
   cssRule: {
     ...clientDefaultRules.cssRule,
     // process css in server side always in ssr mode
-    use: loaders.css({ ssr: true }),
+    use: css({ ssr: true }),
   },
   cssNodeModulesRule: {
     ...clientDefaultRules.cssNodeModulesRule,
     // process css in server side always in ssr mode
-    use: loaders.cssNodeModules({ ssr: true }),
+    use: cssNodeModules({ ssr: true }),
   },
   svgRule: {
     ...clientDefaultRules.svgRule,
-    use: loaders.assets({ limit: undefined, ssr: true }),
+    use: assets({ limit: undefined, ssr: true }),
   },
   fontRule: {
     ...clientDefaultRules.fontRule,
-    use: loaders.assets({ ssr: true }),
+    use: assets({ ssr: true }),
   },
   assetsRule: {
     ...clientDefaultRules.assetsRule,
-    use: loaders.assets({ ssr: true }),
+    use: assets({ ssr: true }),
   },
 };
 
@@ -91,7 +91,7 @@ export default ({
     tsRule: {
       ...defaultTsBaseRule,
       ...tsBaseRule,
-      use: loaders.getTsLoader({
+      use: getTsLoader({
         tsconfig: tsConfig.configFile,
         forkedChecks: tsConfig.forkedChecks,
         useThreadLoader: tsConfig.threadLoader,

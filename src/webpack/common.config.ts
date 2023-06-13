@@ -3,7 +3,7 @@ import path from 'path';
 import appEnv from '../appEnv';
 import buildConfig from '../buildConfig';
 import paths, { moduleExtensions } from '../paths';
-import loaders, { TsLoaderType } from './loaders';
+import { TsLoaderType, getTsCheckerPlugin } from './loaders';
 import nodeRequire from './nodeRequire';
 
 export interface CommonConfigOptions extends OptionalToUndefined<webpack.Configuration> {
@@ -105,7 +105,7 @@ export default ({
       // Forked check for TS
       ...(typescript && typescript.forkedChecks && typescript.configFile
         ? [
-            loaders.getTsCheckerPlugin({
+            getTsCheckerPlugin({
               loaderType: typescript.loader ?? TsLoaderType.Default,
               ...typescript.checkerOptions,
               typescript: {
