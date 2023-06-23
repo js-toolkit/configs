@@ -95,7 +95,7 @@ export interface ClientConfigOptions extends Omit<CommonConfigOptions, 'typescri
 }
 
 function containsLoader(rules: Record<string, RuleSetRule>, loader: string): boolean {
-  const checkRule = (use?: RuleSetUse | undefined): boolean => {
+  const checkRule = (use?: RuleSetUse | undefined | null | string | false | 0): boolean => {
     if (typeof use === 'string') return use.includes(loader);
     if (Array.isArray(use)) return use.some(checkRule);
     if (typeof use !== 'function' && use && use.loader) return use.loader.includes(loader);
