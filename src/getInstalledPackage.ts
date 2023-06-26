@@ -1,6 +1,9 @@
-export function getInstalledPackage(name: string): string | undefined {
+export function getInstalledPackage(
+  name: string,
+  requireFn: typeof require = require
+): string | undefined {
   try {
-    require(name);
+    requireFn(name);
     return name;
   } catch {
     return undefined;
