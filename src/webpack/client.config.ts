@@ -370,7 +370,11 @@ export default ({
           const getName = (): string => 'copy-webpack-plugin';
           const CopyPlugin = nodeRequire(getName());
           return new CopyPlugin({
-            patterns: staticContent.map(({ path: from, ...rest }) => ({ from, ...rest })),
+            patterns: staticContent.map(({ path: from, ignore, ...rest }) => ({
+              from,
+              ...(ignore && { globOptions: { ignore } }),
+              ...rest,
+            })),
           });
         })(),
 
@@ -378,7 +382,11 @@ export default ({
     ].filter(Boolean),
 
     devServer: {
-      static: paths.client.staticContent.map(({ path: p }) => p), // Static content which not processed by webpack and loadable from disk.
+      // Static content which not processed by webpack and loadable from disk.
+      static: paths.client.staticContent.map(({ path: directory, ignore: ignored }) => ({
+        directory,
+        ...(ignored && { watch: { ignored } }),
+      })),
       historyApiFallback: true, // For react subpages handling with webpack-dev-server
       host: '0.0.0.0',
       port: 9000,
