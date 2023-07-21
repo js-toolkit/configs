@@ -120,6 +120,9 @@ const config: Linter.Config = {
           node: {
             extensions: moduleExtensions,
           },
+          typescript: {
+            project: fs.existsSync(eslintTsProject) ? eslintTsProject : 'tsconfig.json',
+          },
         },
         'import/extensions': moduleExtensions,
         'import/external-module-folders': ['node_modules', 'node_modules/@types'],
