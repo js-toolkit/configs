@@ -33,6 +33,9 @@ module.exports = {
       node: {
         extensions: ['.ts', '.tsx', '.js', '.jsx'],
       },
+      typescript: {
+        project: './tsconfig.json',
+      },
     },
   },
 
@@ -53,6 +56,7 @@ module.exports = {
     'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
     'import/no-unresolved': 'off',
     'import/no-dynamic-require': 'off',
+    'import/no-import-module-exports': 'off',
     'import/extensions': ['error', 'ignorePackages', { js: 'never', ts: 'never' }],
 
     '@typescript-eslint/no-explicit-any': 'off',

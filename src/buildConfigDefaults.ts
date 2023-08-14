@@ -2,10 +2,7 @@
 
 type HtmlOptions = import('html-webpack-plugin').Options & { readonly main?: boolean | undefined };
 
-type StaticContentOptions = (
-  | string
-  | ({ path: string } & Pick<import('copy-webpack-plugin').ObjectPattern, 'globOptions'>)
-)[];
+type StaticContentOptions = (string | { path: string; ignore?: (string | RegExp)[] | undefined })[];
 
 export function getClientConfig(root = 'client') {
   return {

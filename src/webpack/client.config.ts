@@ -5,7 +5,15 @@ import appEnv from '../appEnv';
 import paths from '../paths';
 import buildConfig from '../buildConfig';
 import commonConfig, { type CommonConfigOptions } from './common.config';
-import loaders, { TsLoaderType } from './loaders';
+import {
+  TsLoaderType,
+  assets,
+  babelLoader,
+  css,
+  cssExtractLoader,
+  cssNodeModules,
+  getTsLoader,
+} from './loaders';
 import nodeRequire from './nodeRequire';
 
 export const clientDefaultRules: Record<
@@ -21,7 +29,7 @@ export const clientDefaultRules: Record<
   jsRule: {
     test: /\.m?jsx?$/,
     include: [paths.client.sources, paths.shared.sources].filter((v) => !!v),
-    use: loaders.babel(),
+    use: babelLoader(),
   },
   tsBaseRule: {
     test: /\.tsx?$/,
@@ -37,7 +45,7 @@ export const clientDefaultRules: Record<
       path.join(paths.nodeModules.root, '@jstoolkit/editors'),
       path.join(paths.nodeModules.root, 'reflexy'),
     ],
-    use: loaders.css(),
+    use: css(),
   },
   cssNodeModulesRule: {
     test: /\.css$/,
@@ -48,22 +56,22 @@ export const clientDefaultRules: Record<
       path.join(paths.nodeModules.root, '@jstoolkit/editors'),
       path.join(paths.nodeModules.root, 'reflexy'),
     ],
-    use: loaders.cssNodeModules(),
+    use: cssNodeModules(),
   },
   svgRule: {
     test: /\.svg$/,
     include: [paths.client.sources, paths.nodeModules.root],
-    use: loaders.assets({ limit: undefined }),
+    use: assets({ limit: undefined }),
   },
   fontRule: {
     test: /\.(eot|ttf|woff|woff2|otf)$/,
     include: [paths.client.assets, paths.nodeModules.root],
-    use: loaders.assets(),
+    use: assets(),
   },
   assetsRule: {
     test: /\.(png|jpg|gif|ico)$/,
     include: [paths.client.assets, paths.nodeModules.root],
-    use: loaders.assets(),
+    use: assets(),
   },
 };
 
@@ -87,7 +95,7 @@ export interface ClientConfigOptions extends Omit<CommonConfigOptions, 'typescri
 }
 
 function containsLoader(rules: Record<string, RuleSetRule>, loader: string): boolean {
-  const checkRule = (use?: RuleSetUse | undefined): boolean => {
+  const checkRule = (use?: RuleSetUse | undefined | null | string | false | 0): boolean => {
     if (typeof use === 'string') return use.includes(loader);
     if (Array.isArray(use)) return use.some(checkRule);
     if (typeof use !== 'function' && use && use.loader) return use.loader.includes(loader);
@@ -156,7 +164,7 @@ export default ({
     tsRule: {
       ...defaultTsBaseRule,
       ...tsBaseRule,
-      use: loaders.getTsLoader({
+      use: getTsLoader({
         tsconfig: tsConfig.configFile,
         forkedChecks: tsConfig.forkedChecks,
         useThreadLoader: tsConfig.threadLoader,
@@ -266,7 +274,7 @@ export default ({
       })(),
 
       // Extract css if has corresponding loader
-      containsLoader(moduleRules, loaders.cssExtractLoader) &&
+      containsLoader(moduleRules, cssExtractLoader) &&
         (() => {
           // const getName = (): string => 'mini-css-extract-plugin';
           const getName = (): string => 'extract-css-chunks-webpack-plugin';
@@ -283,7 +291,7 @@ export default ({
         })(),
       // Minimize css
       (restOptions.optimization?.minimize ?? true) &&
-        containsLoader(moduleRules, loaders.cssExtractLoader) &&
+        containsLoader(moduleRules, cssExtractLoader) &&
         (() => {
           const getName = (): string => 'optimize-css-assets-webpack-plugin';
           const OptimizeCssAssetsPlugin = nodeRequire(getName());
@@ -362,7 +370,11 @@ export default ({
           const getName = (): string => 'copy-webpack-plugin';
           const CopyPlugin = nodeRequire(getName());
           return new CopyPlugin({
-            patterns: staticContent.map(({ path: from, ...rest }) => ({ from, ...rest })),
+            patterns: staticContent.map(({ path: from, ignore, ...rest }) => ({
+              from,
+              ...(ignore && { globOptions: { ignore } }),
+              ...rest,
+            })),
           });
         })(),
 
@@ -370,7 +382,11 @@ export default ({
     ].filter(Boolean),
 
     devServer: {
-      static: paths.client.staticContent.map(({ path: p }) => p), // Static content which not processed by webpack and loadable from disk.
+      // Static content which not processed by webpack and loadable from disk.
+      static: paths.client.staticContent.map(({ path: directory, ignore: ignored }) => ({
+        directory,
+        ...(ignored && { watch: { ignored } }),
+      })),
       historyApiFallback: true, // For react subpages handling with webpack-dev-server
       host: '0.0.0.0',
       port: 9000,

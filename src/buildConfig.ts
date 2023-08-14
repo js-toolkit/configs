@@ -36,25 +36,28 @@ function merge<T1 extends AnyObject, T2 extends Partial<T1>>(
 ): Omit<T1, keyof T2> & T2 {
   return Array.from(
     new Set([...Object.getOwnPropertyNames(defaults), ...Object.getOwnPropertyNames(nextValues)])
-  ).reduce((acc, key) => {
-    const p = key as keyof (T1 | T2);
-    // Merge arrays
-    if (Array.isArray(defaults[p]) || Array.isArray(nextValues[p])) {
-      // Apply empty array if nextValues[p] is empty otherwise merge them
-      // acc[p] = nextValues[p].length === 0 ? nextValues[p] : [...defaults[p], ...nextValues[p]];
-      // If at least on value is array just rewrite
-      acc[p] = nextValues[p] ?? defaults[p];
-    }
-    // Merge objects
-    else if (typeof defaults[p] === 'object' && typeof nextValues[p] === 'object') {
-      acc[p] = merge(defaults[p], nextValues[p] ?? {}) as any;
-    }
-    // Replace default values from obj2 if exists
-    else {
-      acc[p] = (p in nextValues ? nextValues[p] : defaults[p]) as (typeof acc)[typeof p];
-    }
-    return acc;
-  }, {} as Omit<T1, keyof T2> & T2);
+  ).reduce(
+    (acc, key) => {
+      const p = key as keyof (T1 | T2);
+      // Merge arrays
+      if (Array.isArray(defaults[p]) || Array.isArray(nextValues[p])) {
+        // Apply empty array if nextValues[p] is empty otherwise merge them
+        // acc[p] = nextValues[p].length === 0 ? nextValues[p] : [...defaults[p], ...nextValues[p]];
+        // If at least on value is array just rewrite
+        acc[p] = nextValues[p] ?? defaults[p];
+      }
+      // Merge objects
+      else if (typeof defaults[p] === 'object' && typeof nextValues[p] === 'object') {
+        acc[p] = merge(defaults[p], nextValues[p] ?? {}) as any;
+      }
+      // Replace default values from obj2 if exists
+      else {
+        acc[p] = (p in nextValues ? nextValues[p] : defaults[p]) as (typeof acc)[typeof p];
+      }
+      return acc;
+    },
+    {} as Omit<T1, keyof T2> & T2
+  );
 }
 
 export function getBuildConfig(configPath = resolveConfigPath()): BuildConfig {
