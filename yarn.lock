@@ -161,9 +161,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jstoolkit/configs@workspace:.":
+"@js-toolkit/configs@workspace:.":
   version: 0.0.0-use.local
-  resolution: "@jstoolkit/configs@workspace:."
+  resolution: "@js-toolkit/configs@workspace:."
   dependencies:
     "@types/eslint": ^8.44.2
     "@types/webpack-node-externals": ^3.0.0
