@@ -60,6 +60,7 @@ const config: Linter.Config = {
     'no-console': 'off',
     'no-unused-expressions': ['error', { allowShortCircuit: true }],
     'lines-between-class-members': ['error', 'always', { exceptAfterSingleLine: true }],
+    'func-names': ['warn', 'as-needed', { generators: 'as-needed' }],
 
     'no-restricted-exports': [
       'error',
