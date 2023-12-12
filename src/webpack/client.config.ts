@@ -43,6 +43,8 @@ export const clientDefaultRules: Record<
       // And to avoid duplicating css classes when composes process in the same loaders.
       path.join(paths.nodeModules.root, '@jstoolkit/react-components'),
       path.join(paths.nodeModules.root, '@jstoolkit/editors'),
+      path.join(paths.nodeModules.root, '@js-toolkit/react-components'),
+      path.join(paths.nodeModules.root, '@js-toolkit/editors'),
       path.join(paths.nodeModules.root, 'reflexy'),
     ],
     use: css(),
@@ -54,6 +56,8 @@ export const clientDefaultRules: Record<
     exclude: [
       path.join(paths.nodeModules.root, '@jstoolkit/react-components'),
       path.join(paths.nodeModules.root, '@jstoolkit/editors'),
+      path.join(paths.nodeModules.root, '@js-toolkit/react-components'),
+      path.join(paths.nodeModules.root, '@js-toolkit/editors'),
       path.join(paths.nodeModules.root, 'reflexy'),
     ],
     use: cssNodeModules(),
