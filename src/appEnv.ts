@@ -1,8 +1,8 @@
-export type NodeEnv = 'development' | 'production';
+export type NodeEnv = 'development' | 'test' | 'production';
 
 export type EnvVarType = string | number | boolean | undefined;
 
-/** Useful with module augmentation */
+/** Useful with module augmentation. */
 export interface AppEnvVars {
   NODE_ENV: NodeEnv;
   APP_SSR: boolean;
@@ -22,25 +22,29 @@ export interface AppEnvironment {
 
   get<T extends keyof AppEnvVars>(envVarName: T): AppEnvVars[T];
 
-  /** Use APP_SSR environment variable */
+  /** Use APP_SSR environment variable. */
   ssr: boolean;
 
-  /** Use NODE_ENV environment variable */
+  /** Use NODE_ENV environment variable. */
   dev: boolean;
 
-  /** Use NODE_ENV environment variable */
+  /** Use NODE_ENV environment variable. */
+  test: boolean;
+
+  /** Use NODE_ENV environment variable. */
   prod: boolean;
 
-  /** Use NODE_ENV environment variable */
+  /** Use NODE_ENV environment variable. */
   ifDev<T>(devModeValue: ValueOrGetter<T>, elseValue: ValueOrGetter<T>): T;
 
-  /** Use NODE_ENV environment variable */
+  /** Use NODE_ENV environment variable. */
+  ifTest<T>(testModeValue: ValueOrGetter<T>, elseValue: ValueOrGetter<T>): T;
+
+  /** Use NODE_ENV environment variable. */
   ifProd<T>(prodModeValue: ValueOrGetter<T>, elseValue: ValueOrGetter<T>): T;
 }
 
-const APP = /^APP_/i;
-
-function tryParse(value?: string | undefined): EnvVarType {
+function parseJson(value?: string | undefined): EnvVarType {
   if (value == null) return value;
   try {
     return JSON.parse(value) as EnvVarType;
@@ -55,21 +59,22 @@ function tryParse(value?: string | undefined): EnvVarType {
  * injected into the application via DefinePlugin in Webpack configuration.
  */
 export function getAppEnvironment(): AppEnvironment {
+  const APP = /^APP_/i;
   const rawEnv = process.env;
 
-  // Object with keys and their default values so we can feed into Webpack EnvironmentPlugin
+  // Object with keys and their default values so we can feed into Webpack EnvironmentPlugin.
   const raw = Object.keys(rawEnv)
     .filter((key) => APP.test(key))
     .reduce(
       (env, key) => {
         // eslint-disable-next-line no-param-reassign
-        env[key] = tryParse(rawEnv[key]);
+        env[key] = parseJson(rawEnv[key]);
         return env;
       },
       {
         // Useful for determining whether we’re running in production mode.
         // Most importantly, it switches React into the correct mode.
-        NODE_ENV: tryParse(rawEnv.NODE_ENV || 'development') as NodeEnv,
+        NODE_ENV: parseJson(rawEnv.NODE_ENV || 'development') as NodeEnv,
         APP_SSR: false,
       } as AppEnvVars & AnyObject
     );
@@ -102,6 +107,10 @@ export function getAppEnvironment(): AppEnvironment {
       return this.raw.NODE_ENV === 'development';
     },
 
+    get test() {
+      return this.raw.NODE_ENV === 'test';
+    },
+
     get prod() {
       return this.raw.NODE_ENV === 'production';
     },
@@ -111,6 +120,15 @@ export function getAppEnvironment(): AppEnvironment {
         return typeof devModeValue === 'function'
           ? (devModeValue as ValueGetter<T>)()
           : devModeValue;
+      }
+      return typeof elseValue === 'function' ? (elseValue as ValueGetter<T>)() : elseValue;
+    },
+
+    ifTest<T>(testModeValue: ValueOrGetter<T>, elseValue: ValueOrGetter<T>): T {
+      if (this.test) {
+        return typeof testModeValue === 'function'
+          ? (testModeValue as ValueGetter<T>)()
+          : testModeValue;
       }
       return typeof elseValue === 'function' ? (elseValue as ValueGetter<T>)() : elseValue;
     },
@@ -145,6 +163,8 @@ export function getAppEnvironment(): AppEnvironment {
 
 /**
  * App environment variables.
+ * Grabed NODE_ENV and APP_* environment variables and prepared them to be
+ * injected into the application via DefinePlugin in Webpack configuration.
  * User defined environment variables must start with APP_.
  */
 const appEnv = getAppEnvironment();
