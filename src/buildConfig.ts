@@ -10,10 +10,7 @@ export interface BuildConfig extends Omit<BuildConfigDefaults, 'client' | 'serve
   envStringify(): { 'process.env.buildConfig': string };
 }
 
-export function resolveConfigPath(
-  moduleNames = ['build.config', 'apprc'],
-  paths = [process.cwd()]
-): string {
+export function resolveConfigPath(moduleNames = ['build.config'], paths = [process.cwd()]): string {
   let module = '';
   for (let i = 0, name = moduleNames[i]; i < moduleNames.length; i += 1) {
     try {
@@ -63,8 +60,6 @@ function merge<T1 extends AnyObject, T2 extends Partial<T1>>(
 export function getBuildConfig(configPath = resolveConfigPath()): BuildConfig {
   const buildConfig: BuildConfig =
     process.env.buildConfig ||
-    process.env.apprc ||
-    process.env.appConfig ||
     (configPath
       ? // eslint-disable-next-line @typescript-eslint/no-var-requires
         merge(buildConfigDefaults, require(configPath))
@@ -85,9 +80,6 @@ export function getBuildConfig(configPath = resolveConfigPath()): BuildConfig {
       const json = JSON.stringify(this);
       return {
         'process.env.buildConfig': json,
-        /** Deprecated. They're saved for prev versions. */
-        'process.env.apprc': json,
-        'process.env.appConfig': json,
       };
     },
   };
