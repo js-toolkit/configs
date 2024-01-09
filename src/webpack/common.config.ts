@@ -3,7 +3,6 @@ import path from 'path';
 import appEnv from '../appEnv';
 import buildConfig from '../buildConfig';
 import paths, { moduleExtensions } from '../paths';
-import { getInstalledPackage } from '../getInstalledPackage';
 import { TsLoaderType, getTsCheckerPlugin } from './loaders';
 import nodeRequire from './nodeRequire';
 
@@ -22,6 +21,8 @@ export interface CommonConfigOptions extends OptionalToUndefined<webpack.Configu
         checkerOptions?: Record<string, any> | undefined;
       }
     | undefined;
+  /** Default `terser`. */
+  minimizerPlugin?: 'terser' | 'closure';
   minimizerPluginOptions?: Record<string, any> | readonly Record<string, any>[] | undefined;
 }
 
@@ -32,6 +33,7 @@ export default ({
   hash,
   chunkSuffix = '.chunk',
   typescript,
+  minimizerPlugin = 'terser',
   minimizerPluginOptions,
   ...restOptions
 }: CommonConfigOptions): webpack.Configuration => {
@@ -74,7 +76,7 @@ export default ({
       ...appEnv.ifProd(
         () => ({
           minimizer: [
-            getInstalledPackage('terser-webpack-plugin') &&
+            minimizerPlugin === 'terser' &&
               (() => {
                 const options = Array.isArray(minimizerPluginOptions)
                   ? minimizerPluginOptions.reduce((acc, item) => {
@@ -94,17 +96,19 @@ export default ({
                 });
               })(),
 
-            getInstalledPackage('closure-webpack-plugin') &&
+            minimizerPlugin === 'closure' &&
               (() => {
                 const [pluginOptions, compilerOptions] = Array.isArray(minimizerPluginOptions)
                   ? minimizerPluginOptions ?? []
                   : [minimizerPluginOptions, undefined];
 
                 return new (nodeRequire('closure-webpack-plugin'))(
+                  // https://github.com/webpack-contrib/closure-webpack-plugin?tab=readme-ov-file#options
                   {
                     mode: 'STANDARD',
                     ...pluginOptions,
                   },
+                  // https://github.com/google/closure-compiler/wiki/Flags-and-Options
                   {
                     ...appEnv.ifDev(
                       {
