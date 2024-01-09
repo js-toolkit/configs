@@ -6,14 +6,19 @@ export type EnvVarType = string | number | boolean | undefined;
 export interface AppEnvVars {
   NODE_ENV: NodeEnv;
   APP_SSR: boolean;
+  APP_TEST: boolean;
 }
+
+type CustomAppEnvVars = {
+  [P in string as `APP_${P}`]: EnvVarType;
+};
 
 type ValueGetter<T> = () => T;
 type ValueOrGetter<T> = T | ValueGetter<T>;
 
 export interface AppEnvironment {
   /** Object with keys and their default values so we can feed into Webpack EnvironmentPlugin. */
-  raw: AppEnvVars & AnyObject;
+  raw: AppEnvVars & CustomAppEnvVars;
 
   /** Stringify all values that we can feed into Webpack DefinePlugin. */
   envStringify(): { 'process.env': Record<string, string> };
@@ -28,7 +33,7 @@ export interface AppEnvironment {
   /** Use NODE_ENV environment variable. */
   dev: boolean;
 
-  /** Use NODE_ENV environment variable. */
+  /** Use NODE_ENV environment variable and `APP_TEST`. */
   test: boolean;
 
   /** Use NODE_ENV environment variable. */
@@ -37,7 +42,7 @@ export interface AppEnvironment {
   /** Use NODE_ENV environment variable. */
   ifDev<T>(devModeValue: ValueOrGetter<T>, elseValue: ValueOrGetter<T>): T;
 
-  /** Use NODE_ENV environment variable. */
+  /** Use NODE_ENV environment variable and `APP_TEST`. */
   ifTest<T>(testModeValue: ValueOrGetter<T>, elseValue: ValueOrGetter<T>): T;
 
   /** Use NODE_ENV environment variable. */
@@ -67,8 +72,9 @@ export function getAppEnvironment(): AppEnvironment {
     .filter((key) => APP.test(key))
     .reduce(
       (env, key) => {
+        const prop = key as keyof CustomAppEnvVars;
         // eslint-disable-next-line no-param-reassign
-        env[key] = parseJson(rawEnv[key]);
+        env[prop] = parseJson(rawEnv[key]);
         return env;
       },
       {
@@ -76,7 +82,8 @@ export function getAppEnvironment(): AppEnvironment {
         // Most importantly, it switches React into the correct mode.
         NODE_ENV: parseJson(rawEnv.NODE_ENV || 'development') as NodeEnv,
         APP_SSR: false,
-      } as AppEnvVars & AnyObject
+        APP_TEST: false,
+      } as AppEnvVars & CustomAppEnvVars
     );
 
   const appEnv: AppEnvironment = {
@@ -84,8 +91,9 @@ export function getAppEnvironment(): AppEnvironment {
 
     envStringify() {
       const stringified = Object.keys(this.raw).reduce((env, key) => {
+        const prop = key as keyof CustomAppEnvVars;
         // eslint-disable-next-line no-param-reassign
-        env[key] = JSON.stringify(this.raw[key]);
+        env[key] = JSON.stringify(this.raw[prop]);
         return env;
       }, {} as AnyObject);
       return { 'process.env': stringified };
@@ -108,7 +116,7 @@ export function getAppEnvironment(): AppEnvironment {
     },
 
     get test() {
-      return this.raw.NODE_ENV === 'test';
+      return this.raw.NODE_ENV === 'test' || this.raw.APP_TEST === true;
     },
 
     get prod() {
@@ -148,7 +156,7 @@ export function getAppEnvironment(): AppEnvironment {
       // prop always is string or symbol, not number
       get(target, prop) {
         if (typeof prop === 'string' && !(prop in target)) {
-          return target.raw[prop];
+          return target.raw[prop as keyof CustomAppEnvVars];
         }
         return target[prop as keyof typeof target];
       },
