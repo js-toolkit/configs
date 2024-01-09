@@ -11,14 +11,14 @@ export function getClientConfig(root = 'client') {
     assets: 'src/assets',
     staticContent: ['public'] as StaticContentOptions,
 
-    /** Generating html options */
+    /** Generating html options. */
     html: [] as HtmlOptions | HtmlOptions[],
 
-    /** Used by eslint webpack resolver */
+    /** Used by eslint webpack resolver. */
     webpackConfig: '',
-    /** Used by webpack loaders and plugins */
+    /** Used by webpack loaders and plugins. */
     tsconfig: 'tsconfig.json',
-    /** Plug'n'Play resolver for Webpack */
+    /** Plug'n'Play resolver for Webpack. */
     webpackPnpEnabled: false,
 
     output: {
@@ -29,16 +29,16 @@ export function getClientConfig(root = 'client') {
       external: 'lib',
       publicPath: '/',
 
-      /** Generated asset manifest */
+      /** Generated asset manifest. */
       assetManifest: {
-        /** For example: `asset-manifest.json` */
+        /** For example: `asset-manifest.json`. */
         fileName: '',
         filterTemplate: {},
       },
 
-      /** Generating service worker options (workbox-webpack-plugin) */
+      /** Generating service worker options (workbox-webpack-plugin). */
       sw: {
-        /** For example: `service-worker.js` */
+        /** For example: `service-worker.js`. */
         swDest: '',
       },
     },
@@ -50,9 +50,9 @@ export function getServerConfig(root = 'server') {
     root,
     sources: 'src',
 
-    /** Used by eslint webpack resolver */
+    /** Used by eslint webpack resolver. */
     webpackConfig: '',
-    /** Used by webpack loaders and plugins */
+    /** Used by webpack loaders and plugins. */
     tsconfig: 'tsconfig.json',
 
     output: {

@@ -3,6 +3,7 @@ import path from 'path';
 import appEnv from '../appEnv';
 import buildConfig from '../buildConfig';
 import paths, { moduleExtensions } from '../paths';
+import { getInstalledPackage } from '../getInstalledPackage';
 import { TsLoaderType, getTsCheckerPlugin } from './loaders';
 import nodeRequire from './nodeRequire';
 
@@ -21,7 +22,7 @@ export interface CommonConfigOptions extends OptionalToUndefined<webpack.Configu
         checkerOptions?: Record<string, any> | undefined;
       }
     | undefined;
-  terserPluginOptions?: Record<string, any> | undefined;
+  minimizerPluginOptions?: Record<string, any> | readonly Record<string, any>[] | undefined;
 }
 
 export default ({
@@ -31,7 +32,7 @@ export default ({
   hash,
   chunkSuffix = '.chunk',
   typescript,
-  terserPluginOptions,
+  minimizerPluginOptions,
   ...restOptions
 }: CommonConfigOptions): webpack.Configuration => {
   const entryHash = hash === true || (typeof hash === 'object' && hash.entry);
@@ -70,26 +71,61 @@ export default ({
     },
 
     optimization: {
-      ...restOptions.optimization,
       ...appEnv.ifProd(
         () => ({
           minimizer: [
-            new (nodeRequire('terser-webpack-plugin'))({
-              extractComments: false,
-              ...terserPluginOptions,
-              terserOptions: {
-                ...terserPluginOptions?.terserOptions,
-                output: {
-                  comments: false,
-                  ...terserPluginOptions?.terserOptions?.output,
-                },
-              },
-            }),
+            getInstalledPackage('terser-webpack-plugin') &&
+              (() => {
+                const options = Array.isArray(minimizerPluginOptions)
+                  ? minimizerPluginOptions.reduce((acc, item) => {
+                      return { ...acc, ...item };
+                    }, {})
+                  : minimizerPluginOptions;
+                return new (nodeRequire('terser-webpack-plugin'))({
+                  extractComments: false,
+                  ...options,
+                  terserOptions: {
+                    ...options?.terserOptions,
+                    output: {
+                      comments: false,
+                      ...options?.terserOptions?.output,
+                    },
+                  },
+                });
+              })(),
+
+            getInstalledPackage('closure-webpack-plugin') &&
+              (() => {
+                const [pluginOptions, compilerOptions] = Array.isArray(minimizerPluginOptions)
+                  ? minimizerPluginOptions ?? []
+                  : [minimizerPluginOptions, undefined];
+
+                return new (nodeRequire('closure-webpack-plugin'))(
+                  {
+                    mode: 'STANDARD',
+                    ...pluginOptions,
+                  },
+                  {
+                    ...appEnv.ifDev(
+                      {
+                        formatting: 'PRETTY_PRINT',
+                        debug: true,
+                        renaming: false,
+                      },
+                      undefined
+                    ),
+                    ...compilerOptions,
+                  }
+                );
+              })(),
+
             ...(restOptions.optimization?.minimizer || []),
           ],
         }),
         undefined
       ),
+
+      ...restOptions.optimization,
     },
 
     plugins: [
@@ -103,7 +139,7 @@ export default ({
       }),
 
       // Forked check for TS
-      ...(typescript && typescript.forkedChecks && typescript.configFile
+      ...(typescript?.forkedChecks && typescript.configFile
         ? [
             getTsCheckerPlugin({
               loaderType: typescript.loader ?? TsLoaderType.Default,
@@ -118,7 +154,7 @@ export default ({
 
       // Ignore all locale files of moment.js
       // https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
-      new webpack.IgnorePlugin({ contextRegExp: /moment$/, resourceRegExp: /^\.\/locale$/ }),
+      // new webpack.IgnorePlugin({ contextRegExp: /moment$/, resourceRegExp: /^\.\/locale$/ }),
 
       ...(restOptions.plugins || []),
     ],
@@ -126,16 +162,12 @@ export default ({
     resolve: (() => {
       const extensions = [
         ...(typescript ? moduleExtensions : moduleExtensions.filter((ext) => !ext.includes('ts'))),
-        ...((restOptions.resolve && restOptions.resolve.extensions) || []),
+        ...(restOptions.resolve?.extensions || []),
       ];
       return {
         ...restOptions.resolve,
         extensions,
-        modules: [
-          'node_modules',
-          paths.root,
-          ...((restOptions.resolve && restOptions.resolve.modules) || []),
-        ],
+        modules: ['node_modules', paths.root, ...(restOptions.resolve?.modules || [])],
         plugins: [
           ...(typescript
             ? [
@@ -149,7 +181,7 @@ export default ({
                 })(),
               ]
             : []),
-          ...((restOptions.resolve && restOptions.resolve.plugins) || []),
+          ...(restOptions.resolve?.plugins || []),
         ],
       };
     })(),
@@ -167,7 +199,7 @@ export default ({
       // To suppress warning with 'Critical dependency: the request of a dependency is an expression'
       unknownContextCritical: false,
       ...restOptions.module,
-      rules: (restOptions.module && restOptions.module.rules) || [],
+      rules: restOptions.module?.rules || [],
     },
   } as webpack.Configuration;
 };
