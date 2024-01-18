@@ -157,9 +157,7 @@ export default ({
     checkerOptions: {},
     threadLoader: false,
     threadLoaderOptions: {},
-    ...(typeof typescript === 'object'
-      ? (typescript as RequiredStrict<typeof typescript>)
-      : undefined),
+    ...(typeof typescript === 'object' && (typescript as RequiredStrict<typeof typescript>)),
   };
 
   const { tsBaseRule: defaultTsBaseRule, ...restDefaultRules } = clientDefaultRules;
@@ -219,18 +217,15 @@ export default ({
 
     resolve: {
       ...restOptions.resolve,
-      modules: [
-        paths.client.sources,
-        ...((restOptions.resolve && restOptions.resolve.modules) || []),
-      ],
+      modules: [paths.client.sources, ...(restOptions.resolve?.modules || [])],
       alias: {
         // for universal projects
-        ...(paths.shared.sources ? { shared: paths.shared.sources } : undefined),
-        ...((restOptions.resolve && restOptions.resolve.alias) || undefined),
+        ...(paths.shared.sources && { shared: paths.shared.sources }),
+        ...(restOptions.resolve?.alias || undefined),
       },
       plugins: [
         ...(clientBuildConfig.webpackPnpEnabled ? [getPnpWebpackPlugin()] : []),
-        ...((restOptions.resolve && restOptions.resolve.plugins) || []),
+        ...(restOptions.resolve?.plugins || []),
       ],
     },
 
@@ -240,7 +235,7 @@ export default ({
         ...(clientBuildConfig.webpackPnpEnabled
           ? [getPnpWebpackPlugin().moduleLoader(module)]
           : []),
-        ...((restOptions.resolveLoader && restOptions.resolveLoader.plugins) || []),
+        ...(restOptions.resolveLoader?.plugins || []),
       ],
     },
 
@@ -256,7 +251,7 @@ export default ({
           const hasPug = html.some(({ template }) => template && template.endsWith('.pug'));
           return hasPug ? [{ test: /\.pug$/, use: { loader: 'pug-loader' } }] : [];
         })(),
-        ...((restOptions.module && restOptions.module.rules) || []),
+        ...(restOptions.module?.rules || []),
       ],
     },
 
