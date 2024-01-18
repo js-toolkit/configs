@@ -1,7 +1,28 @@
 import { getInstalledPlugin } from './getInstalledPlugin';
 
 module.exports = {
-  presets: [['@babel/preset-env', { loose: true }]],
+  presets: [getInstalledPlugin('@babel/preset-env', { loose: true })].filter((p) => !!p),
+  // https://babeljs.io/docs/assumptions#migrating-from-babelpreset-envs-loose-and-spec-modes
+  // assumptions: {
+  //   arrayLikeIsIterable: true,
+  //   constantReexports: true,
+  //   ignoreFunctionLength: true,
+  //   ignoreToPrimitiveHint: true,
+  //   mutableTemplateObject: true,
+  //   noClassCalls: true,
+  //   noDocumentAll: true,
+  //   noObjectSuper: true,
+  //   noUndeclaredVariablesCheck: true,
+  //   objectRestNoSymbols: true,
+  //   privateFieldsAsProperties: true,
+  //   pureGetters: true,
+  //   setClassMethods: true,
+  //   setComputedProperties: true,
+  //   setPublicClassFields: true,
+  //   setSpreadProperties: true,
+  //   skipForOfIteratorClosing: true,
+  //   superIsCallableConstructor: true,
+  // },
   plugins: [
     getInstalledPlugin('@babel/plugin-transform-runtime'),
     getInstalledPlugin('@babel/plugin-proposal-decorators', { version: '2023-05' }),
