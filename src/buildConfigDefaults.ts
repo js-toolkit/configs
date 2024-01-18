@@ -74,7 +74,9 @@ export type BuildConfigDefaults = {
   output: {
     root: string;
   };
-
+  nodeModules: {
+    root: string;
+  };
   client: ReturnType<typeof getClientConfig>;
   server: ReturnType<typeof getServerConfig>;
   shared: ReturnType<typeof getSharedConfig>;
@@ -82,9 +84,11 @@ export type BuildConfigDefaults = {
 
 const buildConfigDefaults: BuildConfigDefaults = {
   output: {
-    root: 'dist',
+    root: 'build',
   },
-
+  nodeModules: {
+    root: 'node_modules',
+  },
   client: getClientConfig(),
   server: getServerConfig(),
   shared: getSharedConfig(),

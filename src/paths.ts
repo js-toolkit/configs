@@ -10,9 +10,10 @@ export function getPaths(baseDir = process.cwd(), buildConfig = getBuildConfig()
 
     nodeModules: {
       root: (() => {
-        const dir = 'node_modules';
+        const dir = buildConfig.nodeModules.root;
         try {
           const idx = __dirname.indexOf(dir);
+          // Id cwd is inside node_modules dir.
           if (idx >= 0) {
             return __dirname.substring(0, idx + dir.length);
           }
@@ -21,6 +22,13 @@ export function getPaths(baseDir = process.cwd(), buildConfig = getBuildConfig()
           return path.resolve(baseDir, dir);
         }
       })(),
+    },
+
+    /** Any installed package. */
+    getNodeModulesRoot(packageName: string): string {
+      const modulePath = require.resolve(packageName);
+      const dir = 'node_modules';
+      return modulePath.substring(0, modulePath.indexOf(dir) + dir.length);
     },
 
     output: {
