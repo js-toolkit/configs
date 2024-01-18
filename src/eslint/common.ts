@@ -2,7 +2,7 @@ import fs from 'fs';
 import type { Linter } from 'eslint';
 import airbnbBaseConfig from 'eslint-config-airbnb-base';
 import airbnbBaseStyleConfig from 'eslint-config-airbnb-base/rules/style';
-import paths, { moduleExtensions } from '../paths';
+import paths, { getJSExtensions, getTSExtensions, moduleExtensions } from '../paths';
 import { getInstalledPackage } from '../getInstalledPackage';
 import { eslintTsProject } from './consts';
 
@@ -38,7 +38,7 @@ const config: Linter.Config = {
     'import/resolver': {
       node: {
         // Add again for consistency with extensions in webpack configs
-        extensions: moduleExtensions.filter((ext) => !ext.includes('ts')),
+        extensions: getJSExtensions(),
 
         moduleDirectory: [
           'node_modules',
@@ -54,7 +54,7 @@ const config: Linter.Config = {
       typescript: {},
     },
 
-    'import/extensions': moduleExtensions.filter((ext) => !ext.includes('ts')),
+    'import/extensions': getJSExtensions(),
   },
 
   rules: {
@@ -98,7 +98,7 @@ const config: Linter.Config = {
 
   overrides: [
     {
-      files: moduleExtensions.filter((ext) => ext.includes('ts')).map((ext) => `*${ext}`),
+      files: getTSExtensions().map((ext) => `*${ext}`),
 
       extends: [
         'plugin:@typescript-eslint/recommended',

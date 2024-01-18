@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import buildConfig from '../buildConfig';
-import paths, { moduleExtensions } from '../paths';
+import paths, { getTSExtensions } from '../paths';
 import { eslintTsProject } from './consts';
 
 const enabled = buildConfig.server && fs.existsSync(paths.server.root);
@@ -13,18 +13,18 @@ const config: import('eslint').Linter.Config = {
     node: true,
   },
 
-  settings: {
-    'import/resolver': {
-      node: {}, // Add priority
-      ...(enabled && buildConfig.server && buildConfig.server.webpackConfig
-        ? { webpack: { config: buildConfig.server.webpackConfig } }
-        : undefined),
-    },
-  },
+  // settings: {
+  //   'import/resolver': {
+  //     node: {}, // Add priority
+  //     ...(enabled && buildConfig.server && buildConfig.server.webpackConfig
+  //       ? { webpack: { config: buildConfig.server.webpackConfig } }
+  //       : undefined),
+  //   },
+  // },
 
   overrides: [
     {
-      files: moduleExtensions.filter((ext) => ext.includes('ts')).map((ext) => `*${ext}`),
+      files: getTSExtensions().map((ext) => `*${ext}`),
 
       parserOptions: {
         project: (() => {

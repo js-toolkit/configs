@@ -2,7 +2,7 @@ import webpack from 'webpack';
 import path from 'path';
 import appEnv from '../appEnv';
 import buildConfig from '../buildConfig';
-import paths, { moduleExtensions } from '../paths';
+import paths, { getJSExtensions, moduleExtensions } from '../paths';
 import { TsLoaderType, getTsCheckerPlugin } from './loaders';
 import nodeRequire from './nodeRequire';
 
@@ -165,7 +165,7 @@ export default ({
 
     resolve: (() => {
       const extensions = [
-        ...(typescript ? moduleExtensions : moduleExtensions.filter((ext) => !ext.includes('ts'))),
+        ...(typescript ? moduleExtensions : getJSExtensions()),
         ...(restOptions.resolve?.extensions || []),
       ];
       return {

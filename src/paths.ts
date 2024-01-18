@@ -4,6 +4,18 @@ import { getBuildConfig } from './buildConfig';
 
 export const moduleExtensions = ['.js', '.mjs', '.cjs', '.jsx', '.ts', '.tsx', '.d.ts'];
 
+export function getTSExtensions(): string[] {
+  return moduleExtensions.filter((ext) => ext.includes('ts'));
+}
+
+export function getJSExtensions(): string[] {
+  return moduleExtensions.filter((ext) => ext.includes('js'));
+}
+
+export function getReactExtensions(): string[] {
+  return moduleExtensions.filter((ext) => ext.includes('sx'));
+}
+
 export function getPaths(baseDir = process.cwd(), buildConfig = getBuildConfig()) {
   return Object.freeze({
     root: baseDir,

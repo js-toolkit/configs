@@ -14,8 +14,8 @@ export function getClientConfig(root = 'client') {
     /** Generating html options. */
     html: [] as HtmlOptions | HtmlOptions[],
 
-    /** Used by eslint webpack resolver. */
-    webpackConfig: '',
+    // /** Used by eslint webpack resolver. */
+    // webpackConfig: '',
     /** Used by webpack loaders and plugins. */
     tsconfig: 'tsconfig.json',
     /** Plug'n'Play resolver for Webpack. */
@@ -50,8 +50,8 @@ export function getServerConfig(root = 'server') {
     root,
     sources: 'src',
 
-    /** Used by eslint webpack resolver. */
-    webpackConfig: '',
+    // /** Used by eslint webpack resolver. */
+    // webpackConfig: '',
     /** Used by webpack loaders and plugins. */
     tsconfig: 'tsconfig.json',
 

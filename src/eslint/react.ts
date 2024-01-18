@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import airbnbConfig from 'eslint-config-airbnb';
 import buildConfig from '../buildConfig';
-import paths, { moduleExtensions } from '../paths';
+import paths, { getReactExtensions, getTSExtensions } from '../paths';
 import { getInstalledPackage } from '../getInstalledPackage';
 import { eslintTsProject } from './consts';
 
@@ -34,14 +34,14 @@ const config: import('eslint').Linter.Config = {
     browser: true,
   },
 
-  settings: {
-    'import/resolver': {
-      node: {}, // Add priority
-      ...(enabled && buildConfig.client && buildConfig.client.webpackConfig
-        ? { webpack: { config: buildConfig.client.webpackConfig } }
-        : undefined),
-    },
-  },
+  // settings: {
+  //   'import/resolver': {
+  //     node: {}, // Add priority
+  //     ...(enabled && buildConfig.client?.webpackConfig
+  //       ? { webpack: { config: buildConfig.client.webpackConfig } }
+  //       : undefined),
+  //   },
+  // },
 
   rules: {
     ...(hasReactPlugin && {
@@ -69,7 +69,7 @@ const config: import('eslint').Linter.Config = {
 
   overrides: [
     {
-      files: moduleExtensions.filter((ext) => ext.includes('ts')).map((ext) => `*${ext}`),
+      files: getTSExtensions().map((ext) => `*${ext}`),
 
       parserOptions: {
         project: (() => {
@@ -84,10 +84,7 @@ const config: import('eslint').Linter.Config = {
 
       rules: {
         ...(hasReactPlugin && {
-          'react/jsx-filename-extension': [
-            'error',
-            { extensions: moduleExtensions.filter((ext) => ext.includes('sx')) },
-          ],
+          'react/jsx-filename-extension': ['error', { extensions: getReactExtensions() }],
         }),
       },
     },
