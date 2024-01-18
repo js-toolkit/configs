@@ -171,7 +171,12 @@ export default ({
       return {
         ...restOptions.resolve,
         extensions,
-        modules: ['node_modules', paths.root, ...(restOptions.resolve?.modules || [])],
+        modules: [
+          'node_modules',
+          paths.nodeModules.root,
+          paths.root,
+          ...(restOptions.resolve?.modules || []),
+        ],
         plugins: [
           ...(typescript
             ? [

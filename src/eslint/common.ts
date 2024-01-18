@@ -42,6 +42,7 @@ const config: Linter.Config = {
 
         moduleDirectory: [
           'node_modules',
+          paths.nodeModules.root,
           paths.client.sources,
           paths.server.sources,
           paths.shared.sources,
