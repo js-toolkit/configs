@@ -217,16 +217,23 @@ export default ({
     ...restOptions,
 
     optimization: {
-      minimizer: [
-        getInstalledPackage('css-minimizer-webpack-plugin') &&
-          (() => {
-            const getName = (): string => 'css-minimizer-webpack-plugin';
-            const CssMinimizerPlugin = nodeRequire(getName());
-            return new CssMinimizerPlugin({
-              minimizerOptions: { preset: 'default' },
-            });
-          })(),
-      ],
+      ...restOptions.optimization,
+      ...appEnv.ifProd(
+        {
+          minimizer: [
+            getInstalledPackage('css-minimizer-webpack-plugin') &&
+              (() => {
+                const getName = (): string => 'css-minimizer-webpack-plugin';
+                const CssMinimizerPlugin = nodeRequire(getName());
+                return new CssMinimizerPlugin({
+                  minimizerOptions: { preset: 'default' },
+                });
+              })(),
+            ...(restOptions.optimization?.minimizer || []),
+          ],
+        },
+        undefined
+      ),
     },
 
     resolve: {

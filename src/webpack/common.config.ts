@@ -73,8 +73,10 @@ export default ({
     },
 
     optimization: {
+      ...restOptions.optimization,
+
       ...appEnv.ifProd(
-        () => ({
+        {
           minimizer: [
             minimizerPlugin === 'terser' &&
               (() => {
@@ -125,11 +127,9 @@ export default ({
 
             ...(restOptions.optimization?.minimizer || []),
           ],
-        }),
+        },
         undefined
       ),
-
-      ...restOptions.optimization,
     },
 
     plugins: [
