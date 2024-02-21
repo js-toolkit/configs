@@ -15,6 +15,7 @@ import {
   getTsLoader,
 } from './loaders';
 import nodeRequire from './nodeRequire';
+import { getInstalledPackage } from '../getInstalledPackage';
 
 export const clientDefaultRules: Record<
   | 'jsRule'
@@ -47,7 +48,7 @@ export const clientDefaultRules: Record<
       path.join(paths.nodeModules.root, '@js-toolkit/editors'),
       path.join(paths.nodeModules.root, 'reflexy'),
     ],
-    use: css(),
+    use: css({ extractor: !appEnv.dev }),
   },
   cssNodeModulesRule: {
     test: /\.css$/,
@@ -60,7 +61,7 @@ export const clientDefaultRules: Record<
       path.join(paths.nodeModules.root, '@js-toolkit/editors'),
       path.join(paths.nodeModules.root, 'reflexy'),
     ],
-    use: cssNodeModules(),
+    use: cssNodeModules({ extractor: !appEnv.dev }),
   },
   svgRule: {
     test: /\.svg$/,
@@ -215,6 +216,19 @@ export default ({
 
     ...restOptions,
 
+    optimization: {
+      minimizer: [
+        getInstalledPackage('css-minimizer-webpack-plugin') &&
+          (() => {
+            const getName = (): string => 'css-minimizer-webpack-plugin';
+            const CssMinimizerPlugin = nodeRequire(getName());
+            return new CssMinimizerPlugin({
+              minimizerOptions: { preset: 'default' },
+            });
+          })(),
+      ],
+    },
+
     resolve: {
       ...restOptions.resolve,
       modules: [paths.client.sources, ...(restOptions.resolve?.modules || [])],
@@ -275,31 +289,48 @@ export default ({
       // Extract css if has corresponding loader
       containsLoader(moduleRules, cssExtractLoader) &&
         (() => {
-          // const getName = (): string => 'mini-css-extract-plugin';
-          const getName = (): string => 'extract-css-chunks-webpack-plugin';
-          const ExtractCssPlugin = nodeRequire(getName());
+          const getName = (): string => 'mini-css-extract-plugin';
+          const MiniCssExtractPlugin = nodeRequire(getName());
           const entryHash = hash === true || (typeof hash === 'object' && hash.entry);
           const chunkHash = hash === true || (typeof hash === 'object' && hash.chunk);
           const entryHashStr = appEnv.prod && entryHash ? '.[contenthash:8]' : '';
           const chunkHashStr = appEnv.prod && chunkHash ? '.[contenthash:8]' : '';
-          const dir = clientBuildConfig.output.styles;
-          return new ExtractCssPlugin({
+          const { styles } = clientBuildConfig.output;
+          const dir = (typeof styles === 'string' ? styles : styles?.dir) || '.';
+          return new MiniCssExtractPlugin({
             filename: `${dir}/[name]${entryHashStr}.css`,
             chunkFilename: `${dir}/[name]${chunkHashStr}${chunkSuffix ?? ''}.css`,
+            ...(typeof styles === 'object' && styles),
           });
         })(),
+      // Obsolete
+      // containsLoader(moduleRules, cssExtractLoader) &&
+      //   (() => {
+      //     const getName = (): string => 'extract-css-chunks-webpack-plugin';
+      //     const ExtractCssPlugin = nodeRequire(getName());
+      //     const entryHash = hash === true || (typeof hash === 'object' && hash.entry);
+      //     const chunkHash = hash === true || (typeof hash === 'object' && hash.chunk);
+      //     const entryHashStr = appEnv.prod && entryHash ? '.[contenthash:8]' : '';
+      //     const chunkHashStr = appEnv.prod && chunkHash ? '.[contenthash:8]' : '';
+      //     const dir = clientBuildConfig.output.styles;
+      //     return new ExtractCssPlugin({
+      //       filename: `${dir}/[name]${entryHashStr}.css`,
+      //       chunkFilename: `${dir}/[name]${chunkHashStr}${chunkSuffix ?? ''}.css`,
+      //     });
+      //   })(),
+      // Obsolete
       // Minimize css
-      (restOptions.optimization?.minimize ?? true) &&
-        containsLoader(moduleRules, cssExtractLoader) &&
-        (() => {
-          const getName = (): string => 'optimize-css-assets-webpack-plugin';
-          const OptimizeCssAssetsPlugin = nodeRequire(getName());
-          return new OptimizeCssAssetsPlugin({
-            cssProcessorPluginOptions: {
-              preset: ['default', { discardComments: { removeAll: true } }],
-            },
-          });
-        })(),
+      // (restOptions.optimization?.minimize ?? true) &&
+      //   containsLoader(moduleRules, cssExtractLoader) &&
+      //   (() => {
+      //     const getName = (): string => 'optimize-css-assets-webpack-plugin';
+      //     const OptimizeCssAssetsPlugin = nodeRequire(getName());
+      //     return new OptimizeCssAssetsPlugin({
+      //       cssProcessorPluginOptions: {
+      //         preset: ['default', { discardComments: { removeAll: true } }],
+      //       },
+      //     });
+      //   })(),
 
       // Generate a manifest file which contains a mapping of all asset filenames
       // to their corresponding output file so some tools can pick it up without

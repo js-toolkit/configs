@@ -4,6 +4,8 @@ type HtmlOptions = import('html-webpack-plugin').Options & { readonly main?: boo
 
 type StaticContentOptions = (string | { path: string; ignore?: (string | RegExp)[] | undefined })[];
 
+// todo: Сделать типы web, node, common и только один тип для файла конфигурации?
+
 export function getClientConfig(root = 'client') {
   return {
     root,
@@ -24,7 +26,7 @@ export function getClientConfig(root = 'client') {
     output: {
       root,
       js: 'js',
-      styles: 'styles',
+      styles: 'styles' as string | { dir?: string; extractorOptions?: AnyObject },
       assets: 'assets',
       external: 'lib',
       publicPath: '/',

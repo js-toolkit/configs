@@ -153,8 +153,9 @@ export function babelLoader(options?: Record<PropertyKey, any> | undefined) {
   };
 }
 
-// cssExtractLoader: 'mini-css-extract-plugin/dist/loader',
-export const cssExtractLoader = 'extract-css-chunks-webpack-plugin/dist/loader';
+export const cssExtractLoader = 'mini-css-extract-plugin/dist/loader';
+// export const cssExtractLoader = 'extract-css-chunks-webpack-plugin/dist/loader';
+
 /**
  * Problem of duplication css classes when use composes with css file from node_modules directory.
  * 1. It can occur when use different loaders for source and composing files.
@@ -165,7 +166,7 @@ export function css({
   pattern = '[name]__[local]--[hash:5]',
   prodPattern = '[hash:5]',
   postcss = true,
-  extractor = true,
+  extractor = false,
   modules,
   styleLoaderOptions,
   postcssLoaderOptions,
@@ -182,11 +183,7 @@ export function css({
 } & Record<string, any> = {}): RuleSetUseItem[] {
   return [
     ...(!ssr
-      ? [
-          appEnv.dev || !extractor
-            ? { loader: 'style-loader', options: styleLoaderOptions }
-            : cssExtractLoader,
-        ]
+      ? [!extractor ? { loader: 'style-loader', options: styleLoaderOptions } : cssExtractLoader]
       : []),
     {
       loader: 'css-loader',
@@ -211,7 +208,7 @@ export function css({
   ] as RuleSetUseItem[];
 }
 
-export function cssNodeModules(options: Record<string, any> = {}) {
+export function cssNodeModules(options: Parameters<typeof css>[0] = {}) {
   return css({
     pattern: '[local]',
     prodPattern: '[local]',

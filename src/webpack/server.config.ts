@@ -30,12 +30,12 @@ export const universalDefaultRules: typeof clientDefaultRules = {
   cssRule: {
     ...clientDefaultRules.cssRule,
     // process css in server side always in ssr mode
-    use: css({ ssr: true }),
+    use: css({ ssr: true, extractor: !appEnv.dev }),
   },
   cssNodeModulesRule: {
     ...clientDefaultRules.cssNodeModulesRule,
     // process css in server side always in ssr mode
-    use: cssNodeModules({ ssr: true }),
+    use: cssNodeModules({ ssr: true, extractor: !appEnv.dev }),
   },
   svgRule: {
     ...clientDefaultRules.svgRule,
