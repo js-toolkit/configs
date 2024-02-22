@@ -7,7 +7,6 @@ import buildConfig from '../buildConfig';
 import commonConfig, { type CommonConfigOptions } from './common.config';
 import {
   TsLoaderType,
-  assets,
   babelLoader,
   css,
   cssExtractLoader,
@@ -16,6 +15,8 @@ import {
 } from './loaders';
 import nodeRequire from './nodeRequire';
 import { getInstalledPackage } from '../getInstalledPackage';
+
+// https://webpack.js.org/guides/asset-modules/
 
 export const clientDefaultRules: Record<
   | 'jsRule'
@@ -66,17 +67,37 @@ export const clientDefaultRules: Record<
   svgRule: {
     test: /\.svg$/,
     include: [paths.client.sources, paths.nodeModules.root],
-    use: assets({ limit: undefined }),
+    type: 'asset/inline',
   },
   fontRule: {
     test: /\.(eot|ttf|woff|woff2|otf)$/,
     include: [paths.client.assets, paths.nodeModules.root],
-    use: assets(),
+    type: 'asset',
+    parser: {
+      dataUrlCondition: {
+        maxSize: 4 * 1024, // 4kb
+      },
+    },
+    generator: {
+      filename: `${
+        (buildConfig.client || buildConfig.default.client).output.assets
+      }/[name].[hash:8].[ext][query]`, // Virtual hash useful for HRM during development.
+    },
   },
   assetsRule: {
     test: /\.(png|jpg|gif|ico)$/,
     include: [paths.client.assets, paths.nodeModules.root],
-    use: assets(),
+    type: 'asset',
+    parser: {
+      dataUrlCondition: {
+        maxSize: 8 * 1024, // 8kb
+      },
+    },
+    generator: {
+      filename: `${
+        (buildConfig.client || buildConfig.default.client).output.assets
+      }/[name].[hash:8].[ext][query]`, // Virtual hash useful for HRM during development.
+    },
   },
 };
 

@@ -5,7 +5,7 @@ import paths from '../paths';
 import buildConfig from '../buildConfig';
 import commonConfig from './common.config';
 import { clientDefaultRules, type ClientConfigOptions, prepareRules } from './client.config';
-import { TsLoaderType, assets, css, cssNodeModules, getTsLoader } from './loaders';
+import { TsLoaderType, css, cssNodeModules, getTsLoader } from './loaders';
 
 export const serverDefaultRules: Pick<typeof clientDefaultRules, 'jsRule' | 'tsBaseRule'> = {
   jsRule: {
@@ -39,15 +39,15 @@ export const universalDefaultRules: typeof clientDefaultRules = {
   },
   svgRule: {
     ...clientDefaultRules.svgRule,
-    use: assets({ limit: undefined, ssr: true }),
+    generator: { emit: false },
   },
   fontRule: {
     ...clientDefaultRules.fontRule,
-    use: assets({ ssr: true }),
+    generator: { emit: false },
   },
   assetsRule: {
     ...clientDefaultRules.assetsRule,
-    use: assets({ ssr: true }),
+    generator: { emit: false },
   },
 };
 

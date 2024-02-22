@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/ban-types */
+/* eslint-disable no-shadow */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import type { RuleSetUseItem } from 'webpack';
 import appEnv from '../appEnv';
 import paths from '../paths';
-import buildConfig from '../buildConfig';
 import nodeRequire from './nodeRequire';
 
 export interface BaseTsOptions {
@@ -11,7 +12,6 @@ export interface BaseTsOptions {
 
 export enum TsLoaderType {
   Default = 'ts',
-  ATL = 'atl',
   Babel = 'babel',
 }
 
@@ -79,20 +79,12 @@ export function ts({
 }
 
 export function getTsLoader({ loaderType, ...rest }: GetTsLoaderOptions) {
-  if (loaderType === TsLoaderType.ATL) return atl(rest);
   if (loaderType === TsLoaderType.Babel) return babelLoader();
   return ts(rest);
 }
 
 /** In order to runs typescript type checker on a separate process. */
-export function atlCheckerPlugin() {
-  const getName = (): string => 'awesome-typescript-loader';
-  const { CheckerPlugin } = nodeRequire(getName());
-  return new CheckerPlugin();
-}
-
-/** In order to runs typescript type checker on a separate process. */
-export function tsCheckerPlugin(options: Record<string, any> = {}) {
+export function getTsCheckerPlugin(options: Record<string, any> = {}) {
   const getName = (): string => 'fork-ts-checker-webpack-plugin';
   const Plugin = nodeRequire(getName());
   return new Plugin({
@@ -111,23 +103,6 @@ export function tsCheckerPlugin(options: Record<string, any> = {}) {
   });
 }
 
-export function atl({ tsconfig, ...rest }: BaseTsOptions & Record<string, any>) {
-  return {
-    loader: 'awesome-typescript-loader',
-    options: {
-      configFileName: tsconfig,
-      useBabel: false, // Also sets "target": "es201*" in tsconfig.json
-      useCache: true,
-      ...rest,
-    },
-  };
-}
-
-export function getTsCheckerPlugin({ loaderType, ...rest }: GetTsCheckerPluginOptions) {
-  if (loaderType === TsLoaderType.ATL) return atlCheckerPlugin();
-  return tsCheckerPlugin(rest);
-}
-
 export function tsRHL({ afterLoaders, ...rest }: TsDefaultLoaderOptions) {
   return ts({
     afterLoaders: [
@@ -136,10 +111,6 @@ export function tsRHL({ afterLoaders, ...rest }: TsDefaultLoaderOptions) {
     ],
     ...rest,
   });
-}
-
-export function atsRHL({ tsconfig, ...rest }: BaseTsOptions & Record<string, any>) {
-  return [...appEnv.ifDev(() => [{ loader: 'babel-loader' }], []), atl({ tsconfig, ...rest })];
 }
 
 export function babelLoader(options?: Record<PropertyKey, any> | undefined) {
@@ -154,7 +125,6 @@ export function babelLoader(options?: Record<PropertyKey, any> | undefined) {
 }
 
 export const cssExtractLoader = 'mini-css-extract-plugin/dist/loader';
-// export const cssExtractLoader = 'extract-css-chunks-webpack-plugin/dist/loader';
 
 /**
  * Problem of duplication css classes when use composes with css file from node_modules directory.
@@ -218,21 +188,4 @@ export function cssNodeModules(options: Parameters<typeof css>[0] = {}) {
     modules: false,
     ...options,
   });
-}
-
-export function assets({ ssr = false, ...restOptions }: Record<string, any> = {}) {
-  return {
-    // Embeds resources as DataUrl, or if the file size exceeds options.limit then redirects
-    // to the file-loader with all specified parameters and it copies the files.
-    loader: 'url-loader',
-    options: {
-      limit: 1024,
-      fallback: 'file-loader',
-      emitFile: !ssr,
-      name: `${
-        (buildConfig.client || buildConfig.default.client).output.assets
-      }/[name].[hash:8].[ext]`, // Virtual hash useful for HRM during development.
-      ...restOptions,
-    },
-  };
 }
