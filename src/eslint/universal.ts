@@ -9,18 +9,10 @@ function getFilesGlob(basePath: string): string[] {
   return moduleExtensions.map((e) => `${basePath || '.'}/**/*${e}`);
 }
 
-const filesGlobs: Record<
-  keyof Pick<BuildConfig, 'client' | 'server' | 'shared'> | 'other',
-  string[]
-> = {
-  client:
-    buildConfig.client && fs.existsSync(paths.client.root)
-      ? getFilesGlob(buildConfig.client.root)
-      : [],
-  server:
-    buildConfig.server && fs.existsSync(paths.server.root)
-      ? getFilesGlob(buildConfig.server.root)
-      : [],
+const filesGlobs: Record<keyof Pick<BuildConfig, 'web' | 'node' | 'shared'> | 'other', string[]> = {
+  web: buildConfig.web && fs.existsSync(paths.web.root) ? getFilesGlob(buildConfig.web.root) : [],
+  node:
+    buildConfig.node && fs.existsSync(paths.node.root) ? getFilesGlob(buildConfig.node.root) : [],
   shared:
     buildConfig.shared && fs.existsSync(paths.shared.root)
       ? getFilesGlob(buildConfig.shared.root)
@@ -33,20 +25,20 @@ const config: Linter.Config = {
   settings: { filesGlobs, getFilesGlob },
 
   overrides: [
-    ...(filesGlobs.client.length > 0
+    ...(filesGlobs.web.length > 0
       ? [
           {
-            files: filesGlobs.client,
+            files: filesGlobs.web,
             extends: [require.resolve('./react')],
             rules: {},
           },
         ]
       : []),
 
-    ...(filesGlobs.server.length > 0
+    ...(filesGlobs.node.length > 0
       ? [
           {
-            files: filesGlobs.server,
+            files: filesGlobs.node,
             extends: [require.resolve('./react'), require.resolve('./node')],
             rules: {},
           },
@@ -76,9 +68,7 @@ const config: Linter.Config = {
 
     {
       files: filesGlobs.other,
-      excludedFiles: [...filesGlobs.client, ...filesGlobs.server, ...filesGlobs.shared].filter(
-        (v) => !!v
-      ),
+      excludedFiles: [...filesGlobs.web, ...filesGlobs.node, ...filesGlobs.shared].filter(Boolean),
       extends: [require.resolve('./common')],
       rules: {},
     },

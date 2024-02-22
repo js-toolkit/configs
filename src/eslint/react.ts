@@ -6,7 +6,7 @@ import paths, { getReactExtensions, getTSExtensions } from '../paths';
 import { getInstalledPackage } from '../getInstalledPackage';
 import { eslintTsProject } from './consts';
 
-const enabled = buildConfig.client && fs.existsSync(paths.client.root);
+const enabled = buildConfig.web && fs.existsSync(paths.web.root);
 
 const hasReactPlugin = !!getInstalledPackage('eslint-plugin-react');
 const hasA11yPlugin = !!getInstalledPackage('eslint-plugin-jsx-a11y');
@@ -74,9 +74,9 @@ const config: import('eslint').Linter.Config = {
       parserOptions: {
         project: (() => {
           if (enabled) {
-            const tsconfig = path.join(paths.client.root, eslintTsProject);
+            const tsconfig = path.join(paths.web.root, eslintTsProject);
             if (fs.existsSync(tsconfig)) return tsconfig;
-            if (fs.existsSync(paths.client.tsconfig)) return paths.client.tsconfig;
+            if (fs.existsSync(paths.web.tsconfig)) return paths.web.tsconfig;
           }
           return fs.existsSync(eslintTsProject) ? eslintTsProject : 'tsconfig.json';
         })(),

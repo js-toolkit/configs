@@ -47,10 +47,10 @@ export function getPaths(baseDir = process.cwd(), buildConfig = getBuildConfig()
       root: path.resolve(baseDir, buildConfig.output.root),
     },
 
-    client: (() => {
-      const { client } = buildConfig;
+    web: (() => {
+      const { web } = buildConfig;
 
-      if (!client) {
+      if (!web) {
         return {
           root: '',
           sources: '',
@@ -65,34 +65,29 @@ export function getPaths(baseDir = process.cwd(), buildConfig = getBuildConfig()
       }
 
       return {
-        root: path.resolve(baseDir, client.root),
-        sources: path.resolve(baseDir, client.root, client.sources),
-        assets: path.resolve(baseDir, client.root, client.assets),
-        staticContent: client.staticContent.map((item) => {
+        root: path.resolve(baseDir, web.root),
+        sources: path.resolve(baseDir, web.root, web.sources),
+        assets: path.resolve(baseDir, web.root, web.assets),
+        staticContent: web.staticContent.map((item) => {
           const p = typeof item === 'string' ? { path: item } : item;
           return path.isAbsolute(p.path)
             ? p
-            : { ...p, path: path.resolve(baseDir, client.root, p.path) };
+            : { ...p, path: path.resolve(baseDir, web.root, p.path) };
         }),
 
-        tsconfig: path.resolve(baseDir, client.root, client.tsconfig),
+        tsconfig: path.resolve(baseDir, web.root, web.tsconfig),
 
         output: {
-          path: path.resolve(baseDir, buildConfig.output.root, client.output.root),
-          jsPath: path.resolve(
-            baseDir,
-            buildConfig.output.root,
-            client.output.root,
-            client.output.js
-          ),
+          path: path.resolve(baseDir, buildConfig.output.root, web.output.root),
+          jsPath: path.resolve(baseDir, buildConfig.output.root, web.output.root, web.output.js),
         },
       };
     })(),
 
-    server: (() => {
-      const { server } = buildConfig;
+    node: (() => {
+      const { node } = buildConfig;
 
-      if (!server) {
+      if (!node) {
         return {
           root: '',
           sources: '',
@@ -104,13 +99,13 @@ export function getPaths(baseDir = process.cwd(), buildConfig = getBuildConfig()
       }
 
       return {
-        root: path.resolve(baseDir, server.root),
-        sources: path.resolve(baseDir, server.root, server.sources),
+        root: path.resolve(baseDir, node.root),
+        sources: path.resolve(baseDir, node.root, node.sources),
 
-        tsconfig: path.resolve(baseDir, server.root, server.tsconfig),
+        tsconfig: path.resolve(baseDir, node.root, node.tsconfig),
 
         output: {
-          path: path.resolve(baseDir, buildConfig.output.root, server.output.root),
+          path: path.resolve(baseDir, buildConfig.output.root, node.output.root),
         },
       };
     })(),

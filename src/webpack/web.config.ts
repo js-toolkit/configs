@@ -18,7 +18,7 @@ import { getInstalledPackage } from '../getInstalledPackage';
 
 // https://webpack.js.org/guides/asset-modules/
 
-export const clientDefaultRules: Record<
+export const webDefaultRules: Record<
   | 'jsRule'
   | 'tsBaseRule'
   | 'cssRule'
@@ -30,17 +30,17 @@ export const clientDefaultRules: Record<
 > = {
   jsRule: {
     test: /\.m?jsx?$/,
-    include: [paths.client.sources, paths.shared.sources].filter((v) => !!v),
+    include: [paths.web.sources, paths.shared.sources].filter((v) => !!v),
     use: babelLoader(),
   },
   tsBaseRule: {
     test: /\.tsx?$/,
-    include: [paths.client.sources, paths.shared.sources].filter((v) => !!v),
+    include: [paths.web.sources, paths.shared.sources].filter((v) => !!v),
   },
   cssRule: {
     test: /\.css$/,
     include: [
-      paths.client.sources,
+      paths.web.sources,
       // Because this packages are require css-modules.
       // And to avoid duplicating css classes when composes process in the same loaders.
       path.join(paths.nodeModules.root, '@jstoolkit/react-components'),
@@ -66,36 +66,32 @@ export const clientDefaultRules: Record<
   },
   svgRule: {
     test: /\.svg$/,
-    include: [paths.client.sources, paths.nodeModules.root],
+    include: [paths.web.sources, paths.nodeModules.root],
     type: 'asset/inline',
   },
   fontRule: {
     test: /\.(eot|ttf|woff|woff2|otf)$/,
-    include: [paths.client.assets, paths.nodeModules.root],
+    include: [paths.web.assets, paths.nodeModules.root],
     type: 'asset',
     parser: {
-      dataUrlCondition: {
-        maxSize: 4 * 1024, // 4kb
-      },
+      dataUrlCondition: { maxSize: 4 * 1024 }, // 4kb
     },
     generator: {
       filename: `${
-        (buildConfig.client || buildConfig.default.client).output.assets
+        (buildConfig.web || buildConfig.default.web).output.assets
       }/[name].[hash:8].[ext][query]`, // Virtual hash useful for HRM during development.
     },
   },
   assetsRule: {
     test: /\.(png|jpg|gif|ico)$/,
-    include: [paths.client.assets, paths.nodeModules.root],
+    include: [paths.web.assets, paths.nodeModules.root],
     type: 'asset',
     parser: {
-      dataUrlCondition: {
-        maxSize: 8 * 1024, // 8kb
-      },
+      dataUrlCondition: { maxSize: 8 * 1024 }, // 8kb
     },
     generator: {
       filename: `${
-        (buildConfig.client || buildConfig.default.client).output.assets
+        (buildConfig.web || buildConfig.default.web).output.assets
       }/[name].[hash:8].[ext][query]`, // Virtual hash useful for HRM during development.
     },
   },
@@ -103,12 +99,12 @@ export const clientDefaultRules: Record<
 
 type DefaultRuleValue = RuleSetRule | ((defaults: RuleSetRule) => RuleSetRule);
 
-type ClientDefaultRules = Record<
-  Exclude<keyof typeof clientDefaultRules, 'tsBaseRule'>,
+type WebDefaultRules = Record<
+  Exclude<keyof typeof webDefaultRules, 'tsBaseRule'>,
   DefaultRuleValue
 > & { tsRule: (defaults: RuleSetRule) => RuleSetRule };
 
-export interface ClientConfigOptions extends Omit<CommonConfigOptions, 'typescript'> {
+export interface WebConfigOptions extends Omit<CommonConfigOptions, 'typescript'> {
   typescript?:
     | (CommonConfigOptions['typescript'] & {
         loaderOptions?: Record<string, any> | undefined;
@@ -117,7 +113,7 @@ export interface ClientConfigOptions extends Omit<CommonConfigOptions, 'typescri
       })
     | boolean
     | undefined;
-  rules?: (Partial<ClientDefaultRules> & Record<string, RuleSetRule>) | undefined;
+  rules?: (Partial<WebDefaultRules> & Record<string, RuleSetRule>) | undefined;
 }
 
 function containsLoader(rules: Record<string, RuleSetRule>, loader: string): boolean {
@@ -154,25 +150,25 @@ function getPnpWebpackPlugin(): any {
 }
 
 function normalizeHtml(
-  html: typeof buildConfig.default.client.html
-): Extract<typeof buildConfig.default.client.html, Array<any>> {
+  html: typeof buildConfig.default.web.html
+): Extract<typeof buildConfig.default.web.html, Array<any>> {
   return Array.isArray(html) ? html : [html];
 }
 
-const clientBuildConfig = buildConfig.client || buildConfig.default.client;
+const webBuildConfig = buildConfig.web || buildConfig.default.web;
 
 export default ({
-  outputPath = paths.client.output.path,
-  outputPublicPath = clientBuildConfig.output.publicPath,
-  outputJsDir = clientBuildConfig.output.js,
+  outputPath = paths.web.output.path,
+  outputPublicPath = webBuildConfig.output.publicPath,
+  outputJsDir = webBuildConfig.output.js,
   hash = true,
   chunkSuffix = '.chunk',
   typescript,
   rules: { tsBaseRule, ...rules } = {},
   ...restOptions
-}: ClientConfigOptions): Configuration => {
-  const tsConfig: RequiredStrict<Extract<ClientConfigOptions['typescript'], object>> = {
-    configFile: paths.client.tsconfig,
+}: WebConfigOptions): Configuration => {
+  const tsConfig: RequiredStrict<Extract<WebConfigOptions['typescript'], object>> = {
+    configFile: paths.web.tsconfig,
     loader: TsLoaderType.Default,
     loaderOptions: {},
     forkedChecks: false,
@@ -182,9 +178,9 @@ export default ({
     ...(typeof typescript === 'object' && (typescript as RequiredStrict<typeof typescript>)),
   };
 
-  const { tsBaseRule: defaultTsBaseRule, ...restDefaultRules } = clientDefaultRules;
+  const { tsBaseRule: defaultTsBaseRule, ...restDefaultRules } = webDefaultRules;
 
-  const defaultRules: Omit<typeof clientDefaultRules, 'tsBaseRule'> & { tsRule: RuleSetRule } = {
+  const defaultRules: Omit<typeof webDefaultRules, 'tsBaseRule'> & { tsRule: RuleSetRule } = {
     tsRule: {
       ...defaultTsBaseRule,
       ...tsBaseRule,
@@ -226,10 +222,10 @@ export default ({
         }
       : undefined,
 
-    name: clientBuildConfig.root,
+    name: webBuildConfig.root,
     target: 'web',
 
-    context: paths.client.sources,
+    context: paths.web.sources,
 
     // recordsOutputPath: path.join(paths.output.path, 'webpack.client.stats.json'),
 
@@ -259,14 +255,14 @@ export default ({
 
     resolve: {
       ...restOptions.resolve,
-      modules: [paths.client.sources, ...(restOptions.resolve?.modules || [])],
+      modules: [paths.web.sources, ...(restOptions.resolve?.modules || [])],
       alias: {
         // for universal projects
         ...(paths.shared.sources && { shared: paths.shared.sources }),
         ...(restOptions.resolve?.alias || undefined),
       },
       plugins: [
-        ...(clientBuildConfig.webpackPnpEnabled ? [getPnpWebpackPlugin()] : []),
+        ...(webBuildConfig.webpackPnpEnabled ? [getPnpWebpackPlugin()] : []),
         ...(restOptions.resolve?.plugins || []),
       ],
     },
@@ -274,9 +270,7 @@ export default ({
     resolveLoader: {
       ...restOptions.resolveLoader,
       plugins: [
-        ...(clientBuildConfig.webpackPnpEnabled
-          ? [getPnpWebpackPlugin().moduleLoader(module)]
-          : []),
+        ...(webBuildConfig.webpackPnpEnabled ? [getPnpWebpackPlugin().moduleLoader(module)] : []),
         ...(restOptions.resolveLoader?.plugins || []),
       ],
     },
@@ -289,7 +283,7 @@ export default ({
         ),
         // Provide pug loader if html template is pug template
         ...(() => {
-          const html = normalizeHtml(clientBuildConfig.html);
+          const html = normalizeHtml(webBuildConfig.html);
           const hasPug = html.some(({ template }) => template && template.endsWith('.pug'));
           return hasPug ? [{ test: /\.pug$/, use: { loader: 'pug-loader' } }] : [];
         })(),
@@ -300,7 +294,7 @@ export default ({
     plugins: [
       // Generate html if needed
       ...(() => {
-        const html = normalizeHtml(clientBuildConfig.html);
+        const html = normalizeHtml(webBuildConfig.html);
         const getName = (): string => 'html-webpack-plugin';
         return html
           .filter((opts): opts is Required<typeof opts> => !!opts.template)
@@ -308,7 +302,7 @@ export default ({
             const HtmlWebpackPlugin = nodeRequire(getName());
             return new HtmlWebpackPlugin({
               inject: inject ?? false,
-              template: path.join(paths.client.sources, template),
+              template: path.join(paths.web.sources, template),
               ...rest,
             });
           });
@@ -323,7 +317,7 @@ export default ({
           const chunkHash = hash === true || (typeof hash === 'object' && hash.chunk);
           const entryHashStr = appEnv.prod && entryHash ? '.[contenthash:8]' : '';
           const chunkHashStr = appEnv.prod && chunkHash ? '.[contenthash:8]' : '';
-          const { styles } = clientBuildConfig.output;
+          const { styles } = webBuildConfig.output;
           const dir = (typeof styles === 'string' ? styles : styles?.dir) || '.';
           return new MiniCssExtractPlugin({
             filename: `${dir}/[name]${entryHashStr}.css`,
@@ -340,7 +334,7 @@ export default ({
       //     const chunkHash = hash === true || (typeof hash === 'object' && hash.chunk);
       //     const entryHashStr = appEnv.prod && entryHash ? '.[contenthash:8]' : '';
       //     const chunkHashStr = appEnv.prod && chunkHash ? '.[contenthash:8]' : '';
-      //     const dir = clientBuildConfig.output.styles;
+      //     const dir = webBuildConfig.output.styles;
       //     return new ExtractCssPlugin({
       //       filename: `${dir}/[name]${entryHashStr}.css`,
       //       chunkFilename: `${dir}/[name]${chunkHashStr}${chunkSuffix ?? ''}.css`,
@@ -363,9 +357,9 @@ export default ({
       // Generate a manifest file which contains a mapping of all asset filenames
       // to their corresponding output file so some tools can pick it up without
       // having to parse `index.html`.
-      clientBuildConfig.output.assetManifest.fileName &&
+      webBuildConfig.output.assetManifest.fileName &&
         (() => {
-          const { fileName, filterTemplate } = clientBuildConfig.output.assetManifest;
+          const { fileName, filterTemplate } = webBuildConfig.output.assetManifest;
           const isNeedFilter =
             !!filterTemplate && !!Object.getOwnPropertyNames(filterTemplate).length;
 
@@ -387,20 +381,20 @@ export default ({
       // Generate a service worker script that will precache, and keep up to date,
       // the HTML & assets that are part of the Webpack build.
       appEnv.prod &&
-        clientBuildConfig.output.sw.swDest &&
+        webBuildConfig.output.sw.swDest &&
         (() => {
           const getName = (): string => 'workbox-webpack-plugin';
           const { GenerateSW } = nodeRequire(getName());
-          const html = normalizeHtml(clientBuildConfig.html);
+          const html = normalizeHtml(webBuildConfig.html);
           const filename =
             html.length === 1 ? html[0].filename : html.find(({ main }) => !!main)?.filename;
           return new GenerateSW({
             clientsClaim: true,
             importWorkboxFrom: 'cdn',
-            exclude: [/\.map$/, new RegExp(`${clientBuildConfig.output.assetManifest.fileName}$`)],
+            exclude: [/\.map$/, new RegExp(`${webBuildConfig.output.assetManifest.fileName}$`)],
             navigateFallback:
               filename && typeof filename === 'string'
-                ? `${clientBuildConfig.output.publicPath}${filename}`
+                ? `${webBuildConfig.output.publicPath}${filename}`
                 : undefined,
             navigateFallbackBlacklist: [
               // Exclude URLs starting with /_, as they're likely an API call
@@ -409,18 +403,18 @@ export default ({
               // public/ and not a SPA route
               /\/[^/]+\.[^/]+$/,
             ],
-            ...clientBuildConfig.output.sw,
+            ...webBuildConfig.output.sw,
           });
         })(),
 
       // Copy public static content to output dir.
       // In dev mode them served by dev-server.
       appEnv.prod &&
-        paths.client.staticContent.length > 0 &&
+        paths.web.staticContent.length > 0 &&
         (() => {
           // Exclude root and sources dirs
-          const staticContent = paths.client.staticContent.filter((p) => {
-            return p.path !== paths.client.root && p.path !== paths.client.sources;
+          const staticContent = paths.web.staticContent.filter((p) => {
+            return p.path !== paths.web.root && p.path !== paths.web.sources;
           });
           if (staticContent.length === 0) {
             return undefined;
@@ -441,7 +435,7 @@ export default ({
 
     devServer: {
       // Static content which not processed by webpack and loadable from disk.
-      static: paths.client.staticContent.map(({ path: directory, ignore: ignored }) => ({
+      static: paths.web.staticContent.map(({ path: directory, ignore: ignored }) => ({
         directory,
         ...(ignored && { watch: { ignored } }),
       })),
@@ -450,7 +444,7 @@ export default ({
       port: 9000,
       hot: 'only',
       ...restOptions.devServer,
-      // dev: { publicPath: clientBuildConfig.output.publicPath },
+      // dev: { publicPath: webBuildConfig.output.publicPath },
     },
   });
 };

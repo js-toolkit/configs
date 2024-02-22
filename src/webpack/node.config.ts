@@ -4,63 +4,63 @@ import appEnv from '../appEnv';
 import paths from '../paths';
 import buildConfig from '../buildConfig';
 import commonConfig from './common.config';
-import { clientDefaultRules, type ClientConfigOptions, prepareRules } from './client.config';
+import { webDefaultRules, type WebConfigOptions, prepareRules } from './web.config';
 import { TsLoaderType, css, cssNodeModules, getTsLoader } from './loaders';
 
-export const serverDefaultRules: Pick<typeof clientDefaultRules, 'jsRule' | 'tsBaseRule'> = {
+export const nodeDefaultRules: Pick<typeof webDefaultRules, 'jsRule' | 'tsBaseRule'> = {
   jsRule: {
-    ...clientDefaultRules.jsRule,
-    include: [paths.server.sources, paths.shared.sources].filter((v) => !!v),
+    ...webDefaultRules.jsRule,
+    include: [paths.node.sources, paths.shared.sources].filter((v) => !!v),
   },
   tsBaseRule: {
-    ...clientDefaultRules.tsBaseRule,
-    include: [paths.server.sources, paths.shared.sources].filter((v) => !!v),
+    ...webDefaultRules.tsBaseRule,
+    include: [paths.node.sources, paths.shared.sources].filter((v) => !!v),
   },
 };
 
-export const universalDefaultRules: typeof clientDefaultRules = {
+export const universalDefaultRules: typeof webDefaultRules = {
   jsRule: {
-    ...clientDefaultRules.jsRule,
-    include: [...(clientDefaultRules.jsRule.include as string[]), paths.server.sources],
+    ...webDefaultRules.jsRule,
+    include: [...(webDefaultRules.jsRule.include as string[]), paths.node.sources],
   },
   tsBaseRule: {
-    ...serverDefaultRules.tsBaseRule,
-    include: [...(clientDefaultRules.jsRule.include as string[]), paths.server.sources],
+    ...nodeDefaultRules.tsBaseRule,
+    include: [...(webDefaultRules.jsRule.include as string[]), paths.node.sources],
   },
   cssRule: {
-    ...clientDefaultRules.cssRule,
+    ...webDefaultRules.cssRule,
     // process css in server side always in ssr mode
     use: css({ ssr: true, extractor: !appEnv.dev }),
   },
   cssNodeModulesRule: {
-    ...clientDefaultRules.cssNodeModulesRule,
+    ...webDefaultRules.cssNodeModulesRule,
     // process css in server side always in ssr mode
     use: cssNodeModules({ ssr: true, extractor: !appEnv.dev }),
   },
   svgRule: {
-    ...clientDefaultRules.svgRule,
+    ...webDefaultRules.svgRule,
     generator: { emit: false },
   },
   fontRule: {
-    ...clientDefaultRules.fontRule,
+    ...webDefaultRules.fontRule,
     generator: { emit: false },
   },
   assetsRule: {
-    ...clientDefaultRules.assetsRule,
+    ...webDefaultRules.assetsRule,
     generator: { emit: false },
   },
 };
 
-export interface ServerConfigOptions extends ClientConfigOptions {
+export interface NodeConfigOptions extends WebConfigOptions {
   nodeExternalsOptions?: webpackNodeExternals.Options | undefined;
   isUniversal?: boolean | undefined;
 }
 
-const serverBuildConfig = buildConfig.server || buildConfig.default.server;
+const nodeBuildConfig = buildConfig.node || buildConfig.default.node;
 
 export default ({
-  outputPath = paths.server.output.path,
-  outputPublicPath = serverBuildConfig.output.publicPath,
+  outputPath = paths.node.output.path,
+  outputPublicPath = nodeBuildConfig.output.publicPath,
   outputJsDir = '',
   hash = false,
   chunkSuffix = '.chunk',
@@ -69,9 +69,9 @@ export default ({
   nodeExternalsOptions,
   isUniversal,
   ...restOptions
-}: ServerConfigOptions): Configuration => {
-  const tsConfig: RequiredStrict<Extract<ServerConfigOptions['typescript'], object>> = {
-    configFile: paths.server.tsconfig,
+}: NodeConfigOptions): Configuration => {
+  const tsConfig: RequiredStrict<Extract<NodeConfigOptions['typescript'], object>> = {
+    configFile: paths.node.tsconfig,
     loader: TsLoaderType.Default,
     loaderOptions: {},
     forkedChecks: false,
@@ -85,7 +85,7 @@ export default ({
 
   const { tsBaseRule: defaultTsBaseRule, ...restDefaultRules } = isUniversal
     ? universalDefaultRules
-    : serverDefaultRules;
+    : nodeDefaultRules;
 
   const defaultRules = {
     tsRule: {
@@ -129,10 +129,10 @@ export default ({
         }
       : undefined,
 
-    name: serverBuildConfig.root,
+    name: nodeBuildConfig.root,
     target: 'node',
 
-    context: isUniversal ? paths.root : paths.server.sources,
+    context: isUniversal ? paths.root : paths.node.sources,
 
     ...restOptions,
 
@@ -162,14 +162,14 @@ export default ({
     resolve: {
       ...restOptions.resolve,
       modules: [
-        isUniversal ? paths.client.sources : paths.server.sources,
+        isUniversal ? paths.web.sources : paths.node.sources,
         ...((restOptions.resolve && restOptions.resolve.modules) || []),
       ],
       alias: {
         ...(isUniversal
           ? {
-              server: paths.server.sources,
-              client: paths.client.sources,
+              node: paths.node.sources,
+              web: paths.web.sources,
             }
           : undefined),
         ...(paths.shared.sources ? { shared: paths.shared.sources } : undefined),
@@ -191,7 +191,7 @@ export default ({
       // Don't watch on client files when isUniversal is true and ssr is turned off
       // because client by self make hot update and server not needs in updated files
       // because server not render react components.
-      ignored: [paths.nodeModules.root, ...(isUniversal && !appEnv.ssr ? [paths.client.root] : [])],
+      ignored: [paths.nodeModules.root, ...(isUniversal && !appEnv.ssr ? [paths.web.root] : [])],
       ...restOptions.watchOptions,
     },
   });

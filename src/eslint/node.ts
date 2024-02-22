@@ -4,7 +4,7 @@ import buildConfig from '../buildConfig';
 import paths, { getTSExtensions } from '../paths';
 import { eslintTsProject } from './consts';
 
-const enabled = buildConfig.server && fs.existsSync(paths.server.root);
+const enabled = buildConfig.node && fs.existsSync(paths.node.root);
 
 const config: import('eslint').Linter.Config = {
   extends: [require.resolve('./common')],
@@ -29,9 +29,9 @@ const config: import('eslint').Linter.Config = {
       parserOptions: {
         project: (() => {
           if (enabled) {
-            const tsconfig = path.join(paths.server.root, eslintTsProject);
+            const tsconfig = path.join(paths.node.root, eslintTsProject);
             if (fs.existsSync(tsconfig)) return tsconfig;
-            if (fs.existsSync(paths.server.tsconfig)) return paths.server.tsconfig;
+            if (fs.existsSync(paths.node.tsconfig)) return paths.node.tsconfig;
           }
           return fs.existsSync(eslintTsProject) ? eslintTsProject : 'tsconfig.json';
         })(),

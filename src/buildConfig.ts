@@ -1,9 +1,9 @@
 import buildConfigDefaults, { type BuildConfigDefaults } from './buildConfigDefaults';
 
-export interface BuildConfig extends Omit<BuildConfigDefaults, 'client' | 'server' | 'shared'> {
-  client: BuildConfigDefaults['client'] | undefined;
-  server: BuildConfigDefaults['server'] | undefined;
-  shared: BuildConfigDefaults['shared'] | undefined;
+export interface BuildConfig extends Pick<BuildConfigDefaults, 'output' | 'nodeModules'> {
+  web?: BuildConfigDefaults['web'] | undefined;
+  node?: BuildConfigDefaults['node'] | undefined;
+  shared?: BuildConfigDefaults['shared'] | undefined;
 
   default: BuildConfigDefaults;
 
@@ -65,8 +65,8 @@ export function getBuildConfig(configPath = resolveConfigPath()): BuildConfig {
         merge(buildConfigDefaults, require(configPath))
       : ({
           ...buildConfigDefaults,
-          client: undefined,
-          server: undefined,
+          web: undefined,
+          node: undefined,
           shared: undefined,
         } satisfies Pick<BuildConfig, keyof BuildConfigDefaults>));
 

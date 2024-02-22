@@ -1,12 +1,17 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 
-type HtmlOptions = import('html-webpack-plugin').Options & { readonly main?: boolean | undefined };
-
-type StaticContentOptions = (string | { path: string; ignore?: (string | RegExp)[] | undefined })[];
-
 // todo: Сделать типы web, node, common и только один тип для файла конфигурации?
 
-export function getClientConfig(root = 'client') {
+export function getWebAppConfig(root = 'web') {
+  type HtmlOptions = import('html-webpack-plugin').Options & {
+    readonly main?: boolean | undefined;
+  };
+
+  type StaticContentOptions = (
+    | string
+    | { path: string; ignore?: (string | RegExp)[] | undefined }
+  )[];
+
   return {
     root,
     sources: 'src',
@@ -47,7 +52,7 @@ export function getClientConfig(root = 'client') {
   };
 }
 
-export function getServerConfig(root = 'server') {
+export function getNodeAppConfig(root = 'node') {
   return {
     root,
     sources: 'src',
@@ -79,8 +84,8 @@ export type BuildConfigDefaults = {
   nodeModules: {
     root: string;
   };
-  client: ReturnType<typeof getClientConfig>;
-  server: ReturnType<typeof getServerConfig>;
+  web: ReturnType<typeof getWebAppConfig>;
+  node: ReturnType<typeof getNodeAppConfig>;
   shared: ReturnType<typeof getSharedConfig>;
 };
 
@@ -91,8 +96,8 @@ const buildConfigDefaults: BuildConfigDefaults = {
   nodeModules: {
     root: 'node_modules',
   },
-  client: getClientConfig(),
-  server: getServerConfig(),
+  web: getWebAppConfig(),
+  node: getNodeAppConfig(),
   shared: getSharedConfig(),
 };
 
