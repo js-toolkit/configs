@@ -371,39 +371,54 @@ export default ({
               ? undefined
               : (item: Record<string, any>) =>
                   Object.getOwnPropertyNames(filterTemplate).every(
-                    (key) =>
-                      !(key in item) ||
-                      item[key] === filterTemplate[key as keyof typeof filterTemplate]
+                    (key) => !(key in item) || item[key] === filterTemplate[key]
                   ),
           });
         })(),
 
       // Generate a service worker script that will precache, and keep up to date,
       // the HTML & assets that are part of the Webpack build.
-      appEnv.prod &&
-        webBuildConfig.output.sw.swDest &&
+      (webBuildConfig.output.sw.swDest || webBuildConfig.output.sw.swSrc) &&
         (() => {
           const getName = (): string => 'workbox-webpack-plugin';
-          const { GenerateSW } = nodeRequire(getName());
-          const html = normalizeHtml(webBuildConfig.html);
-          const filename =
-            html.length === 1 ? html[0].filename : html.find(({ main }) => !!main)?.filename;
+          const { GenerateSW, InjectManifest } = nodeRequire(getName());
+          // const html = normalizeHtml(webBuildConfig.html);
+          // const filename =
+          //   html.length === 1 ? html[0].filename : html.find(({ main }) => !!main)?.filename;
+          const exclude = [
+            /\.map$/,
+            /^manifest.*\.js$/,
+            webBuildConfig.output.assetManifest.fileName &&
+              new RegExp(`${webBuildConfig.output.assetManifest.fileName}$`),
+          ].filter(Boolean);
+
+          const { swSrc, swDest, ...rest } = webBuildConfig.output.sw;
+
+          if (swSrc) {
+            return new InjectManifest({
+              swSrc,
+              ...(swDest && { swDest }),
+              exclude,
+              ...rest,
+            });
+          }
+
           return new GenerateSW({
+            ...(swDest && { swDest }),
             clientsClaim: true,
-            importWorkboxFrom: 'cdn',
-            exclude: [/\.map$/, new RegExp(`${webBuildConfig.output.assetManifest.fileName}$`)],
-            navigateFallback:
-              filename && typeof filename === 'string'
-                ? `${webBuildConfig.output.publicPath}${filename}`
-                : undefined,
-            navigateFallbackBlacklist: [
-              // Exclude URLs starting with /_, as they're likely an API call
-              /^\/_/,
-              // Exclude URLs containing a dot, as they're likely a resource in
-              // public/ and not a SPA route
-              /\/[^/]+\.[^/]+$/,
-            ],
-            ...webBuildConfig.output.sw,
+            exclude,
+            // navigateFallback:
+            //   filename && typeof filename === 'string'
+            //     ? `${webBuildConfig.output.publicPath}${filename}`
+            //     : undefined,
+            // navigateFallbackBlacklist: [
+            //   // Exclude URLs starting with /_, as they're likely an API call
+            //   /^\/_/,
+            //   // Exclude URLs containing a dot, as they're likely a resource in
+            //   // public/ and not a SPA route
+            //   /\/[^/]+\.[^/]+$/,
+            // ],
+            ...rest,
           });
         })(),
 

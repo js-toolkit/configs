@@ -31,7 +31,9 @@ export function getWebAppConfig(root = 'web') {
     output: {
       root,
       js: 'js',
-      styles: 'styles' as string | { dir?: string; extractorOptions?: AnyObject },
+      styles: 'styles' as
+        | string
+        | { dir?: string | undefined; extractorOptions?: AnyObject | undefined },
       assets: 'assets',
       external: 'lib',
       publicPath: '/',
@@ -39,14 +41,16 @@ export function getWebAppConfig(root = 'web') {
       /** Generated asset manifest. */
       assetManifest: {
         /** For example: `asset-manifest.json`. */
-        fileName: '',
-        filterTemplate: {},
+        fileName: undefined as string | undefined,
+        filterTemplate: undefined as AnyObject | undefined,
       },
 
       /** Generating service worker options (workbox-webpack-plugin). */
       sw: {
         /** For example: `service-worker.js`. */
-        swDest: '',
+        swDest: undefined as string | undefined,
+        /** If provided then InjectManifest mode will be used. */
+        swSrc: undefined as string | undefined,
       },
     },
   };

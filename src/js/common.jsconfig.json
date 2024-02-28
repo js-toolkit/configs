@@ -4,6 +4,6 @@
     "module": "ES2015",
     "moduleResolution": "node",
     "jsx": "preserve",
-    "lib": ["DOM", "DOM.Iterable", "ScriptHost", "ESNext"]
+    "lib": ["DOM", "DOM.Iterable", "ESNext"]
   }
 }
