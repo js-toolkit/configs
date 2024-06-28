@@ -2,18 +2,35 @@
 import path from 'path';
 import { getBuildConfig } from './buildConfig';
 
-export const moduleExtensions = ['.js', '.mjs', '.cjs', '.jsx', '.ts', '.tsx', '.d.ts'];
+export const moduleExtensions = [
+  '.js',
+  '.mjs',
+  '.cjs',
+  '.jsx',
+  '.mjsx',
+  '.ts',
+  '.tsx',
+  '.mtsx',
+  '.d.ts',
+];
 
-export function getTSExtensions(): string[] {
-  return moduleExtensions.filter((ext) => ext.includes('ts'));
+function addGlob(extensions: string[]): string[] {
+  return extensions.map((ext) => `*${ext}`);
 }
 
-export function getJSExtensions(): string[] {
-  return moduleExtensions.filter((ext) => ext.includes('js'));
+export function getTSExtensions(glob = false): string[] {
+  const list = moduleExtensions.filter((ext) => ext.includes('ts'));
+  return glob ? addGlob(list) : list;
 }
 
-export function getReactExtensions(): string[] {
-  return moduleExtensions.filter((ext) => ext.includes('sx'));
+export function getJSExtensions(glob = false): string[] {
+  const list = moduleExtensions.filter((ext) => ext.includes('js'));
+  return glob ? addGlob(list) : list;
+}
+
+export function getJSXExtensions(glob = false): string[] {
+  const list = moduleExtensions.filter((ext) => ext.endsWith('sx'));
+  return glob ? addGlob(list) : list;
 }
 
 export function getPaths(baseDir = process.cwd(), buildConfig = getBuildConfig()) {
