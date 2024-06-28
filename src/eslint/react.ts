@@ -1,10 +1,16 @@
 import fs from 'fs';
 import path from 'path';
-import airbnbConfig from 'eslint-config-airbnb';
+import globals from 'globals';
 import buildConfig from '../buildConfig';
-import paths, { getReactExtensions, getTSExtensions } from '../paths';
+import paths, {
+  getFilesGlob,
+  getJSXExtensions,
+  getTSExtensions,
+  getTSJSXExtensions,
+} from '../paths';
 import { getInstalledPackage } from '../getInstalledPackage';
 import { eslintTsProject } from './consts';
+import { compat } from './utils';
 
 const enabled = buildConfig.web && fs.existsSync(paths.web.root);
 
@@ -13,64 +19,71 @@ const hasA11yPlugin = !!getInstalledPackage('eslint-plugin-jsx-a11y');
 const hasReactHooksPlugin = !!getInstalledPackage('eslint-plugin-react-hooks');
 const hasMobxPlugin = !!getInstalledPackage('eslint-plugin-mobx');
 
-const airbnbExtends = airbnbConfig.extends.filter(
-  (item) =>
-    !item.includes('eslint-config-airbnb-base') &&
-    (hasReactPlugin ? true : !item.includes('rules/react.js')) &&
-    (hasA11yPlugin ? true : !item.includes('rules/react-a11y.js'))
-);
+delete (globals.browser as any)['AudioWorkletGlobalScope '];
 
-const config: import('eslint').Linter.Config = {
-  extends: [
-    // Adds eslint-plugin-react, eslint-plugin-jsx-a11y, rules
-    // https://github.com/airbnb/javascript/blob/master/packages/eslint-config-airbnb/index.js
-    ...airbnbExtends,
-    require.resolve('./common'),
-    ...(hasReactHooksPlugin ? ['plugin:react-hooks/recommended'] : []),
-    ...(hasMobxPlugin ? ['plugin:mobx/recommended'] : []),
-  ],
+const config: import('eslint').Linter.FlatConfig[] = [
+  ...require('./common'),
 
-  env: {
-    browser: true,
+  {
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+      },
+    },
   },
 
-  // settings: {
-  //   'import/resolver': {
-  //     node: {}, // Add priority
-  //     ...(enabled && buildConfig.client?.webpackConfig
-  //       ? { webpack: { config: buildConfig.client.webpackConfig } }
-  //       : undefined),
-  //   },
-  // },
-
-  rules: {
-    ...(hasReactPlugin && {
+  ...(hasReactPlugin ? [require('eslint-plugin-react/configs/recommended')] : []).map((conf) => ({
+    ...conf,
+    files: [...(conf.files ?? []), getFilesGlob(getJSXExtensions())],
+    settings: {
+      ...conf.settings,
+      react: {
+        ...conf.settings?.react,
+        version: 'detect',
+      },
+    },
+    rules: {
+      ...conf.rules,
       'react/prop-types': 'off',
       'react/sort-comp': 'off',
+      'react/display-name': 'off',
       'react/destructuring-assignment': ['error', 'always', { ignoreClassFields: true }],
-      'react/jsx-filename-extension': ['error', { extensions: ['.jsx'] }],
+      'react/jsx-filename-extension': ['error', { extensions: getJSXExtensions() }],
       'react/jsx-wrap-multilines': 'off',
       'react/jsx-props-no-spreading': 'off',
       'react/function-component-definition': [
         'error',
         { namedComponents: 'function-declaration', unnamedComponents: 'arrow-function' },
       ],
-    }),
+    },
+  })),
 
-    ...(hasA11yPlugin && {
-      'jsx-a11y/anchor-is-valid': ['error', { specialLink: ['to'] }],
-      'jsx-a11y/label-has-for': ['error', { allowChildren: true }],
-    }),
+  ...(hasA11yPlugin ? [require('eslint-plugin-jsx-a11y').flatConfigs.recommended] : []).map(
+    (conf) => ({
+      ...conf,
+      files: [...(conf.files ?? []), getFilesGlob(getJSXExtensions())],
+      rules: {
+        ...conf.rules,
+        'jsx-a11y/anchor-is-valid': ['error', { specialLink: ['to'] }],
+        'jsx-a11y/label-has-for': ['error', { allowChildren: true }],
+      },
+    })
+  ),
 
-    ...(hasReactHooksPlugin && {
+  ...(hasReactHooksPlugin ? compat.extends('plugin:react-hooks/recommended') : []).map((conf) => ({
+    ...conf,
+    rules: {
+      ...conf.rules,
       'react-hooks/exhaustive-deps': 'error',
-    }),
-  },
+    },
+  })),
 
-  overrides: [
-    {
-      files: getTSExtensions().map((ext) => `*${ext}`),
+  ...(hasMobxPlugin ? compat.extends('plugin:mobx/recommended') : []),
 
+  {
+    files: [getFilesGlob(getTSExtensions())],
+
+    languageOptions: {
       parserOptions: {
         project: (() => {
           if (enabled) {
@@ -81,14 +94,17 @@ const config: import('eslint').Linter.Config = {
           return fs.existsSync(eslintTsProject) ? eslintTsProject : 'tsconfig.json';
         })(),
       },
-
-      rules: {
-        ...(hasReactPlugin && {
-          'react/jsx-filename-extension': ['error', { extensions: getReactExtensions() }],
-        }),
-      },
     },
-  ],
-};
+  },
+
+  {
+    files: [getFilesGlob(getTSJSXExtensions())],
+    rules: {
+      ...(hasReactPlugin && {
+        'react/jsx-filename-extension': ['error', { extensions: getJSXExtensions() }],
+      }),
+    },
+  },
+];
 
 module.exports = config;

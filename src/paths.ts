@@ -14,23 +14,34 @@ export const moduleExtensions = [
   '.d.ts',
 ];
 
-function addGlob(extensions: string[]): string[] {
+function addStar(extensions: string[]): string[] {
   return extensions.map((ext) => `*${ext}`);
 }
 
-export function getTSExtensions(glob = false): string[] {
+export function getFilesGlob(extensions: string[], basePath?: string): string {
+  return (
+    path.join(basePath || '', '**/*.{') + extensions.map((ext) => ext.substring(1)).join(',') + '}'
+  );
+}
+
+export function getTSExtensions(withStar = false): string[] {
   const list = moduleExtensions.filter((ext) => ext.includes('ts'));
-  return glob ? addGlob(list) : list;
+  return withStar ? addStar(list) : list;
 }
 
-export function getJSExtensions(glob = false): string[] {
+export function getJSExtensions(withStar = false): string[] {
   const list = moduleExtensions.filter((ext) => ext.includes('js'));
-  return glob ? addGlob(list) : list;
+  return withStar ? addStar(list) : list;
 }
 
-export function getJSXExtensions(glob = false): string[] {
+export function getJSXExtensions(withStar = false): string[] {
   const list = moduleExtensions.filter((ext) => ext.endsWith('sx'));
-  return glob ? addGlob(list) : list;
+  return withStar ? addStar(list) : list;
+}
+
+export function getTSJSXExtensions(withStar = false): string[] {
+  const list = moduleExtensions.filter((ext) => ext.endsWith('tsx'));
+  return withStar ? addStar(list) : list;
 }
 
 export function getPaths(baseDir = process.cwd(), buildConfig = getBuildConfig()) {

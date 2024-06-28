@@ -1,31 +1,31 @@
 import fs from 'fs';
 import path from 'path';
 import buildConfig from '../buildConfig';
-import paths, { getTSExtensions } from '../paths';
+import paths, { getFilesGlob, getTSExtensions } from '../paths';
 import { eslintTsProject } from './consts';
 
 const enabled = buildConfig.node && fs.existsSync(paths.node.root);
 
-const config: import('eslint').Linter.Config = {
-  extends: [require.resolve('./common')],
-
-  env: {
-    node: true,
-  },
-
-  // settings: {
-  //   'import/resolver': {
-  //     node: {}, // Add priority
-  //     ...(enabled && buildConfig.server && buildConfig.server.webpackConfig
-  //       ? { webpack: { config: buildConfig.server.webpackConfig } }
-  //       : undefined),
+const config: import('eslint').Linter.FlatConfig[] = [
+  ...require('./common'),
+  // {
+  //   env: {
+  //     node: true,
   //   },
+
+  //   // settings: {
+  //   //   'import/resolver': {
+  //   //     node: {}, // Add priority
+  //   //     ...(enabled && buildConfig.server && buildConfig.server.webpackConfig
+  //   //       ? { webpack: { config: buildConfig.server.webpackConfig } }
+  //   //       : undefined),
+  //   //   },
+  //   // },
   // },
+  {
+    files: [getFilesGlob(getTSExtensions())],
 
-  overrides: [
-    {
-      files: getTSExtensions().map((ext) => `*${ext}`),
-
+    languageOptions: {
       parserOptions: {
         project: (() => {
           if (enabled) {
@@ -37,7 +37,7 @@ const config: import('eslint').Linter.Config = {
         })(),
       },
     },
-  ],
-};
+  },
+];
 
 module.exports = config;
