@@ -34,12 +34,12 @@ export function getJSExtensions(withStar = false): string[] {
   return withStar ? addStar(list) : list;
 }
 
-export function getJSXExtensions(withStar = false): string[] {
+export function getSXExtensions(withStar = false): string[] {
   const list = moduleExtensions.filter((ext) => ext.endsWith('sx'));
   return withStar ? addStar(list) : list;
 }
 
-export function getTSJSXExtensions(withStar = false): string[] {
+export function getTSXExtensions(withStar = false): string[] {
   const list = moduleExtensions.filter((ext) => ext.endsWith('tsx'));
   return withStar ? addStar(list) : list;
 }

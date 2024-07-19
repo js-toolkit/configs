@@ -1,6 +1,6 @@
 const eslintJs = require('@eslint/js');
 const { FlatCompat } = require('@eslint/eslintrc');
-const { fixupPluginRules } = require('@eslint/compat');
+const { fixupConfigRules } = require('@eslint/compat');
 const tsEslint = require('typescript-eslint');
 const eslintPluginPrettierRecommended = require('eslint-plugin-prettier/recommended');
 
@@ -9,52 +9,40 @@ const compat = new FlatCompat({
   // recommendedConfig: eslintJs.configs.recommended,
 });
 
-function legacyPlugin(name, alias = name) {
-  const plugin = compat.plugins(name)[0]?.plugins?.[alias];
+const filterStandardRules = () => {
+  const rules = Object.entries(require('eslint-config-standard').rules).reduce(
+    (acc, [name, value]) => {
+      if (name.startsWith('import/')) {
+        acc[name] = value;
+      } else if (name.startsWith('n/')) {
+        // if (hasNodePlugin) acc[name] = value;
+      } else if (name.startsWith('promise/')) {
+        acc[name] = value;
+      } else {
+        acc[name] = value;
+      }
+      return acc;
+    },
+    {}
+  );
 
-  if (!plugin) {
-    throw new Error(`Unable to resolve plugin ${name} and/or alias ${alias}`);
-  }
-
-  return fixupPluginRules(plugin);
-}
+  return { rules };
+};
 
 /** @type {import('eslint').Linter.FlatConfig[]} */
 module.exports = [
   eslintJs.configs.recommended,
-  eslintPluginPrettierRecommended,
-  ...tsEslint.configs.recommendedTypeChecked,
-  ...compat.extends('plugin:import/typescript'),
+  require('eslint-plugin-promise').configs['flat/recommended'],
+  ...fixupConfigRules(compat.extends('plugin:import/recommended')),
+  filterStandardRules(),
 
   {
     languageOptions: {
-      // parser: '@typescript-eslint/parser',
-      parserOptions: {
-        project: './tsconfig.json',
-      },
+      parser: require('@babel/eslint-parser'),
       ecmaVersion: 'latest',
     },
 
     ignores: ['eslint.config.js'],
-
-    plugins: {
-      import: legacyPlugin('eslint-plugin-import', 'import'),
-    },
-
-    settings: {
-      'import/parsers': {
-        '@typescript-eslint/parser': ['.ts', '.tsx', '.js', '.jsx'],
-      },
-
-      'import/resolver': {
-        node: {
-          extensions: ['.ts', '.tsx', '.js', '.jsx'],
-        },
-        typescript: {
-          project: './tsconfig.json',
-        },
-      },
-    },
 
     rules: {
       'no-undef': 'off',
@@ -75,7 +63,47 @@ module.exports = [
       'import/no-dynamic-require': 'off',
       'import/no-import-module-exports': 'off',
       'import/extensions': ['error', 'ignorePackages', { js: 'never', ts: 'never' }],
+    },
+  },
 
+  // TS
+
+  ...tsEslint.configs.recommendedTypeChecked.map((conf) => ({ ...conf, files: ['**/*.{ts,tsx}'] })),
+
+  ...fixupConfigRules(compat.extends('plugin:import/typescript')).map((conf) => ({
+    ...conf,
+    files: ['**/*.{ts,tsx}'],
+  })),
+
+  eslintPluginPrettierRecommended,
+
+  {
+    files: ['**/*.{ts,tsx}'],
+
+    languageOptions: {
+      // parser: '@typescript-eslint/parser',
+      parserOptions: {
+        project: './tsconfig.json',
+      },
+    },
+
+    settings: {
+      'import/parsers': {
+        '@typescript-eslint/parser': ['.ts', '.tsx', '.js', '.jsx'],
+      },
+
+      'import/resolver': {
+        node: {
+          extensions: ['.ts', '.tsx', '.js', '.jsx'],
+        },
+        typescript: {
+          project: './tsconfig.json',
+        },
+      },
+    },
+
+    rules: {
+      '@typescript-eslint/no-var-requires': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/explicit-function-return-type': [
         'warn',

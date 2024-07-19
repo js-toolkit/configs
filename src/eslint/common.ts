@@ -2,23 +2,68 @@ import fs from 'fs';
 import globals from 'globals';
 import type { Linter } from 'eslint';
 import eslintJs from '@eslint/js';
-import { fixupConfigRules } from '@eslint/compat';
+import { fixupConfigRules, type FixupConfigArray } from '@eslint/compat';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 import paths, { getFilesGlob, getJSExtensions, getTSExtensions, moduleExtensions } from '../paths';
 import { getInstalledPackage } from '../getInstalledPackage';
 import { eslintTsProject } from './consts';
 import { compat } from './utils';
 
+const hasPromisePlugin = !!getInstalledPackage('eslint-plugin-promise');
 const hasImportPlugin = !!getInstalledPackage('eslint-plugin-import');
+const hasConfigStandard = !!getInstalledPackage('eslint-config-standard');
+const hasConfigAirbnbBase = !!getInstalledPackage('eslint-config-airbnb-base');
+const hasJsDocPlugin = !!getInstalledPackage('eslint-plugin-jsdoc');
 const hasTsDocPlugin = !!getInstalledPackage('eslint-plugin-tsdoc');
 const hasTypescriptEslintPlugin = !!getInstalledPackage('typescript-eslint');
+
+const filterStandardRules = (): { readonly rules: Readonly<Linter.RulesRecord> } => {
+  const hasNodePlugin = !!getInstalledPackage('eslint-plugin-n');
+
+  const rules = Object.entries(
+    (require('eslint-config-standard') as Linter.FlatConfig).rules!
+  ).reduce((acc, [name, value]) => {
+    if (name.startsWith('import/')) {
+      if (hasImportPlugin) acc[name] = value;
+    } else if (name.startsWith('n/')) {
+      if (hasNodePlugin) acc[name] = value;
+    } else if (name.startsWith('promise/')) {
+      if (hasPromisePlugin) acc[name] = value;
+    } else {
+      acc[name] = value;
+    }
+    return acc;
+  }, {} as AnyObject);
+
+  return { rules };
+};
+
+const filterAirbnbRules = (): FixupConfigArray => {
+  const list: FixupConfigArray = require('eslint-config-airbnb-base').extends.map((url: string) => {
+    return url.endsWith('imports.js') && !hasImportPlugin ? {} : { rules: require(url).rules };
+  });
+  return fixupConfigRules(list);
+};
 
 const config: Linter.FlatConfig[] = [
   eslintJs.configs.recommended,
 
-  eslintPluginPrettierRecommended,
+  ...(hasPromisePlugin ? [require('eslint-plugin-promise').configs['flat/recommended']] : []),
 
   ...(hasImportPlugin ? fixupConfigRules(compat.extends('plugin:import/recommended')) : []),
+
+  ...(hasConfigStandard ? [filterStandardRules()] : []),
+
+  ...(hasJsDocPlugin
+    ? [
+        {
+          ...require('eslint-plugin-jsdoc').configs['flat/recommended'],
+          files: [getFilesGlob(getJSExtensions())],
+        },
+      ]
+    : []),
+
+  ...(hasConfigAirbnbBase ? filterAirbnbRules() : []),
 
   {
     languageOptions: {
@@ -102,6 +147,10 @@ const config: Linter.FlatConfig[] = [
         'import/prefer-default-export': 'off',
         // 'import/no-default-export': 'warn',
       }),
+
+      ...(hasPromisePlugin && {
+        'promise/always-return': 'off',
+      }),
     },
   },
 
@@ -170,6 +219,8 @@ const config: Linter.FlatConfig[] = [
                 allowConciseArrowFunctionExpressionsStartingWithVoid: true,
               },
             ],
+            'no-use-before-define': 'off',
+            '@typescript-eslint/no-use-before-define': 'error',
 
             ...(hasTsDocPlugin && {
               'tsdoc/syntax': 'warn',
@@ -178,6 +229,8 @@ const config: Linter.FlatConfig[] = [
         });
       })()
     : []),
+
+  eslintPluginPrettierRecommended,
 
   // Special overrides for TS declaration files
   {
