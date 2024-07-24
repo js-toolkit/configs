@@ -111,10 +111,11 @@ const config: Linter.FlatConfig[] = [
     },
 
     rules: {
-      'no-console': 'off',
-      'no-unused-expressions': ['error', { allowShortCircuit: true }],
       'lines-between-class-members': ['error', 'always', { exceptAfterSingleLine: true }],
       'func-names': ['warn', 'as-needed', { generators: 'as-needed' }],
+      'no-console': 'off',
+      'no-unused-expressions': ['error', { allowShortCircuit: true }],
+      'no-plusplus': ['error', { allowForLoopAfterthoughts: true }],
 
       'no-restricted-exports': [
         'error',
@@ -127,6 +128,17 @@ const config: Linter.FlatConfig[] = [
             defaultFrom: false,
           },
         },
+      ],
+
+      'no-restricted-syntax': [
+        'error',
+        'ForInStatement',
+        // 'ForOfStatement',
+        'LabeledStatement',
+        'WithStatement',
+        // "BinaryExpression[operator='in']",
+        "CallExpression[callee.name='setTimeout'][arguments.length!=2]",
+        "CallExpression[arguments.length!=2] > MemberExpression[object.name='window'][property.name='setTimeout']",
       ],
 
       ...(hasImportPlugin && {
@@ -221,6 +233,9 @@ const config: Linter.FlatConfig[] = [
             ],
             'no-use-before-define': 'off',
             '@typescript-eslint/no-use-before-define': 'error',
+
+            'no-shadow': 'off',
+            '@typescript-eslint/no-shadow': ['error', { ignoreTypeValueShadow: true }],
 
             ...(hasTsDocPlugin && {
               'tsdoc/syntax': 'warn',
