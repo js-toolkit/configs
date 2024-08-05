@@ -117,6 +117,7 @@ const config: Linter.Config[] = [
       'no-console': 'off',
       'no-unused-expressions': ['error', { allowShortCircuit: true }],
       'no-plusplus': ['error', { allowForLoopAfterthoughts: true }],
+      'no-param-reassign': ['error', { props: false }],
 
       'no-restricted-exports': [
         'error',
