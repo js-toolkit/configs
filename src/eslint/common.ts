@@ -20,20 +20,21 @@ const hasTypescriptEslintPlugin = !!getInstalledPackage('typescript-eslint');
 const filterStandardRules = (): { readonly rules: Readonly<Linter.RulesRecord> } => {
   const hasNodePlugin = !!getInstalledPackage('eslint-plugin-n');
 
-  const rules = Object.entries(
-    (require('eslint-config-standard') as Linter.FlatConfig).rules!
-  ).reduce((acc, [name, value]) => {
-    if (name.startsWith('import/')) {
-      if (hasImportPlugin) acc[name] = value;
-    } else if (name.startsWith('n/')) {
-      if (hasNodePlugin) acc[name] = value;
-    } else if (name.startsWith('promise/')) {
-      if (hasPromisePlugin) acc[name] = value;
-    } else {
-      acc[name] = value;
-    }
-    return acc;
-  }, {} as AnyObject);
+  const rules = Object.entries((require('eslint-config-standard') as Linter.Config).rules!).reduce(
+    (acc, [name, value]) => {
+      if (name.startsWith('import/')) {
+        if (hasImportPlugin) acc[name] = value;
+      } else if (name.startsWith('n/')) {
+        if (hasNodePlugin) acc[name] = value;
+      } else if (name.startsWith('promise/')) {
+        if (hasPromisePlugin) acc[name] = value;
+      } else {
+        acc[name] = value;
+      }
+      return acc;
+    },
+    {} as AnyObject
+  );
 
   return { rules };
 };
@@ -45,7 +46,7 @@ const filterAirbnbRules = (): FixupConfigArray => {
   return fixupConfigRules(list);
 };
 
-const config: Linter.FlatConfig[] = [
+const config: Linter.Config[] = [
   eslintJs.configs.recommended,
 
   ...(hasPromisePlugin ? [require('eslint-plugin-promise').configs['flat/recommended']] : []),

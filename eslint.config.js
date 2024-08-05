@@ -29,7 +29,7 @@ const filterStandardRules = () => {
   return { rules };
 };
 
-/** @type {import('eslint').Linter.FlatConfig[]} */
+/** @type {import('eslint').Linter.Config[]} */
 module.exports = [
   eslintJs.configs.recommended,
   require('eslint-plugin-promise').configs['flat/recommended'],

@@ -27,7 +27,7 @@ const filterAirbnbRules = (config: 'react' | 'react-a11y'): FixupConfigArray => 
   });
 };
 
-const config: import('eslint').Linter.FlatConfig[] = [
+const config: import('eslint').Linter.Config[] = [
   ...require('./common'),
 
   {

@@ -25,7 +25,7 @@ const filesGlobs: Record<keyof Pick<BuildConfig, 'web' | 'node' | 'shared'> | 'o
   other: moduleExtensions.map((ext) => `*${ext}`),
 };
 
-const config: Linter.FlatConfig[] = [
+const config: Linter.Config[] = [
   {
     // Add to settings because we can export only valid configuration object without other named exports.
     settings: { filesGlobs, getFilesGlob },

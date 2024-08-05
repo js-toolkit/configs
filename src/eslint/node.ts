@@ -6,7 +6,7 @@ import { eslintTsProject } from './consts';
 
 const enabled = buildConfig.node && fs.existsSync(paths.node.root);
 
-const config: import('eslint').Linter.FlatConfig[] = [
+const config: import('eslint').Linter.Config[] = [
   ...require('./common'),
   // {
   //   env: {
