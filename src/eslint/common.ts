@@ -164,6 +164,7 @@ const config: Linter.Config[] = [
 
       ...(hasPromisePlugin && {
         'promise/always-return': 'off',
+        'promise/catch-or-return': ['error', { allowFinally: true }],
       }),
     },
   },
