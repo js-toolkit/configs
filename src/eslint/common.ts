@@ -240,6 +240,12 @@ const config: Linter.Config[] = [
             'no-shadow': 'off',
             '@typescript-eslint/no-shadow': ['error', { ignoreTypeValueShadow: true }],
 
+            'no-empty-function': 'off',
+            '@typescript-eslint/no-empty-function': [
+              'error',
+              { allow: ['private-constructors', 'protected-constructors', 'decoratedFunctions'] },
+            ],
+
             ...(hasTsDocPlugin && {
               'tsdoc/syntax': 'warn',
             }),
