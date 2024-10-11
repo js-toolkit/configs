@@ -10,6 +10,7 @@ import { getInstalledPackage } from '../getInstalledPackage';
 import { eslintTsProject } from './consts';
 import { compat } from './utils';
 
+const hasBabelParser = !!getInstalledPackage('@babel/eslint-parser');
 const hasPromisePlugin = !!getInstalledPackage('eslint-plugin-promise');
 const hasImportPlugin = !!getInstalledPackage('eslint-plugin-import');
 const hasConfigStandard = !!getInstalledPackage('eslint-config-standard');
@@ -69,7 +70,7 @@ const config: Linter.Config[] = [
 
   {
     languageOptions: {
-      parser: require('@babel/eslint-parser'),
+      ...(hasBabelParser && { parser: require('@babel/eslint-parser') }),
       // parserOptions: {
       //   ecmaVersion: 2020,
       // },
@@ -108,7 +109,7 @@ const config: Linter.Config[] = [
       },
 
       'import/parsers': {
-        '@babel/eslint-parser': getJSExtensions(),
+        '@babel/eslint-parser': hasBabelParser ? getJSExtensions() : [],
       },
     },
 
