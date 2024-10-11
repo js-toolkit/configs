@@ -101,7 +101,7 @@ export default ({
             minimizerPlugin === 'closure' &&
               (() => {
                 const [pluginOptions, compilerOptions] = Array.isArray(minimizerPluginOptions)
-                  ? minimizerPluginOptions ?? []
+                  ? (minimizerPluginOptions ?? [])
                   : [minimizerPluginOptions, undefined];
 
                 return new (nodeRequire('closure-webpack-plugin'))(

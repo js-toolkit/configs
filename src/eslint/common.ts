@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 import fs from 'fs';
 import globals from 'globals';
 import type { Linter } from 'eslint';
@@ -250,7 +251,7 @@ const config: Linter.Config[] = [
               'tsdoc/syntax': 'warn',
             }),
           },
-        });
+        } as Linter.Config);
       })()
     : []),
 

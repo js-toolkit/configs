@@ -117,7 +117,7 @@ export interface WebConfigOptions extends Omit<CommonConfigOptions, 'typescript'
 }
 
 function containsLoader(rules: Record<string, RuleSetRule>, loader: string): boolean {
-  const checkRule = (use?: RuleSetUse | undefined | null | string | false | 0): boolean => {
+  const checkRule = (use?: RuleSetUse | null | string | false | 0): boolean => {
     if (typeof use === 'string') return use.includes(loader);
     if (Array.isArray(use)) return use.some(checkRule);
     if (typeof use !== 'function' && use && use.loader) return use.loader.includes(loader);

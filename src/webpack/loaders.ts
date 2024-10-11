@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/ban-types */
-/* eslint-disable no-shadow */
+/* eslint-disable @typescript-eslint/no-unsafe-function-type */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import type { RuleSetUseItem } from 'webpack';
 import appEnv from '../appEnv';
@@ -113,7 +112,7 @@ export function tsRHL({ afterLoaders, ...rest }: TsDefaultLoaderOptions) {
   });
 }
 
-export function babelLoader(options?: Record<PropertyKey, any> | undefined) {
+export function babelLoader(options?: Record<PropertyKey, any>) {
   return {
     loader: 'babel-loader',
     options: {
