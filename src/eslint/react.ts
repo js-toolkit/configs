@@ -73,7 +73,7 @@ const config: Linter.Config[] = [
 
   ...[
     ...(hasReactA11yPlugin ? [require('eslint-plugin-jsx-a11y').flatConfigs.recommended] : []),
-    ...(hasReactPlugin && hasConfigAirbnb ? filterAirbnbRules('react-a11y') : []),
+    ...(hasReactA11yPlugin && hasConfigAirbnb ? filterAirbnbRules('react-a11y') : []),
   ].map((conf) => ({
     ...conf,
     files: [...(conf.files ?? []), getFilesGlob(getSXExtensions())],
