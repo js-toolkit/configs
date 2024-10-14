@@ -18,6 +18,8 @@ const hasConfigAirbnbBase = !!getInstalledPackage('eslint-config-airbnb-base');
 const hasJsDocPlugin = !!getInstalledPackage('eslint-plugin-jsdoc');
 const hasTsDocPlugin = !!getInstalledPackage('eslint-plugin-tsdoc');
 const hasTypescriptEslintPlugin = !!getInstalledPackage('typescript-eslint');
+const tsconfig =
+  hasTypescriptEslintPlugin && fs.existsSync(eslintTsProject) ? eslintTsProject : 'tsconfig.json';
 
 const filterStandardRules = (): { readonly rules: Readonly<Linter.RulesRecord> } => {
   const hasNodePlugin = !!getInstalledPackage('eslint-plugin-n');
@@ -70,15 +72,14 @@ const config: Linter.Config[] = [
 
   {
     languageOptions: {
-      ...(hasBabelParser && { parser: require('@babel/eslint-parser') }),
-      // parserOptions: {
-      //   ecmaVersion: 2020,
-      // },
       ecmaVersion: 'latest',
-
+      parserOptions: {
+        ecmaVersion: 'latest',
+      },
       globals: {
         ...globals.node,
       },
+      ...(hasBabelParser && { parser: require('@babel/eslint-parser') }),
     },
 
     linterOptions: {
@@ -108,9 +109,11 @@ const config: Linter.Config[] = [
         // typescript: {},
       },
 
-      'import/parsers': {
-        '@babel/eslint-parser': hasBabelParser ? getJSExtensions() : [],
-      },
+      ...(hasBabelParser && {
+        'import/parsers': {
+          '@babel/eslint-parser': getJSExtensions(),
+        },
+      }),
     },
 
     rules: {
@@ -191,7 +194,7 @@ const config: Linter.Config[] = [
 
           languageOptions: {
             parserOptions: {
-              project: fs.existsSync(eslintTsProject) ? eslintTsProject : 'tsconfig.json',
+              project: tsconfig,
             },
           },
 
@@ -203,12 +206,13 @@ const config: Linter.Config[] = [
                 extensions: moduleExtensions,
               },
               typescript: {
-                project: fs.existsSync(eslintTsProject) ? eslintTsProject : 'tsconfig.json',
+                project: tsconfig,
               },
             },
             'import/parsers': {
               '@typescript-eslint/parser': moduleExtensions,
-              '@babel/eslint-parser': [], // Disable babel parsing for ts files
+              // Disable babel parsing for ts files
+              ...(hasBabelParser && { '@babel/eslint-parser': [] }),
             },
             // 'import/external-module-folders': ['node_modules', 'node_modules/@types'],
           },
@@ -260,10 +264,14 @@ const config: Linter.Config[] = [
 
   // Special overrides for TS declaration files
   {
-    files: ['**/*.d.ts'],
+    files: [getFilesGlob(['.d.ts'])],
     rules: {
       'max-classes-per-file': 'off',
     },
+  },
+
+  {
+    ignores: ['node_modules', 'dist', 'build', '.yarn'],
   },
 ];
 

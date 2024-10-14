@@ -1,13 +1,15 @@
 import fs from 'fs';
 import path from 'path';
+import type { Linter } from 'eslint';
 import buildConfig from '../buildConfig';
 import paths, { getFilesGlob, getTSExtensions } from '../paths';
 import { eslintTsProject } from './consts';
 
-const enabled = buildConfig.node && fs.existsSync(paths.node.root);
+const nodeConfigEnabled = buildConfig.node && fs.existsSync(paths.node.root);
 
-const config: import('eslint').Linter.Config[] = [
-  ...require('./common'),
+const config: Linter.Config[] = [
+  // ...require('./common'),
+
   // {
   //   env: {
   //     node: true,
@@ -22,22 +24,27 @@ const config: import('eslint').Linter.Config[] = [
   //   //   },
   //   // },
   // },
-  {
-    files: [getFilesGlob(getTSExtensions())],
 
-    languageOptions: {
-      parserOptions: {
-        project: (() => {
-          if (enabled) {
-            const tsconfig = path.join(paths.node.root, eslintTsProject);
-            if (fs.existsSync(tsconfig)) return tsconfig;
-            if (fs.existsSync(paths.node.tsconfig)) return paths.node.tsconfig;
-          }
-          return fs.existsSync(eslintTsProject) ? eslintTsProject : 'tsconfig.json';
-        })(),
-      },
-    },
-  },
+  ...(nodeConfigEnabled
+    ? (() => {
+        let eslintTsConfig = path.join(paths.node.root, eslintTsProject);
+        if (!fs.existsSync(eslintTsConfig)) {
+          eslintTsConfig = paths.node.tsconfig;
+        }
+        if (!fs.existsSync(eslintTsConfig)) {
+          eslintTsConfig = '';
+        }
+        if (!eslintTsConfig) {
+          return [];
+        }
+        return [
+          {
+            files: [getFilesGlob(getTSExtensions())],
+            languageOptions: { parserOptions: { project: eslintTsConfig } },
+          } satisfies Linter.Config,
+        ];
+      })()
+    : []),
 ];
 
 module.exports = config;

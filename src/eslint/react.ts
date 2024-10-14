@@ -1,15 +1,18 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-require-imports */
 import fs from 'fs';
 import path from 'path';
 import globals from 'globals';
+import type { Linter } from 'eslint';
 import { fixupConfigRules, type FixupConfigArray } from '@eslint/compat';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 import buildConfig from '../buildConfig';
-import paths, { getFilesGlob, getSXExtensions, getTSExtensions, getTSXExtensions } from '../paths';
+import paths, { getFilesGlob, getSXExtensions, getTSXExtensions } from '../paths';
 import { getInstalledPackage } from '../getInstalledPackage';
 import { eslintTsProject } from './consts';
 import { compat } from './utils';
 
-const enabled = buildConfig.web && fs.existsSync(paths.web.root);
+const webConfigEnabled = buildConfig.web && fs.existsSync(paths.web.root);
 
 const hasReactPlugin = !!getInstalledPackage('eslint-plugin-react');
 const hasReactA11yPlugin = !!getInstalledPackage('eslint-plugin-jsx-a11y');
@@ -27,8 +30,8 @@ const filterAirbnbRules = (config: 'react' | 'react-a11y'): FixupConfigArray => 
   });
 };
 
-const config: import('eslint').Linter.Config[] = [
-  ...require('./common'),
+const config: Linter.Config[] = [
+  // ...require('./common'),
 
   {
     languageOptions: {
@@ -96,22 +99,26 @@ const config: import('eslint').Linter.Config[] = [
     ? [...compat.extends('plugin:mobx/recommended'), { rules: { 'mobx/missing-observer': 'off' } }]
     : []),
 
-  {
-    files: [getFilesGlob(getTSExtensions())],
-
-    languageOptions: {
-      parserOptions: {
-        project: (() => {
-          if (enabled) {
-            const tsconfig = path.join(paths.web.root, eslintTsProject);
-            if (fs.existsSync(tsconfig)) return tsconfig;
-            if (fs.existsSync(paths.web.tsconfig)) return paths.web.tsconfig;
-          }
-          return fs.existsSync(eslintTsProject) ? eslintTsProject : 'tsconfig.json';
-        })(),
-      },
-    },
-  },
+  ...(webConfigEnabled
+    ? (() => {
+        let eslintTsConfig = path.join(paths.web.root, eslintTsProject);
+        if (!fs.existsSync(eslintTsConfig)) {
+          eslintTsConfig = paths.web.tsconfig;
+        }
+        if (!fs.existsSync(eslintTsConfig)) {
+          eslintTsConfig = '';
+        }
+        if (!eslintTsConfig) {
+          return [];
+        }
+        return [
+          {
+            files: [getFilesGlob(getTSXExtensions())],
+            languageOptions: { parserOptions: { project: eslintTsConfig } },
+          } satisfies Linter.Config,
+        ];
+      })()
+    : []),
 
   {
     files: [getFilesGlob(getTSXExtensions())],
