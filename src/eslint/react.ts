@@ -19,6 +19,7 @@ const hasReactA11yPlugin = !!getInstalledPackage('eslint-plugin-jsx-a11y');
 const hasReactHooksPlugin = !!getInstalledPackage('eslint-plugin-react-hooks');
 const hasMobxPlugin = !!getInstalledPackage('eslint-plugin-mobx');
 const hasConfigAirbnb = !!getInstalledPackage('eslint-config-airbnb');
+const hasTypescriptEslintPlugin = !!getInstalledPackage('typescript-eslint');
 
 delete (globals.browser as any)['AudioWorkletGlobalScope '];
 
@@ -47,13 +48,6 @@ const config: Linter.Config[] = [
   ].map((conf) => ({
     ...conf,
     files: [...(conf.files ?? []), getFilesGlob(getSXExtensions())],
-    settings: {
-      ...conf.settings,
-      react: {
-        ...conf.settings?.react,
-        version: 'detect',
-      },
-    },
     rules: {
       ...conf.rules,
       // 'react/prop-types': 'off',
@@ -92,6 +86,22 @@ const config: Linter.Config[] = [
     },
   })),
 
+  {
+    files: [getFilesGlob(getSXExtensions())],
+    languageOptions: {
+      parserOptions: {
+        ecmaFeatures: {
+          jsx: true,
+        },
+      },
+    },
+    settings: {
+      react: {
+        version: 'detect',
+      },
+    },
+  },
+
   // Redefine again to override react rules.
   eslintPluginPrettierRecommended,
 
@@ -99,7 +109,7 @@ const config: Linter.Config[] = [
     ? [...compat.extends('plugin:mobx/recommended'), { rules: { 'mobx/missing-observer': 'off' } }]
     : []),
 
-  ...(webConfigEnabled
+  ...(webConfigEnabled && hasTypescriptEslintPlugin
     ? (() => {
         let eslintTsConfig = path.join(paths.web.root, eslintTsProject);
         if (!fs.existsSync(eslintTsConfig)) {
@@ -120,15 +130,17 @@ const config: Linter.Config[] = [
       })()
     : []),
 
-  {
-    files: [getFilesGlob(getTSXExtensions())],
-    rules: {
-      ...(hasReactPlugin && {
-        'react/jsx-filename-extension': ['error', { extensions: getSXExtensions() }],
-        'react/require-default-props': 'off',
-      }),
-    },
-  },
+  ...(hasTypescriptEslintPlugin && hasReactPlugin
+    ? [
+        {
+          files: [getFilesGlob(getTSXExtensions())],
+          rules: {
+            'react/jsx-filename-extension': ['error', { extensions: getSXExtensions() }],
+            'react/require-default-props': 'off',
+          },
+        } satisfies Linter.Config,
+      ]
+    : []),
 ];
 
 module.exports = config;
