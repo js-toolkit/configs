@@ -4,7 +4,6 @@ import globals from 'globals';
 import type { Linter } from 'eslint';
 import eslintJs from '@eslint/js';
 import { fixupConfigRules, type FixupConfigArray } from '@eslint/compat';
-import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 import paths, { getFilesGlob, getJSExtensions, getTSExtensions, moduleExtensions } from '../paths';
 import { getInstalledPackage } from '../getInstalledPackage';
 import { eslintTsProject } from './consts';
@@ -17,6 +16,7 @@ const hasConfigStandard = !!getInstalledPackage('eslint-config-standard');
 const hasConfigAirbnbBase = !!getInstalledPackage('eslint-config-airbnb-base');
 const hasJsDocPlugin = !!getInstalledPackage('eslint-plugin-jsdoc');
 const hasTsDocPlugin = !!getInstalledPackage('eslint-plugin-tsdoc');
+const hasPrettierEslintPlugin = !!getInstalledPackage('eslint-plugin-prettier/recommended');
 const hasTypescriptEslintPlugin = !!getInstalledPackage('typescript-eslint');
 const tsconfig =
   hasTypescriptEslintPlugin && fs.existsSync(eslintTsProject) ? eslintTsProject : 'tsconfig.json';
@@ -260,7 +260,7 @@ const config: Linter.Config[] = [
       })()
     : []),
 
-  eslintPluginPrettierRecommended,
+  ...(hasPrettierEslintPlugin ? [require('eslint-plugin-prettier/recommended')] : []),
 
   // Special overrides for TS declaration files
   {

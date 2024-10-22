@@ -5,7 +5,6 @@ import path from 'path';
 import globals from 'globals';
 import type { Linter } from 'eslint';
 import { fixupConfigRules, type FixupConfigArray } from '@eslint/compat';
-import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 import buildConfig from '../buildConfig';
 import paths, { getFilesGlob, getSXExtensions, getTSXExtensions } from '../paths';
 import { getInstalledPackage } from '../getInstalledPackage';
@@ -20,6 +19,7 @@ const hasReactHooksPlugin = !!getInstalledPackage('eslint-plugin-react-hooks');
 const hasMobxPlugin = !!getInstalledPackage('eslint-plugin-mobx');
 const hasConfigAirbnb = !!getInstalledPackage('eslint-config-airbnb');
 const hasTypescriptEslintPlugin = !!getInstalledPackage('typescript-eslint');
+const hasPrettierEslintPlugin = !!getInstalledPackage('eslint-plugin-prettier/recommended');
 
 delete (globals.browser as any)['AudioWorkletGlobalScope '];
 
@@ -32,8 +32,6 @@ const filterAirbnbRules = (config: 'react' | 'react-a11y'): FixupConfigArray => 
 };
 
 const config: Linter.Config[] = [
-  // ...require('./common'),
-
   {
     languageOptions: {
       globals: {
@@ -43,67 +41,81 @@ const config: Linter.Config[] = [
   },
 
   ...[
-    ...(hasReactPlugin ? [require('eslint-plugin-react/configs/recommended')] : []),
+    hasReactPlugin && require('eslint-plugin-react/configs/recommended'),
     ...(hasReactPlugin && hasConfigAirbnb ? filterAirbnbRules('react') : []),
-  ].map((conf) => ({
-    ...conf,
-    files: [...(conf.files ?? []), getFilesGlob(getSXExtensions())],
-    rules: {
-      ...conf.rules,
-      // 'react/prop-types': 'off',
-      // 'react/sort-comp': 'off',
-      // 'react/display-name': 'off',
-      // 'react/destructuring-assignment': ['error', 'always', { ignoreClassFields: true }],
-      // 'react/jsx-filename-extension': ['error', { extensions: getSXExtensions() }],
-      // 'react/jsx-wrap-multilines': 'off',
-      'react/jsx-props-no-spreading': 'off',
-      // 'react/jsx-indent': 'off',
-      // 'react/function-component-definition': [
-      //   'error',
-      //   { namedComponents: 'function-declaration', unnamedComponents: 'arrow-function' },
-      // ],
-    },
-  })),
-
-  ...[
-    ...(hasReactA11yPlugin ? [require('eslint-plugin-jsx-a11y').flatConfigs.recommended] : []),
-    ...(hasReactA11yPlugin && hasConfigAirbnb ? filterAirbnbRules('react-a11y') : []),
-  ].map((conf) => ({
-    ...conf,
-    files: [...(conf.files ?? []), getFilesGlob(getSXExtensions())],
-    rules: {
-      ...conf.rules,
-      'jsx-a11y/anchor-is-valid': ['error', { specialLink: ['to'] }],
-      'jsx-a11y/label-has-for': ['error', { allowChildren: true }],
-    },
-  })),
-
-  ...(hasReactHooksPlugin ? compat.extends('plugin:react-hooks/recommended') : []).map((conf) => ({
-    ...conf,
-    rules: {
-      ...conf.rules,
-      'react-hooks/exhaustive-deps': 'error',
-    },
-  })),
-
-  {
-    files: [getFilesGlob(getSXExtensions())],
-    languageOptions: {
-      parserOptions: {
-        ecmaFeatures: {
-          jsx: true,
+    hasReactPlugin && require('eslint-plugin-react/configs/jsx-runtime'),
+    hasReactPlugin && {
+      // languageOptions: {
+      //   parserOptions: {
+      //     ecmaFeatures: {
+      //       jsx: true,
+      //     },
+      //   },
+      // },
+      settings: {
+        react: {
+          version: 'detect',
         },
       },
-    },
-    settings: {
-      react: {
-        version: 'detect',
+      rules: {
+        // 'react/prop-types': 'off',
+        // 'react/sort-comp': 'off',
+        // 'react/display-name': 'off',
+        // 'react/destructuring-assignment': ['error', 'always', { ignoreClassFields: true }],
+        // 'react/jsx-filename-extension': ['error', { extensions: getSXExtensions() }],
+        // 'react/jsx-wrap-multilines': 'off',
+        'react/jsx-props-no-spreading': 'off',
+        // 'react/jsx-indent': 'off',
+        // 'react/function-component-definition': [
+        //   'error',
+        //   { namedComponents: 'function-declaration', unnamedComponents: 'arrow-function' },
+        // ],
       },
     },
-  },
+  ]
+    .filter(Boolean)
+    .flatMap((conf) => ({
+      ...conf,
+      files: [...(conf.files ?? []), getFilesGlob(getSXExtensions())],
+    })),
+
+  ...(hasReactPlugin && hasTypescriptEslintPlugin
+    ? [
+        {
+          files: [getFilesGlob(getTSXExtensions())],
+          rules: {
+            'react/jsx-filename-extension': ['error', { extensions: getSXExtensions() }],
+            'react/require-default-props': 'off',
+          },
+        } satisfies Linter.Config,
+      ]
+    : []),
+
+  ...[
+    hasReactA11yPlugin && require('eslint-plugin-jsx-a11y').flatConfigs.recommended,
+    ...(hasReactA11yPlugin && hasConfigAirbnb ? filterAirbnbRules('react-a11y') : []),
+    hasReactA11yPlugin && {
+      rules: {
+        'jsx-a11y/anchor-is-valid': ['error', { specialLink: ['to'] }],
+        'jsx-a11y/label-has-for': ['error', { allowChildren: true }],
+      },
+    },
+  ]
+    .filter(Boolean)
+    .map((conf) => ({
+      ...conf,
+      files: [...(conf.files ?? []), getFilesGlob(getSXExtensions())],
+    })),
+
+  ...(hasReactHooksPlugin
+    ? [
+        ...compat.extends('plugin:react-hooks/recommended'),
+        { rules: { 'react-hooks/exhaustive-deps': 'error' } },
+      ]
+    : []),
 
   // Redefine again to override react rules.
-  eslintPluginPrettierRecommended,
+  ...(hasPrettierEslintPlugin ? [require('eslint-plugin-prettier/recommended')] : []),
 
   ...(hasMobxPlugin
     ? [...compat.extends('plugin:mobx/recommended'), { rules: { 'mobx/missing-observer': 'off' } }]
@@ -128,18 +140,6 @@ const config: Linter.Config[] = [
           } satisfies Linter.Config,
         ];
       })()
-    : []),
-
-  ...(hasTypescriptEslintPlugin && hasReactPlugin
-    ? [
-        {
-          files: [getFilesGlob(getTSXExtensions())],
-          rules: {
-            'react/jsx-filename-extension': ['error', { extensions: getSXExtensions() }],
-            'react/require-default-props': 'off',
-          },
-        } satisfies Linter.Config,
-      ]
     : []),
 ];
 
