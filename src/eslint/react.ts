@@ -74,7 +74,7 @@ const config: Linter.Config[] = [
     },
   ]
     .filter(Boolean)
-    .flatMap((conf) => ({
+    .map((conf) => ({
       ...conf,
       files: [...(conf.files ?? []), getFilesGlob(getSXExtensions())],
     })),
