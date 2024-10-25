@@ -19,7 +19,7 @@
     "minor-publish": "yarn run build && yarn run minify && npm version minor --no-workspaces-update -m 'v%s' && yarn run copy && cd ./dist && npm publish --access public && git push --follow-tags"
   },
   "devDependencies": {
-    "@babel/eslint-parser": "^7.25.8",
+    "@babel/eslint-parser": "^7.25.9",
     "@eslint/compat": "^1.2.1",
     "@eslint/eslintrc": "^3.1.0",
     "@eslint/js": "^9.13.0",
@@ -37,10 +37,10 @@
     "eslint-plugin-jsx-a11y": "^6.10.1",
     "eslint-plugin-prettier": "^5.2.1",
     "eslint-plugin-promise": "^7.1.0",
-    "eslint-plugin-react": "^7.37.1",
+    "eslint-plugin-react": "^7.37.2",
     "eslint-plugin-react-hooks": "5.1.0-rc-fb9a90fa48-20240614",
     "globals": "^15.11.0",
-    "html-webpack-plugin": "^5.6.2",
+    "html-webpack-plugin": "^5.6.3",
     "prettier": "^3.3.3",
     "rimraf": "^6.0.1",
     "typescript": "^5.6.3",
