@@ -79,7 +79,12 @@ const config: Linter.Config[] = [
       globals: {
         ...globals.node,
       },
-      ...(hasBabelParser && { parser: require('@babel/eslint-parser') }),
+      ...(hasBabelParser && {
+        parser: require('@babel/eslint-parser'),
+        parserOptions: {
+          requireConfigFile: false,
+        },
+      }),
     },
 
     linterOptions: {
