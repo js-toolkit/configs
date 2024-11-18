@@ -257,6 +257,8 @@ const config: Linter.Config[] = [
               { allow: ['private-constructors', 'protected-constructors', 'decoratedFunctions'] },
             ],
 
+            '@typescript-eslint/no-unused-expressions': ['error', { allowShortCircuit: true }],
+
             ...(hasTsDocPlugin && {
               'tsdoc/syntax': 'warn',
             }),
