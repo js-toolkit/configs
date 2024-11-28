@@ -128,6 +128,7 @@ const config: Linter.Config[] = [
       'no-unused-expressions': ['error', { allowShortCircuit: true }],
       'no-plusplus': ['error', { allowForLoopAfterthoughts: true }],
       'no-param-reassign': ['error', { props: false }],
+      'no-promise-executor-return': ['error', { allowVoid: true }],
 
       'no-restricted-exports': [
         'error',
