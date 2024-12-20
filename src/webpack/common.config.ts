@@ -5,6 +5,7 @@ import buildConfig from '../buildConfig';
 import paths, { getJSExtensions, moduleExtensions } from '../paths';
 import { TsLoaderType, getTsCheckerPlugin } from './loaders';
 import nodeRequire from './nodeRequire';
+import type { OptionalToUndefined } from './types';
 
 export interface CommonConfigOptions extends OptionalToUndefined<webpack.Configuration> {
   outputPath: string;
