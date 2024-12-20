@@ -49,7 +49,7 @@ export interface AppEnvironment {
   ifProd<T>(prodModeValue: ValueOrGetter<T>, elseValue: ValueOrGetter<T>): T;
 }
 
-function parseJson(value?: string | undefined): EnvVarType {
+function parseJson(value?: string): EnvVarType {
   if (value == null) return value;
   try {
     return JSON.parse(value) as EnvVarType;

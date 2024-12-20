@@ -6,6 +6,7 @@ import buildConfig from '../buildConfig';
 import commonConfig from './common.config';
 import { webDefaultRules, type WebConfigOptions, prepareRules } from './web.config';
 import { TsLoaderType, css, cssNodeModules, getTsLoader } from './loaders';
+import type { RequiredStrict } from './types';
 
 export const nodeDefaultRules: Pick<typeof webDefaultRules, 'jsRule' | 'tsBaseRule'> = {
   jsRule: {

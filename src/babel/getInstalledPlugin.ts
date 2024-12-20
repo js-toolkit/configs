@@ -2,7 +2,7 @@ import { getInstalledPackage } from '../getInstalledPackage';
 
 export function getInstalledPlugin(
   name: string,
-  options?: AnyObject | undefined
+  options?: AnyObject
 ): string | [string, AnyObject] | undefined {
   const plugin = getInstalledPackage(name);
   if (!plugin) return undefined;

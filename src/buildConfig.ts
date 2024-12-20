@@ -26,7 +26,6 @@ export function resolveConfigPath(moduleNames = ['build.config'], paths = [proce
   return module;
 }
 
-// eslint-disable-next-line @typescript-eslint/ban-types
 function merge<T1 extends AnyObject, T2 extends Partial<T1>>(
   defaults: T1,
   nextValues: T2
@@ -61,7 +60,7 @@ export function getBuildConfig(configPath = resolveConfigPath()): BuildConfig {
   const buildConfig: BuildConfig =
     process.env.buildConfig ||
     (configPath
-      ? // eslint-disable-next-line @typescript-eslint/no-var-requires
+      ? // eslint-disable-next-line @typescript-eslint/no-require-imports
         merge(buildConfigDefaults, require(configPath))
       : ({
           ...buildConfigDefaults,

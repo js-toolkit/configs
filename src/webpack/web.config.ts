@@ -15,6 +15,7 @@ import {
 } from './loaders';
 import nodeRequire from './nodeRequire';
 import { getInstalledPackage } from '../getInstalledPackage';
+import type { RequiredStrict } from './types';
 
 // https://webpack.js.org/guides/asset-modules/
 
