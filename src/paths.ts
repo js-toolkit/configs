@@ -44,6 +44,11 @@ export function getTSXExtensions(withStar = false): string[] {
   return withStar ? addStar(list) : list;
 }
 
+export function getNonSXExtensions(withStar = false): string[] {
+  const list = moduleExtensions.filter((ext) => !ext.endsWith('sx'));
+  return withStar ? addStar(list) : list;
+}
+
 export function getPaths(baseDir = process.cwd(), buildConfig = getBuildConfig()) {
   return Object.freeze({
     root: baseDir,

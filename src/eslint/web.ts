@@ -6,7 +6,12 @@ import globals from 'globals';
 import type { Linter } from 'eslint';
 import { fixupConfigRules, type FixupConfigArray } from '@eslint/compat';
 import buildConfig from '../buildConfig';
-import paths, { getFilesGlob, getSXExtensions, getTSXExtensions } from '../paths';
+import paths, {
+  getFilesGlob,
+  getNonSXExtensions,
+  getSXExtensions,
+  getTSXExtensions,
+} from '../paths';
 import { getInstalledPackage } from '../getInstalledPackage';
 import { eslintTsProject } from './consts';
 import { compat } from './utils';
@@ -16,6 +21,7 @@ const webConfigEnabled = buildConfig.web && fs.existsSync(paths.web.root);
 const hasReactPlugin = !!getInstalledPackage('eslint-plugin-react');
 const hasReactA11yPlugin = !!getInstalledPackage('eslint-plugin-jsx-a11y');
 const hasReactHooksPlugin = !!getInstalledPackage('eslint-plugin-react-hooks');
+const hasWCPlugin = !!getInstalledPackage('eslint-plugin-wc');
 const hasMobxPlugin = !!getInstalledPackage('eslint-plugin-mobx');
 const hasConfigAirbnb = !!getInstalledPackage('eslint-config-airbnb');
 const hasTypescriptEslintPlugin = !!getInstalledPackage('typescript-eslint');
@@ -113,6 +119,23 @@ const config: Linter.Config[] = [
         { rules: { 'react-hooks/exhaustive-deps': 'error' } },
       ]
     : []),
+
+  ...(hasWCPlugin
+    ? [
+        require('eslint-plugin-wc').configs['flat/best-practice'],
+        {
+          settings: {
+            wc: {
+              elementBaseClasses: ['HTMLElement'],
+            },
+          },
+        },
+      ]
+    : []
+  ).map((conf) => ({
+    ...conf,
+    files: [...(conf.files ?? []), getFilesGlob(getNonSXExtensions())],
+  })),
 
   // Redefine again to override react rules.
   ...(hasPrettierEslintPlugin ? [require('eslint-plugin-prettier/recommended')] : []),
