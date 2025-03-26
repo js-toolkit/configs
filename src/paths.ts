@@ -8,9 +8,13 @@ export const moduleExtensions = [
   '.cjs',
   '.jsx',
   '.mjsx',
+  '.cjsx',
   '.ts',
+  '.mts',
+  '.cts',
   '.tsx',
   '.mtsx',
+  '.ctsx',
   '.d.ts',
 ];
 
