@@ -201,6 +201,9 @@ const config: Linter.Config[] = [
           languageOptions: {
             parserOptions: {
               project: tsconfig,
+              projectService: {
+                defaultProject: tsconfig,
+              },
             },
           },
 
