@@ -1,6 +1,6 @@
 import { getInstalledPlugin } from './getInstalledPlugin';
 
-module.exports = {
+const config = {
   presets: [getInstalledPlugin('@babel/preset-env', { loose: true })].filter((p) => !!p),
   // https://babeljs.io/docs/assumptions#migrating-from-babelpreset-envs-loose-and-spec-modes
   // assumptions: {
@@ -29,3 +29,6 @@ module.exports = {
     // Other plugins already included in preset.
   ].filter((p) => !!p),
 };
+
+module.exports = config;
+export default config;

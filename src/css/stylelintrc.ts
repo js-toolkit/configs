@@ -1,7 +1,7 @@
 import path from 'path';
 import paths from '../paths';
 
-module.exports = {
+const config = {
   extends: ['stylelint-config-standard', 'stylelint-config-css-modules'],
 
   plugins: ['stylelint-prettier'],
@@ -22,3 +22,6 @@ module.exports = {
     'selector-descendant-combinator-no-non-space': null,
   },
 };
+
+module.exports = config;
+export default config;

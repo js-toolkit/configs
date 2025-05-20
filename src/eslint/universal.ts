@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 import fs from 'fs';
 import path from 'path';
 import type { Linter } from 'eslint';
@@ -37,7 +38,7 @@ const config: Linter.Config[] = [
           files: filesGlobs.web,
           rules: {},
         },
-        ...require('./react'),
+        ...require('./web'),
       ]
     : []),
 
@@ -47,7 +48,7 @@ const config: Linter.Config[] = [
           files: filesGlobs.node,
           rules: {},
         },
-        ...require('./react'),
+        ...require('./web'),
         ...require('./node'),
       ]
     : []),
@@ -89,3 +90,4 @@ const config: Linter.Config[] = [
 ];
 
 module.exports = config;
+export default config;
