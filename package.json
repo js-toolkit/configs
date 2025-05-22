@@ -4,7 +4,6 @@
   "description": "Preconfigured configurations",
   "author": "VZH",
   "license": "MIT",
-  "main": "./",
   "repository": {
     "type": "git",
     "url": "https://github.com/js-toolkit/configs"
