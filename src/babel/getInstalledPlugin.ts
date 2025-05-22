@@ -1,4 +1,5 @@
 import { getInstalledPackage } from '../getInstalledPackage';
+import type { AnyObject } from '../types';
 
 export function getInstalledPlugin(
   name: string,

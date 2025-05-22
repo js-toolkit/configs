@@ -1,3 +1,5 @@
+import type { AnyObject } from './types';
+
 export type NodeEnv = 'development' | 'test' | 'production';
 
 export type EnvVarType = string | number | boolean | undefined;
@@ -92,7 +94,6 @@ export function getAppEnvironment(): AppEnvironment {
     envStringify() {
       const stringified = Object.keys(this.raw).reduce((env, key) => {
         const prop = key as keyof CustomAppEnvVars;
-        // eslint-disable-next-line no-param-reassign
         env[key] = JSON.stringify(this.raw[prop]);
         return env;
       }, {} as AnyObject);

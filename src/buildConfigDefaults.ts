@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 
+import type { AnyObject } from './types';
+
 // todo: Сделать типы web, node, common и только один тип для файла конфигурации?
 
 export function getWebAppConfig(root = 'web') {

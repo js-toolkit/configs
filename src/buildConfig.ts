@@ -1,4 +1,5 @@
 import buildConfigDefaults, { type BuildConfigDefaults } from './buildConfigDefaults';
+import type { AnyObject } from './types';
 
 export interface BuildConfig extends Pick<BuildConfigDefaults, 'output' | 'nodeModules'> {
   web?: BuildConfigDefaults['web'] | undefined;

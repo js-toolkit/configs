@@ -4,6 +4,7 @@ import globals from 'globals';
 import type { Linter } from 'eslint';
 import eslintJs from '@eslint/js';
 import { fixupConfigRules, type FixupConfigArray } from '@eslint/compat';
+import type { AnyObject } from '../types';
 import paths, { getFilesGlob, getJSExtensions, getTSExtensions, moduleExtensions } from '../paths';
 import { getInstalledPackage } from '../getInstalledPackage';
 import { eslintTsProject } from './consts';
