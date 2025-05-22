@@ -2,7 +2,7 @@
   "extends": "./common.tsconfig.json",
   "compilerOptions": {
     "target": "ES2015",
-    "module": "ESNext",
+    "module": "Preserve",
     "moduleResolution": "bundler"
   }
 }

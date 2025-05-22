@@ -1,5 +1,4 @@
 {
-  "extends": "../js/common.jsconfig.json",
   "compilerOptions": {
     "target": "ESNext",
     "module": "ESNext",
