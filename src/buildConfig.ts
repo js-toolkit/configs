@@ -13,7 +13,8 @@ export interface BuildConfig extends Pick<BuildConfigDefaults, 'output' | 'nodeM
 
 export function resolveConfigPath(moduleNames = ['build.config'], paths = [process.cwd()]): string {
   let module = '';
-  for (let i = 0, name = moduleNames[i]; i < moduleNames.length; i += 1) {
+  const { length } = moduleNames;
+  for (let i = 0, name = moduleNames[i]; i < length; i += 1) {
     try {
       // With node 12 it is needed to use prefix './'
       module = require.resolve(`./${name}`, { paths });
