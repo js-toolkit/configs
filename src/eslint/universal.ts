@@ -65,7 +65,9 @@ const config: Linter.Config[] = [
               const tsconfig = path.join(paths.shared.root, eslintTsProject);
               if (fs.existsSync(tsconfig)) return tsconfig;
               if (fs.existsSync(paths.shared.tsconfig)) return paths.shared.tsconfig;
-              return fs.existsSync(eslintTsProject) ? eslintTsProject : 'tsconfig.json';
+              return path.resolve(
+                fs.existsSync(eslintTsProject) ? eslintTsProject : 'tsconfig.json'
+              );
             })(),
           },
           rules: {},

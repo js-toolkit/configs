@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 import fs from 'fs';
+import path from 'path';
 import globals from 'globals';
 import type { Linter } from 'eslint';
 import eslintJs from '@eslint/js';
@@ -19,8 +20,9 @@ const hasJsDocPlugin = !!getInstalledPackage('eslint-plugin-jsdoc');
 const hasTsDocPlugin = !!getInstalledPackage('eslint-plugin-tsdoc');
 const hasPrettierEslintPlugin = !!getInstalledPackage('eslint-plugin-prettier/recommended');
 const hasTypescriptEslintPlugin = !!getInstalledPackage('typescript-eslint');
-const tsconfig =
-  hasTypescriptEslintPlugin && fs.existsSync(eslintTsProject) ? eslintTsProject : 'tsconfig.json';
+const tsconfig = path.resolve(
+  hasTypescriptEslintPlugin && fs.existsSync(eslintTsProject) ? eslintTsProject : 'tsconfig.json'
+);
 
 const filterStandardRules = (): { readonly rules: Readonly<Linter.RulesRecord> } => {
   const hasNodePlugin = !!getInstalledPackage('eslint-plugin-n');

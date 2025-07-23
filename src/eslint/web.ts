@@ -159,7 +159,7 @@ const config: Linter.Config[] = [
         return [
           {
             files: [getFilesGlob(getTSXExtensions())],
-            languageOptions: { parserOptions: { project: eslintTsConfig } },
+            languageOptions: { parserOptions: { project: path.resolve(eslintTsConfig) } },
           } satisfies Linter.Config,
         ];
       })()

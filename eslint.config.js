@@ -1,3 +1,4 @@
+const path = require('path');
 const eslintJs = require('@eslint/js');
 const { FlatCompat } = require('@eslint/eslintrc');
 const { fixupConfigRules } = require('@eslint/compat');
@@ -83,7 +84,10 @@ module.exports = [
     languageOptions: {
       // parser: '@typescript-eslint/parser',
       parserOptions: {
-        project: './tsconfig.json',
+        project: path.resolve('./tsconfig.json'),
+        projectService: {
+          defaultProject: path.resolve('./tsconfig.json'),
+        },
       },
     },
 
@@ -97,7 +101,7 @@ module.exports = [
           extensions: ['.ts', '.tsx', '.js', '.jsx'],
         },
         typescript: {
-          project: './tsconfig.json',
+          project: path.resolve('./tsconfig.json'),
         },
       },
     },
