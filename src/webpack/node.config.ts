@@ -1,4 +1,4 @@
-import type { Configuration } from 'webpack';
+import type { Configuration, ExternalItem } from 'webpack';
 import webpackNodeExternals from 'webpack-node-externals';
 import appEnv from '../appEnv';
 import paths from '../paths';
@@ -154,7 +154,7 @@ export default ({
 
     // http://jlongster.com/Backend-Apps-with-Webpack--Part-I
     externals: [
-      webpackNodeExternals(nodeExternalsOptions),
+      webpackNodeExternals(nodeExternalsOptions) as ExternalItem,
       ...((restOptions.externals &&
         (Array.isArray(restOptions.externals) ? restOptions.externals : [restOptions.externals])) ||
         []),
