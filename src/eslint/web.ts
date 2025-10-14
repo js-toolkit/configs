@@ -115,7 +115,7 @@ const config: Linter.Config[] = [
 
   ...(hasReactHooksPlugin
     ? [
-        ...require('eslint-plugin-react-hooks').configs['recommended-latest'],
+        require('eslint-plugin-react-hooks').configs.flat['recommended-latest'],
         { rules: { 'react-hooks/exhaustive-deps': 'error' } },
       ]
     : []),
