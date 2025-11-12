@@ -37,10 +37,18 @@ const config: Linter.Config[] = [
         if (!eslintTsConfig) {
           return [];
         }
+        const tsconfig = path.resolve(eslintTsConfig);
         return [
           {
             files: [getFilesGlob(getTSExtensions())],
-            languageOptions: { parserOptions: { project: path.resolve(eslintTsConfig) } },
+            languageOptions: {
+              parserOptions: {
+                // project: tsconfig,
+                projectService: {
+                  defaultProject: tsconfig,
+                },
+              },
+            },
           } satisfies Linter.Config,
         ];
       })()

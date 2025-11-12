@@ -61,14 +61,16 @@ const config: Linter.Config[] = [
           //   'shared-node-browser': true,
           // },
           parserOptions: {
-            project: (() => {
-              const tsconfig = path.join(paths.shared.root, eslintTsProject);
-              if (fs.existsSync(tsconfig)) return tsconfig;
-              if (fs.existsSync(paths.shared.tsconfig)) return paths.shared.tsconfig;
-              return path.resolve(
-                fs.existsSync(eslintTsProject) ? eslintTsProject : 'tsconfig.json'
-              );
-            })(),
+            projectService: {
+              defaultProject: (() => {
+                const tsconfig = path.join(paths.shared.root, eslintTsProject);
+                if (fs.existsSync(tsconfig)) return tsconfig;
+                if (fs.existsSync(paths.shared.tsconfig)) return paths.shared.tsconfig;
+                return path.resolve(
+                  fs.existsSync(eslintTsProject) ? eslintTsProject : 'tsconfig.json'
+                );
+              })(),
+            },
           },
           rules: {},
         },
