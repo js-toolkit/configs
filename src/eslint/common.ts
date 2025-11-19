@@ -349,6 +349,14 @@ const config: Linter.Config[] = [
 
             '@typescript-eslint/no-unused-expressions': ['error', { allowShortCircuit: true }],
 
+            '@typescript-eslint/prefer-nullish-coalescing': [
+              'error',
+              {
+                ignorePrimitives: { string: true },
+                ignoreMixedLogicalExpressions: true,
+              },
+            ],
+
             ...(hasImportXPlugin && {
               'import-x/named': 'off',
             }),
