@@ -22,6 +22,7 @@ const hasReactPlugin = !!getInstalledPackage('eslint-plugin-react');
 const hasReactA11yPlugin = !!getInstalledPackage('eslint-plugin-jsx-a11y');
 const hasReactHooksPlugin = !!getInstalledPackage('eslint-plugin-react-hooks');
 const hasWCPlugin = !!getInstalledPackage('eslint-plugin-wc');
+const hasLitPlugin = !!getInstalledPackage('eslint-plugin-lit');
 const hasMobxPlugin = !!getInstalledPackage('eslint-plugin-mobx');
 const hasConfigAirbnb = !!getInstalledPackage('eslint-config-airbnb');
 const hasTypescriptEslintPlugin = !!getInstalledPackage('typescript-eslint');
@@ -78,6 +79,15 @@ const config: Linter.Config[] = [
         // ],
       },
     },
+
+    hasReactA11yPlugin && require('eslint-plugin-jsx-a11y').flatConfigs.recommended,
+    ...(hasReactA11yPlugin && hasConfigAirbnb ? filterAirbnbRules('react-a11y') : []),
+    hasReactA11yPlugin && {
+      rules: {
+        'jsx-a11y/anchor-is-valid': ['error', { specialLink: ['to'] }],
+        'jsx-a11y/label-has-for': ['error', { allowChildren: true }],
+      },
+    },
   ]
     .filter(Boolean)
     .map((conf) => ({
@@ -97,22 +107,6 @@ const config: Linter.Config[] = [
       ]
     : []),
 
-  ...[
-    hasReactA11yPlugin && require('eslint-plugin-jsx-a11y').flatConfigs.recommended,
-    ...(hasReactA11yPlugin && hasConfigAirbnb ? filterAirbnbRules('react-a11y') : []),
-    hasReactA11yPlugin && {
-      rules: {
-        'jsx-a11y/anchor-is-valid': ['error', { specialLink: ['to'] }],
-        'jsx-a11y/label-has-for': ['error', { allowChildren: true }],
-      },
-    },
-  ]
-    .filter(Boolean)
-    .map((conf) => ({
-      ...conf,
-      files: [...(conf.files ?? []), getFilesGlob(getSXExtensions())],
-    })),
-
   ...(hasReactHooksPlugin
     ? [
         require('eslint-plugin-react-hooks').configs.flat['recommended-latest'],
@@ -120,22 +114,29 @@ const config: Linter.Config[] = [
       ]
     : []),
 
-  ...(hasWCPlugin
-    ? [
-        require('eslint-plugin-wc').configs['flat/best-practice'],
-        {
-          settings: {
-            wc: {
-              elementBaseClasses: ['HTMLElement'],
-            },
-          },
+  ...[
+    hasWCPlugin && require('eslint-plugin-wc').configs['flat/best-practice'],
+    hasWCPlugin && {
+      settings: {
+        wc: {
+          elementBaseClasses: ['HTMLElement'],
         },
-      ]
-    : []
-  ).map((conf) => ({
-    ...conf,
-    files: [...(conf.files ?? []), getFilesGlob(getNonSXExtensions())],
-  })),
+      },
+    },
+    hasLitPlugin && require('eslint-plugin-lit').configs['flat/recommended'],
+    hasLitPlugin && {
+      settings: {
+        lit: {
+          elementBaseClasses: ['LitElement'],
+        },
+      },
+    },
+  ]
+    .filter(Boolean)
+    .map((conf) => ({
+      ...conf,
+      files: [...(conf.files ?? []), getFilesGlob(getNonSXExtensions())],
+    })),
 
   // Redefine again to override react rules.
   ...(hasPrettierEslintPlugin ? [require('eslint-plugin-prettier/recommended')] : []),
