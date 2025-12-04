@@ -265,6 +265,7 @@ const config: Linter.Config[] = [
               // project: tsconfig,
               projectService: {
                 defaultProject: tsconfig,
+                allowDefaultProject: ['*.config.ts', '*.config.mts'],
               },
             },
           },
