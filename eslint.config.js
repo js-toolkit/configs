@@ -90,7 +90,6 @@ module.exports = [
     languageOptions: {
       // parser: '@typescript-eslint/parser',
       parserOptions: {
-        // project: path.resolve('./tsconfig.json'),
         projectService: {
           defaultProject: path.resolve('./tsconfig.json'),
         },

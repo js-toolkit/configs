@@ -1,20 +1,18 @@
-import fs from 'fs';
-import path from 'path';
+// import fs from 'fs';
+// import path from 'path';
 import type { Linter } from 'eslint';
-import buildConfig from '../buildConfig';
-import paths, { getFilesGlob, getTSExtensions } from '../paths';
-import { eslintTsProject } from './consts';
+// import buildConfig from '../buildConfig';
+// import paths, { getFilesGlob, getTSExtensions } from '../paths';
+// import { eslintTsProject } from './consts';
 
-const nodeConfigEnabled = buildConfig.node && fs.existsSync(paths.node.root);
+// const nodeConfigEnabled = buildConfig.node && fs.existsSync(paths.node.root);
 
 const config: Linter.Config[] = [
   // ...require('./common'),
-
   // {
   //   env: {
   //     node: true,
   //   },
-
   //   // settings: {
   //   //   'import/resolver': {
   //   //     node: {}, // Add priority
@@ -24,35 +22,33 @@ const config: Linter.Config[] = [
   //   //   },
   //   // },
   // },
-
-  ...(nodeConfigEnabled
-    ? (() => {
-        let eslintTsConfig = path.join(paths.node.root, eslintTsProject);
-        if (!fs.existsSync(eslintTsConfig)) {
-          eslintTsConfig = paths.node.tsconfig;
-        }
-        if (!fs.existsSync(eslintTsConfig)) {
-          eslintTsConfig = '';
-        }
-        if (!eslintTsConfig) {
-          return [];
-        }
-        const tsconfig = path.resolve(eslintTsConfig);
-        return [
-          {
-            files: [getFilesGlob(getTSExtensions())],
-            languageOptions: {
-              parserOptions: {
-                // project: tsconfig,
-                projectService: {
-                  defaultProject: tsconfig,
-                },
-              },
-            },
-          } satisfies Linter.Config,
-        ];
-      })()
-    : []),
+  // ...(nodeConfigEnabled
+  //   ? (() => {
+  //       let eslintTsConfig = path.join(paths.node.root, eslintTsProject);
+  //       if (!fs.existsSync(eslintTsConfig)) {
+  //         eslintTsConfig = paths.node.tsconfig;
+  //       }
+  //       if (!fs.existsSync(eslintTsConfig)) {
+  //         eslintTsConfig = '';
+  //       }
+  //       if (!eslintTsConfig) {
+  //         return [];
+  //       }
+  //       const tsconfig = path.resolve(eslintTsConfig);
+  //       return [
+  //         {
+  //           files: [getFilesGlob(getTSExtensions())],
+  //           languageOptions: {
+  //             parserOptions: {
+  //               projectService: {
+  //                 defaultProject: tsconfig,
+  //               },
+  //             },
+  //           },
+  //         } satisfies Linter.Config,
+  //       ];
+  //     })()
+  //   : []),
 ];
 
 module.exports = config;

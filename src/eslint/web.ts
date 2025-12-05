@@ -1,22 +1,22 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-require-imports */
-import fs from 'fs';
-import path from 'path';
+// import fs from 'fs';
+// import path from 'path';
 import globals from 'globals';
 import type { Linter } from 'eslint';
 import { fixupConfigRules, type FixupConfigArray } from '@eslint/compat';
-import buildConfig from '../buildConfig';
-import paths, {
-  getFilesGlob,
+// import buildConfig from '../buildConfig';
+import {
+  /* paths, */ getFilesGlob,
   getNonSXExtensions,
   getSXExtensions,
   getTSXExtensions,
 } from '../paths';
 import { getInstalledPackage } from '../getInstalledPackage';
-import { eslintTsProject } from './consts';
+// import { eslintTsProject } from './consts';
 import { compat } from './utils';
 
-const webConfigEnabled = buildConfig.web && fs.existsSync(paths.web.root);
+// const webConfigEnabled = buildConfig.web && fs.existsSync(paths.web.root);
 
 const hasReactPlugin = !!getInstalledPackage('eslint-plugin-react');
 const hasReactA11yPlugin = !!getInstalledPackage('eslint-plugin-jsx-a11y');
@@ -145,34 +145,33 @@ const config: Linter.Config[] = [
     ? [...compat.extends('plugin:mobx/recommended'), { rules: { 'mobx/missing-observer': 'off' } }]
     : []),
 
-  ...(webConfigEnabled && hasTypescriptEslintPlugin
-    ? (() => {
-        let eslintTsConfig = path.join(paths.web.root, eslintTsProject);
-        if (!fs.existsSync(eslintTsConfig)) {
-          eslintTsConfig = paths.web.tsconfig;
-        }
-        if (!fs.existsSync(eslintTsConfig)) {
-          eslintTsConfig = '';
-        }
-        if (!eslintTsConfig) {
-          return [];
-        }
-        const tsconfig = path.resolve(eslintTsConfig);
-        return [
-          {
-            files: [getFilesGlob(getTSXExtensions())],
-            languageOptions: {
-              parserOptions: {
-                // project: tsconfig,
-                projectService: {
-                  defaultProject: tsconfig,
-                },
-              },
-            },
-          } satisfies Linter.Config,
-        ];
-      })()
-    : []),
+  // ...(webConfigEnabled && hasTypescriptEslintPlugin
+  //   ? (() => {
+  //       let eslintTsConfig = path.join(paths.web.root, eslintTsProject);
+  //       if (!fs.existsSync(eslintTsConfig)) {
+  //         eslintTsConfig = paths.web.tsconfig;
+  //       }
+  //       if (!fs.existsSync(eslintTsConfig)) {
+  //         eslintTsConfig = '';
+  //       }
+  //       if (!eslintTsConfig) {
+  //         return [];
+  //       }
+  //       const tsconfig = path.resolve(eslintTsConfig);
+  //       return [
+  //         {
+  //           files: [getFilesGlob(getTSXExtensions())],
+  //           languageOptions: {
+  //             parserOptions: {
+  //               projectService: {
+  //                 defaultProject: tsconfig,
+  //               },
+  //             },
+  //           },
+  //         } satisfies Linter.Config,
+  //       ];
+  //     })()
+  //   : []),
 ];
 
 module.exports = config;
