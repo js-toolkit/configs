@@ -329,6 +329,7 @@ export function create(cwd: string): Linter.Config[] {
                     : [],
                   require('eslint-plugin-import-x').createNodeResolver({
                     extensions: moduleExtensions,
+                    tsconfig: { configFile: tsconfig },
                   }),
                 ],
               }),
