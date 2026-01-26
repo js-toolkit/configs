@@ -82,10 +82,11 @@ export default ({
             minimizerPlugin === 'terser' &&
               (() => {
                 const options = Array.isArray(minimizerPluginOptions)
-                  ? minimizerPluginOptions.reduce((acc, item) => {
-                      return { ...acc, ...item };
-                    }, {})
-                  : minimizerPluginOptions;
+                  ? (minimizerPluginOptions as readonly Record<string, any>[]).reduce(
+                      (acc, item) => ({ ...acc, ...item }),
+                      {}
+                    )
+                  : (minimizerPluginOptions as Record<string, any>);
                 return new (nodeRequire('terser-webpack-plugin'))({
                   extractComments: false,
                   ...options,
@@ -102,7 +103,7 @@ export default ({
             minimizerPlugin === 'closure' &&
               (() => {
                 const [pluginOptions, compilerOptions] = Array.isArray(minimizerPluginOptions)
-                  ? (minimizerPluginOptions ?? [])
+                  ? ((minimizerPluginOptions as readonly Record<string, any>[]) ?? [])
                   : [minimizerPluginOptions, undefined];
 
                 return new (nodeRequire('closure-webpack-plugin'))(
