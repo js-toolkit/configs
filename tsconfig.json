@@ -1,7 +1,7 @@
 {
   "extends": "./src/ts/common.tsconfig.json",
   "compilerOptions": {
-    "module": "Node16",
+    "module": "node16",
     "moduleResolution": "node16",
     "verbatimModuleSyntax": false,
     "isolatedModules": true,

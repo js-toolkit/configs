@@ -1,3 +1,7 @@
+if (typeof exports !== 'undefined' && !exports.__esModule) {
+  Object.defineProperty(exports, '__esModule', { value: true });
+}
+
 const config = {
   printWidth: 100,
   singleQuote: true,
@@ -7,4 +11,4 @@ const config = {
 };
 
 module.exports = config;
-export default config;
+exports.default = config;

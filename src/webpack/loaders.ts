@@ -66,6 +66,7 @@ export function ts({
         configFile: tsconfig,
         transpileOnly: forkedChecks,
         happyPackMode: useThreadLoader, // use happyPackMode mode to speed-up compilation and reduce errors reported to webpack
+        projectReferences: true,
         ...rest,
         compilerOptions: {
           // disable sourceMap in production by default
