@@ -11,7 +11,7 @@ export interface Options {
 }
 
 export default ({
-  import: importConfig = paths.web.sources ? { path: [paths.web.sources] } : false,
+  import: importConfig = paths.web.sources.length > 0 ? { path: paths.web.sources } : false,
   presetEnv,
   nested = true,
   minimizer = appEnv.prod,

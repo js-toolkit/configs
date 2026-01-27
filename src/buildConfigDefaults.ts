@@ -16,8 +16,8 @@ export function getWebAppConfig(root = 'web') {
 
   return {
     root,
-    sources: 'src',
-    assets: 'src/assets',
+    sources: ['src'],
+    assets: ['src/assets'],
     staticContent: ['public'] as StaticContentOptions,
 
     /** Generating html options. */

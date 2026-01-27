@@ -163,7 +163,7 @@ export default ({
     resolve: {
       ...restOptions.resolve,
       modules: [
-        isUniversal ? paths.web.sources : paths.node.sources,
+        ...(isUniversal ? paths.web.sources : [paths.node.sources]),
         ...((restOptions.resolve && restOptions.resolve.modules) || []),
       ],
       alias: {

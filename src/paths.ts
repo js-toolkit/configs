@@ -90,8 +90,8 @@ export function getPaths(baseDir = process.cwd(), buildConfig = getBuildConfig()
       if (!web) {
         return {
           root: '',
-          sources: '',
-          assets: '',
+          sources: [],
+          assets: [],
           staticContent: [],
           tsconfig: '',
           output: {
@@ -103,8 +103,8 @@ export function getPaths(baseDir = process.cwd(), buildConfig = getBuildConfig()
 
       return {
         root: path.resolve(baseDir, web.root),
-        sources: path.resolve(baseDir, web.root, web.sources),
-        assets: path.resolve(baseDir, web.root, web.assets),
+        sources: web.sources.map((p) => path.resolve(baseDir, web.root, p)),
+        assets: web.assets.map((p) => path.resolve(baseDir, web.root, p)),
         staticContent: web.staticContent.map((item) => {
           const p = typeof item === 'string' ? { path: item } : item;
           return path.isAbsolute(p.path)

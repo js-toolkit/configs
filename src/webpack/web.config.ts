@@ -32,17 +32,17 @@ export const webDefaultRules: Record<
 > = {
   jsRule: {
     test: /\.m?jsx?$/,
-    include: [paths.web.sources, paths.shared.sources].filter((v) => !!v),
+    include: [...paths.web.sources, paths.shared.sources].filter((v) => !!v),
     use: babelLoader(),
   },
   tsBaseRule: {
     test: /\.tsx?$/,
-    include: [paths.web.sources, paths.shared.sources].filter((v) => !!v),
+    include: [...paths.web.sources, paths.shared.sources].filter((v) => !!v),
   },
   cssRule: {
     test: /\.css$/,
     include: [
-      paths.web.sources,
+      ...paths.web.sources,
       // Because this packages are require css-modules.
       // And to avoid duplicating css classes when composes process in the same loaders.
       path.join(paths.nodeModules.root, '@jstoolkit/react-components'),
@@ -68,7 +68,7 @@ export const webDefaultRules: Record<
   },
   svgRule: {
     test: /\.svg$/,
-    include: [paths.web.sources, paths.nodeModules.root],
+    include: [...paths.web.sources, paths.nodeModules.root],
     type: 'asset/inline',
   },
   fontRule: {
@@ -227,7 +227,8 @@ export default ({
     name: webBuildConfig.root,
     target: 'web',
 
-    context: paths.web.sources,
+    // context: paths.web.sources,
+    context: paths.web.root,
 
     // recordsOutputPath: path.join(paths.output.path, 'webpack.client.stats.json'),
 
@@ -257,7 +258,7 @@ export default ({
 
     resolve: {
       ...restOptions.resolve,
-      modules: [paths.web.sources, ...(restOptions.resolve?.modules || [])],
+      modules: [...paths.web.sources, ...(restOptions.resolve?.modules || [])],
       alias: {
         // for universal projects
         ...(paths.shared.sources && { shared: paths.shared.sources }),
@@ -304,7 +305,7 @@ export default ({
             const HtmlWebpackPlugin = nodeRequire(getName());
             return new HtmlWebpackPlugin({
               inject: inject ?? false,
-              template: path.join(paths.web.sources, template),
+              template: path.join(paths.web.root, template),
               ...rest,
             });
           });
@@ -431,7 +432,7 @@ export default ({
         (() => {
           // Exclude root and sources dirs
           const staticContent = paths.web.staticContent.filter((p) => {
-            return p.path !== paths.web.root && p.path !== paths.web.sources;
+            return p.path !== paths.web.root && !paths.web.sources.includes(p.path);
           });
           if (staticContent.length === 0) {
             return undefined;
