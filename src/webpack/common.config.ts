@@ -1,11 +1,11 @@
 import webpack from 'webpack';
 import path from 'path';
+import type { OptionalToUndefined } from '../types';
 import appEnv from '../appEnv';
 import buildConfig from '../buildConfig';
 import paths, { getJSExtensions, moduleExtensions } from '../paths';
 import { TsLoaderType, getTsCheckerPlugin } from './loaders';
 import nodeRequire from './nodeRequire';
-import type { OptionalToUndefined } from './types';
 
 export interface CommonConfigOptions extends OptionalToUndefined<webpack.Configuration> {
   outputPath: string;
@@ -157,10 +157,6 @@ export default ({
             }),
           ]
         : []),
-
-      // Ignore all locale files of moment.js
-      // https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
-      // new webpack.IgnorePlugin({ contextRegExp: /moment$/, resourceRegExp: /^\.\/locale$/ }),
 
       ...(restOptions.plugins || []),
     ],

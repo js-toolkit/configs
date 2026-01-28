@@ -1,17 +1,10 @@
 /* global require module */
 const path = require('path');
 const eslintJs = require('@eslint/js');
-// const { FlatCompat } = require('@eslint/eslintrc');
-// const { fixupConfigRules } = require('@eslint/compat');
 const tsEslint = require('typescript-eslint');
 const eslintPluginImport = require('eslint-plugin-import-x');
 const { createTypeScriptImportResolver } = require('eslint-import-resolver-typescript');
 const eslintPluginPrettierRecommended = require('eslint-plugin-prettier/recommended');
-
-// const compat = new FlatCompat({
-//   // baseDirectory: __dirname,
-//   // recommendedConfig: eslintJs.configs.recommended,
-// });
 
 const filterStandardRules = () => {
   const rules = Object.entries(require('eslint-config-standard').rules).reduce(
@@ -62,25 +55,10 @@ module.exports = [
       'no-console': 'off',
       'class-methods-use-this': 'off',
       'global-require': 'off',
-
-      // 'import/prefer-default-export': 'off',
-      // 'import/named': 'off',
-      // 'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
-      // 'import/no-unresolved': 'off',
-      // 'import/no-dynamic-require': 'off',
-      // 'import/no-import-module-exports': 'off',
-      // 'import/extensions': ['error', 'ignorePackages', { js: 'never', ts: 'never' }],
     },
   },
 
-  // TS
-
   ...tsEslint.configs.recommendedTypeChecked.map((conf) => ({ ...conf, files: ['**/*.{ts,tsx}'] })),
-
-  // ...fixupConfigRules(compat.extends('plugin:import/typescript')).map((conf) => ({
-  //   ...conf,
-  //   files: ['**/*.{ts,tsx}'],
-  // })),
 
   eslintPluginPrettierRecommended,
 
@@ -88,7 +66,6 @@ module.exports = [
     files: ['**/*.{ts,tsx}'],
 
     languageOptions: {
-      // parser: '@typescript-eslint/parser',
       parserOptions: {
         projectService: {
           defaultProject: path.resolve('./tsconfig.json'),

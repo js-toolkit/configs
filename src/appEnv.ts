@@ -75,7 +75,6 @@ export function getAppEnvironment(): AppEnvironment {
     .reduce(
       (env, key) => {
         const prop = key as keyof CustomAppEnvVars;
-        // eslint-disable-next-line no-param-reassign
         env[prop] = parseJson(rawEnv[key]);
         return env;
       },

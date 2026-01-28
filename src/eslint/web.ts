@@ -1,22 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-require-imports */
-// import fs from 'fs';
-// import path from 'path';
 import globals from 'globals';
 import type { Linter } from 'eslint';
 import { fixupConfigRules, type FixupConfigArray } from '@eslint/compat';
-// import buildConfig from '../buildConfig';
-import {
-  /* paths, */ getFilesGlob,
-  getNonSXExtensions,
-  getSXExtensions,
-  getTSXExtensions,
-} from '../paths';
+import { getFilesGlob, getNonSXExtensions, getSXExtensions, getTSXExtensions } from '../paths';
 import { getInstalledPackage } from '../getInstalledPackage';
-// import { eslintTsProject } from './consts';
 import { compat } from './utils';
-
-// const webConfigEnabled = buildConfig.web && fs.existsSync(paths.web.root);
 
 const hasReactPlugin = !!getInstalledPackage('eslint-plugin-react');
 const hasReactA11yPlugin = !!getInstalledPackage('eslint-plugin-jsx-a11y');
@@ -52,31 +41,20 @@ const config: Linter.Config[] = [
     ...(hasReactPlugin && hasConfigAirbnb ? filterAirbnbRules('react') : []),
     hasReactPlugin && require('eslint-plugin-react/configs/jsx-runtime'),
     hasReactPlugin && {
-      // languageOptions: {
-      //   parserOptions: {
-      //     ecmaFeatures: {
-      //       jsx: true,
-      //     },
-      //   },
-      // },
       settings: {
         react: {
           version: 'detect',
         },
       },
       rules: {
-        // 'react/prop-types': 'off',
-        // 'react/sort-comp': 'off',
-        // 'react/display-name': 'off',
-        // 'react/destructuring-assignment': ['error', 'always', { ignoreClassFields: true }],
-        // 'react/jsx-filename-extension': ['error', { extensions: getSXExtensions() }],
-        // 'react/jsx-wrap-multilines': 'off',
         'react/jsx-props-no-spreading': 'off',
-        // 'react/jsx-indent': 'off',
-        // 'react/function-component-definition': [
-        //   'error',
-        //   { namedComponents: 'function-declaration', unnamedComponents: 'arrow-function' },
-        // ],
+        'react/function-component-definition': [
+          'error',
+          {
+            namedComponents: 'function-declaration',
+            unnamedComponents: ['arrow-function', 'function-expression'],
+          },
+        ],
       },
     },
 
@@ -144,34 +122,6 @@ const config: Linter.Config[] = [
   ...(hasMobxPlugin
     ? [...compat.extends('plugin:mobx/recommended'), { rules: { 'mobx/missing-observer': 'off' } }]
     : []),
-
-  // ...(webConfigEnabled && hasTypescriptEslintPlugin
-  //   ? (() => {
-  //       let eslintTsConfig = path.join(paths.web.root, eslintTsProject);
-  //       if (!fs.existsSync(eslintTsConfig)) {
-  //         eslintTsConfig = paths.web.tsconfig;
-  //       }
-  //       if (!fs.existsSync(eslintTsConfig)) {
-  //         eslintTsConfig = '';
-  //       }
-  //       if (!eslintTsConfig) {
-  //         return [];
-  //       }
-  //       const tsconfig = path.resolve(eslintTsConfig);
-  //       return [
-  //         {
-  //           files: [getFilesGlob(getTSXExtensions())],
-  //           languageOptions: {
-  //             parserOptions: {
-  //               projectService: {
-  //                 defaultProject: tsconfig,
-  //               },
-  //             },
-  //           },
-  //         } satisfies Linter.Config,
-  //       ];
-  //     })()
-  //   : []),
 ];
 
 module.exports = config;

@@ -1,14 +1,8 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 import fs from 'fs';
-// import path from 'path';
 import type { Linter } from 'eslint';
 import buildConfig, { type BuildConfig } from '../buildConfig';
 import paths, { getFilesGlob, moduleExtensions } from '../paths';
-// import { eslintTsProject } from './consts';
-
-// function getFilesGlob(basePath: string): string[] {
-//   return moduleExtensions.map((e) => `${basePath || '.'}/**/*${e}`);
-// }
 
 const filesGlobs: Record<keyof Pick<BuildConfig, 'web' | 'node' | 'shared'> | 'other', string[]> = {
   web:
@@ -53,38 +47,12 @@ const config: Linter.Config[] = [
       ]
     : []),
 
-  ...(filesGlobs.shared.length > 0
-    ? [
-        // {
-        //   files: filesGlobs.shared,
-        //   // env: {
-        //   //   'shared-node-browser': true,
-        //   // },
-        //   parserOptions: {
-        //     projectService: {
-        //       defaultProject: (() => {
-        //         const tsconfig = path.join(paths.shared.root, eslintTsProject);
-        //         if (fs.existsSync(tsconfig)) return tsconfig;
-        //         if (fs.existsSync(paths.shared.tsconfig)) return paths.shared.tsconfig;
-        //         return path.resolve(
-        //           fs.existsSync(eslintTsProject) ? eslintTsProject : 'tsconfig.json'
-        //         );
-        //       })(),
-        //     },
-        //   },
-        //   rules: {},
-        // },
-        ...require('./common'),
-      ]
-    : []),
+  ...(filesGlobs.shared.length > 0 ? [...require('./common')] : []),
 
   ...(filesGlobs.other.length > 0
     ? [
         {
           files: filesGlobs.other,
-          // excludedFiles: [...filesGlobs.web, ...filesGlobs.node, ...filesGlobs.shared].filter(
-          //   Boolean
-          // ),
           ignores: [...filesGlobs.web, ...filesGlobs.node, ...filesGlobs.shared].filter(Boolean),
           rules: {},
         },

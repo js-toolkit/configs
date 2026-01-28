@@ -182,9 +182,9 @@ export function cssNodeModules(options: Parameters<typeof css>[0] = {}) {
   return css({
     pattern: '[local]',
     prodPattern: '[local]',
-    // // In some cases have problems when build with modules because webpack requiring urls as modules.
-    // // In this case you need define resolve.extensions in webpack config for those files.
-    // // For example, font urls in katex.css.
+    // In some cases have problems when build with modules because webpack requiring urls as modules.
+    // In this case you need define resolve.extensions in webpack config for those files.
+    // For example, font urls in katex.css.
     modules: false,
     ...options,
   });

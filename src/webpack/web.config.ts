@@ -1,6 +1,7 @@
 import type { Configuration, RuleSetRule, RuleSetUse } from 'webpack';
 import type {} from 'webpack-dev-server';
 import path from 'path';
+import type { AnyObject, RequiredStrict } from '../types';
 import appEnv from '../appEnv';
 import paths from '../paths';
 import buildConfig from '../buildConfig';
@@ -15,8 +16,6 @@ import {
 } from './loaders';
 import nodeRequire from './nodeRequire';
 import { getInstalledPackage } from '../getInstalledPackage';
-import type { AnyObject } from '../types';
-import type { RequiredStrict } from './types';
 
 // https://webpack.js.org/guides/asset-modules/
 
@@ -229,8 +228,6 @@ export default ({
 
     // context: paths.web.sources,
     context: paths.web.root,
-
-    // recordsOutputPath: path.join(paths.output.path, 'webpack.client.stats.json'),
 
     stats: appEnv.ifDev('minimal', undefined),
 

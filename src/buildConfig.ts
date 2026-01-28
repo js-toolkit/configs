@@ -39,8 +39,6 @@ function merge<T1 extends AnyObject, T2 extends Partial<T1>>(
       const p = key as keyof (T1 | T2);
       // Merge arrays
       if (Array.isArray(defaults[p]) || Array.isArray(nextValues[p])) {
-        // Apply empty array if nextValues[p] is empty otherwise merge them
-        // acc[p] = nextValues[p].length === 0 ? nextValues[p] : [...defaults[p], ...nextValues[p]];
         // If at least on value is array just rewrite
         acc[p] = nextValues[p] ?? defaults[p];
       }

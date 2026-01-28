@@ -336,16 +336,10 @@ export function create(cwd: string): Linter.Config[] {
             },
 
             rules: {
-              // 'no-restricted-globals': 'off',
               // https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/docs/rules/no-useless-constructor.md#rule-changes
               'no-useless-constructor': 'off',
               // https://github.com/typescript-eslint/typescript-eslint/blob/v3.0.0/packages/eslint-plugin/docs/rules/no-floating-promises.md#ignorevoid
               'no-void': ['error', { allowAsStatement: true }],
-
-              // ...(hasImportPlugin && {
-              //   'import/export': 'off', // No named exports found in module
-              //   'import/named': 'off', // With named namespace export: {name} not found in {module}
-              // }),
 
               '@typescript-eslint/explicit-member-accessibility': 'off',
               '@typescript-eslint/explicit-function-return-type': [
