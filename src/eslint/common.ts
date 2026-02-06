@@ -148,9 +148,9 @@ export function create(cwd: string): Linter.Config[] {
                 moduleDirectory: [
                   'node_modules',
                   // paths.nodeModules.root,
-                  paths.web.sources,
-                  paths.node.sources,
-                  paths.shared.sources,
+                  ...paths.web.sources,
+                  ...paths.node.sources,
+                  ...paths.shared.sources,
                 ].filter((v) => !!v),
               },
 
@@ -174,9 +174,9 @@ export function create(cwd: string): Linter.Config[] {
               modules: [
                 'node_modules',
                 // paths.nodeModules.root,
-                paths.web.sources,
-                paths.node.sources,
-                paths.shared.sources,
+                ...paths.web.sources,
+                ...paths.node.sources,
+                ...paths.shared.sources,
               ].filter((v) => !!v),
             }),
           ],

@@ -59,7 +59,7 @@ export function getWebAppConfig(root = 'web') {
 export function getNodeAppConfig(root = 'node') {
   return {
     root,
-    sources: 'src',
+    sources: ['src'],
 
     /** Used by webpack loaders and plugins. */
     tsconfig: 'tsconfig.json',
@@ -74,7 +74,7 @@ export function getNodeAppConfig(root = 'node') {
 export function getSharedConfig(root = 'shared') {
   return {
     root,
-    sources: 'src',
+    sources: ['src'],
     tsconfig: 'tsconfig.json',
   };
 }

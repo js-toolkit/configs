@@ -11,22 +11,22 @@ import { TsLoaderType, css, cssNodeModules, getTsLoader } from './loaders';
 export const nodeDefaultRules: Pick<typeof webDefaultRules, 'jsRule' | 'tsBaseRule'> = {
   jsRule: {
     ...webDefaultRules.jsRule,
-    include: [paths.node.sources, paths.shared.sources].filter((v) => !!v),
+    include: [...paths.node.sources, ...paths.shared.sources].filter((v) => !!v),
   },
   tsBaseRule: {
     ...webDefaultRules.tsBaseRule,
-    include: [paths.node.sources, paths.shared.sources].filter((v) => !!v),
+    include: [...paths.node.sources, ...paths.shared.sources].filter((v) => !!v),
   },
 };
 
 export const universalDefaultRules: typeof webDefaultRules = {
   jsRule: {
     ...webDefaultRules.jsRule,
-    include: [...(webDefaultRules.jsRule.include as string[]), paths.node.sources],
+    include: [...(webDefaultRules.jsRule.include as string[]), ...paths.node.sources],
   },
   tsBaseRule: {
     ...nodeDefaultRules.tsBaseRule,
-    include: [...(webDefaultRules.jsRule.include as string[]), paths.node.sources],
+    include: [...(webDefaultRules.jsRule.include as string[]), ...paths.node.sources],
   },
   cssRule: {
     ...webDefaultRules.cssRule,
@@ -133,7 +133,7 @@ export default ({
     name: nodeBuildConfig.root,
     target: 'node',
 
-    context: isUniversal ? paths.root : paths.node.sources,
+    context: isUniversal ? paths.root : paths.node.root,
 
     ...restOptions,
 
@@ -163,7 +163,7 @@ export default ({
     resolve: {
       ...restOptions.resolve,
       modules: [
-        ...(isUniversal ? paths.web.sources : [paths.node.sources]),
+        ...(isUniversal ? paths.web.sources : paths.node.sources),
         ...((restOptions.resolve && restOptions.resolve.modules) || []),
       ],
       alias: {
@@ -173,7 +173,7 @@ export default ({
               web: paths.web.sources,
             }
           : undefined),
-        ...(paths.shared.sources ? { shared: paths.shared.sources } : undefined),
+        ...(paths.shared.sources.length > 0 ? { shared: paths.shared.sources } : undefined),
         ...((restOptions.resolve && restOptions.resolve.alias) || undefined),
       },
     },

@@ -31,12 +31,12 @@ export const webDefaultRules: Record<
 > = {
   jsRule: {
     test: /\.m?jsx?$/,
-    include: [...paths.web.sources, paths.shared.sources].filter((v) => !!v),
+    include: [...paths.web.sources, ...paths.shared.sources].filter((v) => !!v),
     use: babelLoader(),
   },
   tsBaseRule: {
     test: /\.tsx?$/,
-    include: [...paths.web.sources, paths.shared.sources].filter((v) => !!v),
+    include: [...paths.web.sources, ...paths.shared.sources].filter((v) => !!v),
   },
   cssRule: {
     test: /\.css$/,
@@ -72,7 +72,7 @@ export const webDefaultRules: Record<
   },
   fontRule: {
     test: /\.(eot|ttf|woff|woff2|otf)$/,
-    include: [paths.web.assets, paths.nodeModules.root],
+    include: [...paths.web.assets, paths.nodeModules.root],
     type: 'asset',
     parser: {
       dataUrlCondition: { maxSize: 4 * 1024 }, // 4kb
@@ -85,7 +85,7 @@ export const webDefaultRules: Record<
   },
   assetsRule: {
     test: /\.(png|jpg|gif|ico)$/,
-    include: [paths.web.assets, paths.nodeModules.root],
+    include: [...paths.web.assets, paths.nodeModules.root],
     type: 'asset',
     parser: {
       dataUrlCondition: { maxSize: 8 * 1024 }, // 8kb
@@ -226,7 +226,6 @@ export default ({
     name: webBuildConfig.root,
     target: 'web',
 
-    // context: paths.web.sources,
     context: paths.web.root,
 
     stats: appEnv.ifDev('minimal', undefined),
@@ -258,7 +257,7 @@ export default ({
       modules: [...paths.web.sources, ...(restOptions.resolve?.modules || [])],
       alias: {
         // for universal projects
-        ...(paths.shared.sources && { shared: paths.shared.sources }),
+        ...(paths.shared.sources.length > 0 && { shared: paths.shared.sources }),
         ...(restOptions.resolve?.alias || undefined),
       },
       plugins: [

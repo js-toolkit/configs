@@ -127,7 +127,7 @@ export function getPaths(baseDir = process.cwd(), buildConfig = getBuildConfig()
       if (!node) {
         return {
           root: '',
-          sources: '',
+          sources: [],
           tsconfig: '',
           output: {
             path: '',
@@ -137,10 +137,8 @@ export function getPaths(baseDir = process.cwd(), buildConfig = getBuildConfig()
 
       return {
         root: path.resolve(baseDir, node.root),
-        sources: path.resolve(baseDir, node.root, node.sources),
-
+        sources: node.sources.map((p) => path.resolve(baseDir, node.root, p)),
         tsconfig: path.resolve(baseDir, node.root, node.tsconfig),
-
         output: {
           path: path.resolve(baseDir, buildConfig.output.root, node.output.root),
         },
@@ -153,14 +151,14 @@ export function getPaths(baseDir = process.cwd(), buildConfig = getBuildConfig()
       if (!shared) {
         return {
           root: '',
-          sources: '',
+          sources: [],
           tsconfig: '',
         };
       }
 
       return {
         root: path.resolve(baseDir, shared.root),
-        sources: path.resolve(baseDir, shared.root, shared.sources),
+        sources: shared.sources.map((p) => path.resolve(baseDir, shared.root, p)),
         tsconfig: path.resolve(baseDir, shared.root, shared.tsconfig),
       };
     })(),
