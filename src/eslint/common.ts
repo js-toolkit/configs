@@ -249,7 +249,7 @@ export function create(cwd: string): Linter.Config[] {
 
         ...(hasPromisePlugin && {
           'promise/always-return': 'off',
-          'promise/catch-or-return': ['error', { allowFinally: true }],
+          'promise/catch-or-return': ['error', { allowFinally: true, allowThenStrict: true }],
         }),
       },
     },
