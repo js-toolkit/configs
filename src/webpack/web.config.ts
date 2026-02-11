@@ -145,11 +145,6 @@ export function prepareRules(
   }, {} as AnyObject);
 }
 
-function getPnpWebpackPlugin(): any {
-  const getName = (): string => 'pnp-webpack-plugin';
-  return nodeRequire(getName());
-}
-
 function normalizeHtml(
   html: typeof buildConfig.default.web.html
 ): Extract<typeof buildConfig.default.web.html, Array<any>> {
@@ -260,18 +255,6 @@ export default ({
         ...(paths.shared.sources.length > 0 && { shared: paths.shared.sources }),
         ...(restOptions.resolve?.alias || undefined),
       },
-      plugins: [
-        ...(webBuildConfig.webpackPnpEnabled ? [getPnpWebpackPlugin()] : []),
-        ...(restOptions.resolve?.plugins || []),
-      ],
-    },
-
-    resolveLoader: {
-      ...restOptions.resolveLoader,
-      plugins: [
-        ...(webBuildConfig.webpackPnpEnabled ? [getPnpWebpackPlugin().moduleLoader(module)] : []),
-        ...(restOptions.resolveLoader?.plugins || []),
-      ],
     },
 
     module: {
