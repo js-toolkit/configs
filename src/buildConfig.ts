@@ -21,8 +21,8 @@ export function resolveConfigPath(moduleNames = ['build.config'], paths = [proce
       if (module) {
         return module;
       }
-    } catch {
-      // Ignore errors
+    } catch (err) {
+      console.debug('buildConfig requireModule: optional module not found', name, err);
     }
   }
   return module;
@@ -44,7 +44,7 @@ function merge<T1 extends AnyObject, T2 extends Partial<T1>>(
       }
       // Merge objects
       else if (typeof defaults[p] === 'object' && typeof nextValues[p] === 'object') {
-        acc[p] = merge(defaults[p], nextValues[p] ?? {}) as any;
+        acc[p] = merge(defaults[p], nextValues[p] ?? {}) as (typeof acc)[typeof p];
       }
       // Replace default values from obj2 if exists
       else {

@@ -17,7 +17,7 @@ const hasConfigAirbnb = !!getInstalledPackage('eslint-config-airbnb');
 const hasTypescriptEslintPlugin = !!getInstalledPackage('typescript-eslint');
 const hasPrettierEslintPlugin = !!getInstalledPackage('eslint-plugin-prettier/recommended');
 
-delete (globals.browser as any)['AudioWorkletGlobalScope '];
+// delete (globals.browser as any)['AudioWorkletGlobalScope '];
 
 const filterAirbnbRules = (config: 'react' | 'react-a11y'): FixupConfigArray => {
   return fixupConfigRules({

@@ -26,7 +26,8 @@ export function getWebAppConfig(root = 'web') {
     /** Used by webpack loaders and plugins. */
     tsconfig: 'tsconfig.json',
     /** Plug'n'Play resolver for Webpack. */
-    webpackPnpEnabled: false,
+    // Webpack 5 has built-in support for PnP.
+    // webpackPnpEnabled: false,
 
     output: {
       root,

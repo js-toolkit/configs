@@ -54,7 +54,7 @@ export interface AppEnvironment {
 function parseJson(value?: string): EnvVarType {
   if (value == null) return value;
   try {
-    return JSON.parse(value) as EnvVarType;
+    return JSON.parse(value);
   } catch {
     // Simple string values are unable parsed so we just return origin.
     return value;
