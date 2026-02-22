@@ -378,6 +378,11 @@ export function create(cwd: string): Linter.Config[] {
                 { checkTypePredicates: true, allowConstantLoopConditions: 'only-allowed-literals' },
               ],
 
+              '@typescript-eslint/no-confusing-void-expression': [
+                'error',
+                { ignoreVoidReturningFunctions: true },
+              ],
+
               ...(hasImportXPlugin && {
                 'import-x/named': 'off',
               }),
