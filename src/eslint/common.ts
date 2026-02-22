@@ -10,7 +10,6 @@ import type { AnyObject } from '../types';
 import paths, { getFilesGlob, getJSExtensions, getTSExtensions, moduleExtensions } from '../paths';
 import { getInstalledPackage } from '../getInstalledPackage';
 import { eslintTsProject } from './consts';
-import { compat } from './utils';
 
 const hasBabelParser = !!getInstalledPackage('@babel/eslint-parser');
 const hasPromisePlugin = !!getInstalledPackage('eslint-plugin-promise');
@@ -95,7 +94,7 @@ export function create(cwd: string): Linter.Config[] {
     ...(hasPromisePlugin ? [require('eslint-plugin-promise').configs['flat/recommended']] : []),
 
     ...(hasImportPlugin && !hasImportXPlugin
-      ? fixupConfigRules(compat.extends('plugin:import/recommended'))
+      ? require('eslint-plugin-import').flatConfigs.recommended
       : []),
 
     ...(hasImportXPlugin ? [require('eslint-plugin-import-x').flatConfigs.recommended] : []),
@@ -262,7 +261,7 @@ export function create(cwd: string): Linter.Config[] {
               ...eslintTs.configs.strictTypeChecked,
               ...eslintTs.configs.stylisticTypeChecked,
               ...(hasImportPlugin && !hasImportXPlugin
-                ? fixupConfigRules(compat.extends('plugin:import/typescript'))
+                ? require('eslint-plugin-import').flatConfigs.recommended
                 : []),
               // Do not use due to declare all settings manually already.
               ...(hasImportXPlugin

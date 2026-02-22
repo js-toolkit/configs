@@ -5,7 +5,6 @@ import type { Linter } from 'eslint';
 import { fixupConfigRules, type FixupConfigArray } from '@eslint/compat';
 import { getFilesGlob, getNonSXExtensions, getSXExtensions, getTSXExtensions } from '../paths';
 import { getInstalledPackage } from '../getInstalledPackage';
-import { compat } from './utils';
 
 const hasReactPlugin = !!getInstalledPackage('eslint-plugin-react');
 const hasReactA11yPlugin = !!getInstalledPackage('eslint-plugin-jsx-a11y');
@@ -119,9 +118,7 @@ const config: Linter.Config[] = [
   // Redefine again to override react rules.
   ...(hasPrettierEslintPlugin ? [require('eslint-plugin-prettier/recommended')] : []),
 
-  ...(hasMobxPlugin
-    ? [...compat.extends('plugin:mobx/recommended'), { rules: { 'mobx/missing-observer': 'off' } }]
-    : []),
+  ...(hasMobxPlugin ? [require('eslint-plugin-mobx').flatConfigs.recommended] : []),
 ];
 
 module.exports = config;

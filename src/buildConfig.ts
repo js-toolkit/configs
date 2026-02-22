@@ -21,8 +21,8 @@ export function resolveConfigPath(moduleNames = ['build.config'], paths = [proce
       if (module) {
         return module;
       }
-    } catch (err) {
-      console.debug('buildConfig requireModule: optional module not found', name, err);
+    } catch {
+      // Ignore error, we will try next module name.
     }
   }
   return module;
