@@ -27,22 +27,21 @@ const hasImportResolverTypescript = !!getInstalledPackage('eslint-import-resolve
 const withFilteredStandardRules = (): { readonly rules: Readonly<Linter.RulesRecord> } => {
   const hasNodePlugin = !!getInstalledPackage('eslint-plugin-n');
 
-  const rules = Object.entries((require('eslint-config-standard') as Linter.Config).rules!).reduce(
-    (acc, [name, value]) => {
-      if (name.startsWith('import/')) {
-        if (hasImportPlugin && !hasImportXPlugin) acc[name] = value;
-        else if (hasImportXPlugin) acc[name.replace('import/', 'import-x/')] = value;
-      } else if (name.startsWith('n/')) {
-        if (hasNodePlugin) acc[name] = value;
-      } else if (name.startsWith('promise/')) {
-        if (hasPromisePlugin) acc[name] = value;
-      } else {
-        acc[name] = value;
-      }
-      return acc;
-    },
-    {} as AnyObject
-  );
+  const rules = Object.entries(
+    (require('eslint-config-standard') as Linter.Config).rules ?? {}
+  ).reduce<AnyObject>((acc, [name, value]) => {
+    if (name.startsWith('import/')) {
+      if (hasImportPlugin && !hasImportXPlugin) acc[name] = value;
+      else if (hasImportXPlugin) acc[name.replace('import/', 'import-x/')] = value;
+    } else if (name.startsWith('n/')) {
+      if (hasNodePlugin) acc[name] = value;
+    } else if (name.startsWith('promise/')) {
+      if (hasPromisePlugin) acc[name] = value;
+    } else {
+      acc[name] = value;
+    }
+    return acc;
+  }, {});
 
   return { rules };
 };
@@ -51,14 +50,14 @@ const filterAirbnbRules = (): FixupConfigArray => {
   const list: FixupConfigArray = require('eslint-config-airbnb-base').extends.map((url: string) => {
     return {
       rules: url.endsWith('imports.js')
-        ? (hasImportXPlugin &&
-            Object.entries(require(url).rules as Linter.RulesRecord).reduce(
+        ? ((hasImportXPlugin &&
+            Object.entries(require(url).rules as Linter.RulesRecord).reduce<AnyObject>(
               (acc, [name, value]) => {
                 acc[name.replace('import/', 'import-x/')] = value;
                 return acc;
               },
-              {} as AnyObject
-            )) ||
+              {}
+            )) as false | Linter.RulesRecord) ||
           (hasImportPlugin && require(url).rules) ||
           {}
         : require(url).rules,
@@ -241,11 +240,11 @@ export function create(cwd: string): Linter.Config[] {
             ],
             'import/prefer-default-export': 'off',
             // 'import/no-default-export': 'warn',
-          }).reduce((acc, [name, value]) => {
+          }).reduce<AnyObject>((acc, [name, value]) => {
             if (hasImportXPlugin) acc[name.replace('import/', 'import-x/')] = value;
             else acc[name] = value;
             return acc;
-          }, {} as AnyObject)),
+          }, {})),
 
         ...(hasPromisePlugin && {
           'promise/always-return': 'off',
@@ -260,7 +259,7 @@ export function create(cwd: string): Linter.Config[] {
           const eslintTs = require('typescript-eslint');
           return defineConfig({
             extends: [
-              ...eslintTs.configs.recommendedTypeChecked,
+              ...eslintTs.configs.strictTypeChecked,
               ...eslintTs.configs.stylisticTypeChecked,
               ...(hasImportPlugin && !hasImportXPlugin
                 ? fixupConfigRules(compat.extends('plugin:import/typescript'))
@@ -372,6 +371,11 @@ export function create(cwd: string): Linter.Config[] {
                   ignorePrimitives: { string: true },
                   ignoreMixedLogicalExpressions: true,
                 },
+              ],
+
+              '@typescript-eslint/no-unnecessary-condition': [
+                'error',
+                { checkTypePredicates: true, allowConstantLoopConditions: 'only-allowed-literals' },
               ],
 
               ...(hasImportXPlugin && {

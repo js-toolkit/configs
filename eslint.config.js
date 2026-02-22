@@ -58,7 +58,8 @@ module.exports = [
     },
   },
 
-  ...tsEslint.configs.recommendedTypeChecked.map((conf) => ({ ...conf, files: ['**/*.{ts,tsx}'] })),
+  ...tsEslint.configs.strictTypeChecked.map((conf) => ({ ...conf, files: ['**/*.{ts,tsx}'] })),
+  ...tsEslint.configs.stylisticTypeChecked.map((conf) => ({ ...conf, files: ['**/*.{ts,tsx}'] })),
 
   eslintPluginPrettierRecommended,
 
@@ -98,6 +99,17 @@ module.exports = [
       '@typescript-eslint/no-unsafe-call': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',
       '@typescript-eslint/explicit-module-boundary-types': 'off',
+      '@typescript-eslint/prefer-nullish-coalescing': [
+        'error',
+        {
+          ignorePrimitives: { string: true },
+          ignoreMixedLogicalExpressions: true,
+        },
+      ],
+      '@typescript-eslint/no-unnecessary-condition': [
+        'error',
+        { checkTypePredicates: true, allowConstantLoopConditions: 'only-allowed-literals' },
+      ],
     },
   },
 ];
