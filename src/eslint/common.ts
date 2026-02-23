@@ -375,14 +375,17 @@ export function create(cwd: string): Linter.Config[] {
               '@typescript-eslint/prefer-nullish-coalescing': [
                 'error',
                 {
-                  ignorePrimitives: { string: true },
+                  ignorePrimitives: { string: true, number: true },
                   ignoreMixedLogicalExpressions: true,
                 },
               ],
 
               '@typescript-eslint/no-unnecessary-condition': [
                 'error',
-                { checkTypePredicates: true, allowConstantLoopConditions: 'only-allowed-literals' },
+                {
+                  checkTypePredicates: false,
+                  allowConstantLoopConditions: 'only-allowed-literals',
+                },
               ],
 
               '@typescript-eslint/no-confusing-void-expression': [
