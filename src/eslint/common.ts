@@ -393,6 +393,11 @@ export function create(cwd: string): Linter.Config[] {
                 { ignoreVoidReturningFunctions: true },
               ],
 
+              '@typescript-eslint/restrict-template-expressions': [
+                'error',
+                { allowNumber: true, allowBoolean: true },
+              ],
+
               ...(hasImportXPlugin && {
                 'import-x/named': 'off',
               }),
