@@ -11,20 +11,28 @@ import paths, { getFilesGlob, getJSExtensions, getTSExtensions, moduleExtensions
 import { getInstalledPackage } from '../getInstalledPackage';
 import { eslintTsProject } from './consts';
 
-const hasBabelParser = !!getInstalledPackage('@babel/eslint-parser');
-const hasPromisePlugin = !!getInstalledPackage('eslint-plugin-promise');
-const hasImportXPlugin = !!getInstalledPackage('eslint-plugin-import-x');
-const hasImportPlugin = !!getInstalledPackage('eslint-plugin-import');
-const hasConfigStandard = !!getInstalledPackage('eslint-config-standard');
-const hasConfigAirbnbBase = !!getInstalledPackage('eslint-config-airbnb-base');
-const hasJsDocPlugin = !!getInstalledPackage('eslint-plugin-jsdoc');
-const hasTsDocPlugin = !!getInstalledPackage('eslint-plugin-tsdoc');
-const hasPrettierEslintPlugin = !!getInstalledPackage('eslint-plugin-prettier/recommended');
-const hasTypescriptEslintPlugin = !!getInstalledPackage('typescript-eslint');
-const hasImportResolverTypescript = !!getInstalledPackage('eslint-import-resolver-typescript');
+const hasBabelParser = !!getInstalledPackage('@babel/eslint-parser', { resolveFromCwd: true });
+const hasPromisePlugin = !!getInstalledPackage('eslint-plugin-promise', { resolveFromCwd: true });
+const hasImportXPlugin = !!getInstalledPackage('eslint-plugin-import-x', { resolveFromCwd: true });
+const hasImportPlugin = !!getInstalledPackage('eslint-plugin-import', { resolveFromCwd: true });
+const hasConfigStandard = !!getInstalledPackage('eslint-config-standard', { resolveFromCwd: true });
+const hasConfigAirbnbBase = !!getInstalledPackage('eslint-config-airbnb-base', {
+  resolveFromCwd: true,
+});
+const hasJsDocPlugin = !!getInstalledPackage('eslint-plugin-jsdoc', { resolveFromCwd: true });
+const hasTsDocPlugin = !!getInstalledPackage('eslint-plugin-tsdoc', { resolveFromCwd: true });
+const hasPrettierEslintPlugin = !!getInstalledPackage('eslint-plugin-prettier/recommended', {
+  resolveFromCwd: true,
+});
+const hasTypescriptEslintPlugin = !!getInstalledPackage('typescript-eslint', {
+  resolveFromCwd: true,
+});
+const hasImportResolverTypescript = !!getInstalledPackage('eslint-import-resolver-typescript', {
+  resolveFromCwd: true,
+});
 
 const withFilteredStandardRules = (): { readonly rules: Readonly<Linter.RulesRecord> } => {
-  const hasNodePlugin = !!getInstalledPackage('eslint-plugin-n');
+  const hasNodePlugin = !!getInstalledPackage('eslint-plugin-n', { resolveFromCwd: true });
 
   const rules = Object.entries(
     (require('eslint-config-standard') as Linter.Config).rules ?? {}
