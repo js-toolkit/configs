@@ -2,12 +2,9 @@
   "extends": "./src/ts/common.tsconfig.json",
   "compilerOptions": {
     "module": "node16",
-    "moduleResolution": "node16",
     "verbatimModuleSyntax": false,
     "isolatedModules": true,
-    "baseUrl": "src",
     "outDir": "dist",
-    "exactOptionalPropertyTypes": true,
     "declaration": true,
     "sourceMap": false,
     "importHelpers": false

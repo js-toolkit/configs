@@ -380,13 +380,28 @@ export function create(cwd: string): Linter.Config[] {
                 },
               ],
 
-              '@typescript-eslint/no-unnecessary-condition': [
+              '@typescript-eslint/strict-boolean-expressions': [
                 'error',
                 {
-                  checkTypePredicates: false,
-                  allowConstantLoopConditions: 'only-allowed-literals',
+                  allowAny: false,
+                  allowNullableBoolean: true,
+                  allowNullableEnum: false,
+                  allowNullableNumber: false,
+                  allowNullableObject: true,
+                  allowNullableString: true,
+                  allowNumber: false,
+                  allowString: true,
                 },
               ],
+
+              // Doesn't work correctly with chain conditions: `(a === 'w' && 'q') || `(a === 'e' && 'r') || 'default'`.
+              // '@typescript-eslint/no-unnecessary-condition': [
+              //   'error',
+              //   {
+              //     checkTypePredicates: false,
+              //     allowConstantLoopConditions: 'only-allowed-literals',
+              //   },
+              // ],
 
               '@typescript-eslint/no-confusing-void-expression': [
                 'error',

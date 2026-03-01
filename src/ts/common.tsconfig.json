@@ -2,24 +2,34 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "ESNext",
-    "moduleResolution": "node",
+    "moduleResolution": "nodenext",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "jsx": "react-jsx",
+    "types": [],
+
     "allowJs": false,
-    "sourceMap": true,
-    "verbatimModuleSyntax": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
+    "resolvePackageJsonImports": true,
+    "importHelpers": true,
+    "verbatimModuleSyntax": true,
+    "rewriteRelativeImportExtensions": true,
+    "forceConsistentCasingInFileNames": true,
+
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
     "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true,
     "noUncheckedIndexedAccess": false,
     "exactOptionalPropertyTypes": true,
+
+    "libReplacement": false,
     "skipLibCheck": true,
-    "importHelpers": true,
-    "incremental": true
+    "sourceMap": true,
+    "incremental": true,
+    "outDir": "dist"
   }
 }
