@@ -1,4 +1,4 @@
-import { getInstalledPlugin } from './getInstalledPlugin';
+import { getInstalledPlugin } from './getInstalledPlugin.ts';
 
 const config = {
   presets: [getInstalledPlugin('@babel/preset-env', { loose: true })].filter((p) => !!p),

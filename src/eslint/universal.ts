@@ -1,8 +1,9 @@
-/* eslint-disable @typescript-eslint/no-require-imports */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import fs from 'fs';
 import type { Linter } from 'eslint';
-import buildConfig, { type BuildConfig } from '../buildConfig';
-import paths, { getFilesGlob, moduleExtensions } from '../paths';
+import { defaultRequire } from '../defaultRequire.ts';
+import buildConfig, { type BuildConfig } from '../buildConfig.ts';
+import paths, { getFilesGlob, moduleExtensions } from '../paths.ts';
 
 const filesGlobs: Record<keyof Pick<BuildConfig, 'web' | 'node' | 'shared'> | 'other', string[]> = {
   web:
@@ -32,7 +33,7 @@ const config: Linter.Config[] = [
           files: filesGlobs.web,
           rules: {},
         },
-        ...require('./web'),
+        ...defaultRequire('./web.ts'),
       ]
     : []),
 
@@ -42,12 +43,12 @@ const config: Linter.Config[] = [
           files: filesGlobs.node,
           rules: {},
         },
-        ...require('./web'),
-        ...require('./node'),
+        ...defaultRequire('./web.ts'),
+        ...defaultRequire('./node.ts'),
       ]
     : []),
 
-  ...(filesGlobs.shared.length > 0 ? [...require('./common')] : []),
+  ...(filesGlobs.shared.length > 0 ? [...defaultRequire('./common.ts')] : []),
 
   ...(filesGlobs.other.length > 0
     ? [
@@ -56,10 +57,13 @@ const config: Linter.Config[] = [
           ignores: [...filesGlobs.web, ...filesGlobs.node, ...filesGlobs.shared].filter(Boolean),
           rules: {},
         },
-        ...require('./common'),
+        ...defaultRequire('./common.ts'),
       ]
     : []),
 ];
 
-module.exports = config;
+if (typeof module !== 'undefined') {
+  module.exports = config;
+}
+
 export default config;

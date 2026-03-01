@@ -1,11 +1,17 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import path from 'path';
 import type { Configuration, RuleSetRule, RuleSetUse } from 'webpack';
 import type {} from 'webpack-dev-server';
-import path from 'path';
 import type { AnyObject, RequiredStrict } from '../types';
-import appEnv from '../appEnv';
-import paths from '../paths';
-import buildConfig from '../buildConfig';
-import commonConfig, { type CommonConfigOptions } from './common.config';
+import appEnv from '../appEnv.ts';
+import paths from '../paths.ts';
+import buildConfig from '../buildConfig.ts';
+import { getInstalledPackage } from '../getInstalledPackage.ts';
+import commonConfig, { type CommonConfigOptions } from './common.config.ts';
 import {
   TsLoaderType,
   babelLoader,
@@ -13,9 +19,8 @@ import {
   cssExtractLoader,
   cssNodeModules,
   getTsLoader,
-} from './loaders';
-import nodeRequire from './nodeRequire';
-import { getInstalledPackage } from '../getInstalledPackage';
+} from './loaders.ts';
+import nodeRequire from './nodeRequire.ts';
 
 // https://webpack.js.org/guides/asset-modules/
 
@@ -79,7 +84,7 @@ export const webDefaultRules: Record<
     },
     generator: {
       filename: `${
-        (buildConfig.web || buildConfig.default.web).output.assets
+        (buildConfig.web ?? buildConfig.default.web).output.assets
       }/[name].[hash:8].[ext][query]`, // Virtual hash useful for HRM during development.
     },
   },
@@ -92,7 +97,7 @@ export const webDefaultRules: Record<
     },
     generator: {
       filename: `${
-        (buildConfig.web || buildConfig.default.web).output.assets
+        (buildConfig.web ?? buildConfig.default.web).output.assets
       }/[name].[hash:8].[ext][query]`, // Virtual hash useful for HRM during development.
     },
   },
@@ -135,28 +140,28 @@ export function prepareRules(
   rules: Record<string, DefaultRuleValue>,
   defaultRules: Record<string, RuleSetRule>
 ): Record<string, RuleSetRule> {
-  return Object.entries<DefaultRuleValue>(rules).reduce((acc, [key, value]) => {
+  return Object.entries<DefaultRuleValue>(rules).reduce<AnyObject>((acc, [key, value]) => {
     if (typeof value === 'function' && key in defaultRules && defaultRules[key]) {
       acc[key] = value(defaultRules[key]);
     } else {
       acc[key] = value;
     }
     return acc;
-  }, {} as AnyObject);
+  }, {});
 }
 
 function normalizeHtml(
   html: typeof buildConfig.default.web.html
-): Extract<typeof buildConfig.default.web.html, Array<any>> {
+): Extract<typeof buildConfig.default.web.html, any[]> {
   return Array.isArray(html) ? html : [html];
 }
 
-const webBuildConfig = buildConfig.web || buildConfig.default.web;
+const webBuildConfig = buildConfig.web ?? buildConfig.default.web;
 
 export default ({
-  outputPath = paths.web.output.path,
-  outputPublicPath = webBuildConfig.output.publicPath,
-  outputJsDir = webBuildConfig.output.js,
+  outputPath,
+  outputPublicPath,
+  outputJsDir,
   hash = true,
   chunkSuffix = '.chunk',
   typescript,
@@ -240,7 +245,7 @@ export default ({
                   minimizerOptions: { preset: 'default' },
                 });
               })(),
-            ...(restOptions.optimization?.minimizer || []),
+            ...(restOptions.optimization?.minimizer ?? []),
           ],
         },
         undefined
@@ -249,11 +254,11 @@ export default ({
 
     resolve: {
       ...restOptions.resolve,
-      modules: [...paths.web.sources, ...(restOptions.resolve?.modules || [])],
+      modules: [...paths.web.sources, ...(restOptions.resolve?.modules ?? [])],
       alias: {
         // for universal projects
         ...(paths.shared.sources.length > 0 && { shared: paths.shared.sources }),
-        ...(restOptions.resolve?.alias || undefined),
+        ...restOptions.resolve?.alias,
       },
     },
 
@@ -266,10 +271,10 @@ export default ({
         // Provide pug loader if html template is pug template
         ...(() => {
           const html = normalizeHtml(webBuildConfig.html);
-          const hasPug = html.some(({ template }) => template && template.endsWith('.pug'));
+          const hasPug = html.some(({ template }) => template?.endsWith('.pug'));
           return hasPug ? [{ test: /\.pug$/, use: { loader: 'pug-loader' } }] : [];
         })(),
-        ...(restOptions.module?.rules || []),
+        ...(restOptions.module?.rules ?? []),
       ],
     },
 
@@ -427,7 +432,7 @@ export default ({
           });
         })(),
 
-      ...(restOptions.plugins || []),
+      ...(restOptions.plugins ?? []),
     ].filter(Boolean),
 
     devServer: {

@@ -1,11 +1,16 @@
-import webpack from 'webpack';
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import path from 'path';
+import webpack from 'webpack';
 import type { OptionalToUndefined } from '../types';
-import appEnv from '../appEnv';
-import buildConfig from '../buildConfig';
-import paths, { getJSExtensions, moduleExtensions } from '../paths';
-import { TsLoaderType, getTsCheckerPlugin } from './loaders';
-import nodeRequire from './nodeRequire';
+import appEnv from '../appEnv.ts';
+import buildConfig from '../buildConfig.ts';
+import paths, { getJSExtensions, moduleExtensions } from '../paths.ts';
+import { TsLoaderType, getTsCheckerPlugin } from './loaders.ts';
+import nodeRequire from './nodeRequire.ts';
 
 export interface CommonConfigOptions extends OptionalToUndefined<webpack.Configuration> {
   outputPath: string;
@@ -127,7 +132,7 @@ export default ({
                 );
               })(),
 
-            ...(restOptions.optimization?.minimizer || []),
+            ...(restOptions.optimization?.minimizer ?? []),
           ],
         },
         undefined
@@ -158,13 +163,13 @@ export default ({
           ]
         : []),
 
-      ...(restOptions.plugins || []),
+      ...(restOptions.plugins ?? []),
     ],
 
     resolve: (() => {
       const extensions = [
         ...(typescript ? moduleExtensions : getJSExtensions()),
-        ...(restOptions.resolve?.extensions || []),
+        ...(restOptions.resolve?.extensions ?? []),
       ];
       return {
         ...restOptions.resolve,
@@ -173,7 +178,7 @@ export default ({
           'node_modules',
           paths.nodeModules.root,
           paths.root,
-          ...(restOptions.resolve?.modules || []),
+          ...(restOptions.resolve?.modules ?? []),
         ],
         plugins: [
           ...(typescript
@@ -188,7 +193,7 @@ export default ({
                 })(),
               ]
             : []),
-          ...(restOptions.resolve?.plugins || []),
+          ...(restOptions.resolve?.plugins ?? []),
         ],
       };
     })(),
@@ -206,7 +211,7 @@ export default ({
       // To suppress warning with 'Critical dependency: the request of a dependency is an expression'
       unknownContextCritical: false,
       ...restOptions.module,
-      rules: restOptions.module?.rules || [],
+      rules: restOptions.module?.rules ?? [],
     },
   } as webpack.Configuration;
 };

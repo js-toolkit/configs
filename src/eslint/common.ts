@@ -1,4 +1,10 @@
-/* eslint-disable @typescript-eslint/no-require-imports */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable import-x/extensions */
+/* eslint-disable import-x/no-import-module-exports */
+
 import fs from 'fs';
 import path from 'path';
 import globals from 'globals';
@@ -7,9 +13,15 @@ import { defineConfig } from 'eslint/config';
 import eslintJs from '@eslint/js';
 import { fixupConfigRules, type FixupConfigArray } from '@eslint/compat';
 import type { AnyObject } from '../types';
-import paths, { getFilesGlob, getJSExtensions, getTSExtensions, moduleExtensions } from '../paths';
-import { getInstalledPackage } from '../getInstalledPackage';
-import { eslintTsProject } from './consts';
+import paths, {
+  getFilesGlob,
+  getJSExtensions,
+  getTSExtensions,
+  moduleExtensions,
+} from '../paths.ts';
+import { getInstalledPackage } from '../getInstalledPackage.ts';
+import { defaultRequire } from '../defaultRequire.ts';
+import { eslintTsProject } from './consts.ts';
 
 const hasBabelParser = !!getInstalledPackage('@babel/eslint-parser', { resolveFromCwd: true });
 const hasPromisePlugin = !!getInstalledPackage('eslint-plugin-promise', { resolveFromCwd: true });
@@ -35,7 +47,7 @@ const withFilteredStandardRules = (): { readonly rules: Readonly<Linter.RulesRec
   const hasNodePlugin = !!getInstalledPackage('eslint-plugin-n', { resolveFromCwd: true });
 
   const rules = Object.entries(
-    (require('eslint-config-standard') as Linter.Config).rules ?? {}
+    (defaultRequire('eslint-config-standard') as Linter.Config).rules ?? {}
   ).reduce<AnyObject>((acc, [name, value]) => {
     if (name.startsWith('import/')) {
       if (hasImportPlugin && !hasImportXPlugin) acc[name] = value;
@@ -54,33 +66,34 @@ const withFilteredStandardRules = (): { readonly rules: Readonly<Linter.RulesRec
 };
 
 const filterAirbnbRules = (): FixupConfigArray => {
-  const list: FixupConfigArray = require('eslint-config-airbnb-base').extends.map((url: string) => {
-    return {
-      rules: url.endsWith('imports.js')
-        ? ((hasImportXPlugin &&
-            Object.entries(require(url).rules as Linter.RulesRecord).reduce<AnyObject>(
-              (acc, [name, value]) => {
+  const list: FixupConfigArray = defaultRequire('eslint-config-airbnb-base').extends.map(
+    (url: string) => {
+      return {
+        rules: url.endsWith('imports.js')
+          ? (hasImportXPlugin &&
+              Object.entries(
+                defaultRequire(url).rules as Linter.RulesRecord
+              ).reduce<Linter.RulesRecord>((acc, [name, value]) => {
                 acc[name.replace('import/', 'import-x/')] = value;
                 return acc;
-              },
-              {}
-            )) as false | Linter.RulesRecord) ||
-          (hasImportPlugin && require(url).rules) ||
-          {}
-        : require(url).rules,
-    };
-  });
+              }, {})) ||
+            (hasImportPlugin && (defaultRequire(url).rules as Linter.RulesRecord)) ||
+            {}
+          : (defaultRequire(url).rules as Linter.RulesRecord),
+      };
+    }
+  );
   return fixupConfigRules(list);
 };
 
 // Disable all rules in favor of airbnb and standard configs.
 // const withFilteredImportXRules = (): Linter.Config => {
-//   const config: Linter.Config = require('eslint-plugin-import-x').flatConfigs.recommended;
+//   const config: Linter.Config = defaultRequire('eslint-plugin-import-x').flatConfigs.recommended;
 //   return { ...config, rules: {} };
 // };
 
 export function createTypeScriptImportResolver(options?: AnyObject): AnyObject {
-  return require('eslint-import-resolver-typescript').createTypeScriptImportResolver({
+  return defaultRequire('eslint-import-resolver-typescript').createTypeScriptImportResolver({
     // project: path.dirname(tsconfig),
     // project: [tsconfig],
     // project: [eslintTsProject, 'tsconfig.json'],
@@ -90,7 +103,7 @@ export function createTypeScriptImportResolver(options?: AnyObject): AnyObject {
 }
 
 export function create(cwd: string): Linter.Config[] {
-  const eslintTsConfig = hasTypescriptEslintPlugin && path.resolve(cwd, eslintTsProject);
+  const eslintTsConfig = hasTypescriptEslintPlugin ? path.resolve(cwd, eslintTsProject) : undefined;
   const tsconfig =
     eslintTsConfig && fs.existsSync(eslintTsConfig)
       ? eslintTsConfig
@@ -99,20 +112,22 @@ export function create(cwd: string): Linter.Config[] {
   return [
     eslintJs.configs.recommended,
 
-    ...(hasPromisePlugin ? [require('eslint-plugin-promise').configs['flat/recommended']] : []),
-
-    ...(hasImportPlugin && !hasImportXPlugin
-      ? require('eslint-plugin-import').flatConfigs.recommended
+    ...(hasPromisePlugin
+      ? [defaultRequire('eslint-plugin-promise').configs['flat/recommended']]
       : []),
 
-    ...(hasImportXPlugin ? [require('eslint-plugin-import-x').flatConfigs.recommended] : []),
+    ...(hasImportPlugin && !hasImportXPlugin
+      ? defaultRequire('eslint-plugin-import').flatConfigs.recommended
+      : []),
+
+    ...(hasImportXPlugin ? [defaultRequire('eslint-plugin-import-x').flatConfigs.recommended] : []),
 
     ...(hasConfigStandard ? [withFilteredStandardRules()] : []),
 
     ...(hasJsDocPlugin
       ? [
           {
-            ...require('eslint-plugin-jsdoc').configs['flat/recommended'],
+            ...defaultRequire('eslint-plugin-jsdoc').configs['flat/recommended'],
             files: [getFilesGlob(getJSExtensions())],
           },
         ]
@@ -130,7 +145,7 @@ export function create(cwd: string): Linter.Config[] {
           ...globals.node,
         },
         ...(hasBabelParser && {
-          parser: require('@babel/eslint-parser'),
+          parser: defaultRequire('@babel/eslint-parser'),
           parserOptions: {
             requireConfigFile: false,
           },
@@ -175,7 +190,7 @@ export function create(cwd: string): Linter.Config[] {
 
         ...(hasImportXPlugin && {
           'import-x/resolver-next': [
-            require('eslint-plugin-import-x').createNodeResolver({
+            defaultRequire('eslint-plugin-import-x').createNodeResolver({
               extensions: getJSExtensions(),
               modules: [
                 'node_modules',
@@ -263,24 +278,24 @@ export function create(cwd: string): Linter.Config[] {
     // overrides
     ...(hasTypescriptEslintPlugin
       ? (() => {
-          const eslintTs = require('typescript-eslint');
+          const eslintTs = defaultRequire('typescript-eslint');
           return defineConfig({
             extends: [
               ...eslintTs.configs.strictTypeChecked,
               ...eslintTs.configs.stylisticTypeChecked,
               ...(hasImportPlugin && !hasImportXPlugin
-                ? require('eslint-plugin-import').flatConfigs.recommended
+                ? defaultRequire('eslint-plugin-import').flatConfigs.recommended
                 : []),
               // Do not use due to declare all settings manually already.
               ...(hasImportXPlugin
-                ? [require('eslint-plugin-import-x').flatConfigs.typescript]
+                ? [defaultRequire('eslint-plugin-import-x').flatConfigs.typescript]
                 : []),
             ],
 
             files: [getFilesGlob(getTSExtensions())],
 
             plugins: {
-              ...(hasTsDocPlugin && { tsdoc: require('eslint-plugin-tsdoc') }),
+              ...(hasTsDocPlugin && { tsdoc: defaultRequire('eslint-plugin-tsdoc') }),
             },
 
             languageOptions: {
@@ -333,7 +348,7 @@ export function create(cwd: string): Linter.Config[] {
                   hasImportResolverTypescript
                     ? createTypeScriptImportResolver({ project: tsconfig })
                     : [],
-                  require('eslint-plugin-import-x').createNodeResolver({
+                  defaultRequire('eslint-plugin-import-x').createNodeResolver({
                     extensions: moduleExtensions,
                     tsconfig: { configFile: tsconfig },
                   }),
@@ -384,9 +399,9 @@ export function create(cwd: string): Linter.Config[] {
                 'error',
                 {
                   allowAny: false,
-                  allowNullableBoolean: true,
                   allowNullableEnum: false,
                   allowNullableNumber: false,
+                  allowNullableBoolean: true,
                   allowNullableObject: true,
                   allowNullableString: true,
                   allowNumber: false,
@@ -395,6 +410,8 @@ export function create(cwd: string): Linter.Config[] {
               ],
 
               // Doesn't work correctly with chain conditions: `(a === 'w' && 'q') || `(a === 'e' && 'r') || 'default'`.
+              // So disable it for now, but it is better to enable in the future with correct configuration.
+              '@typescript-eslint/no-unnecessary-condition': 'off',
               // '@typescript-eslint/no-unnecessary-condition': [
               //   'error',
               //   {
@@ -425,7 +442,7 @@ export function create(cwd: string): Linter.Config[] {
         })()
       : []),
 
-    ...(hasPrettierEslintPlugin ? [require('eslint-plugin-prettier/recommended')] : []),
+    ...(hasPrettierEslintPlugin ? [defaultRequire('eslint-plugin-prettier/recommended')] : []),
 
     // Special overrides for TS declaration files
     {
@@ -442,7 +459,11 @@ export function create(cwd: string): Linter.Config[] {
 }
 
 const config = create(process.cwd());
-module.exports = config;
-module.exports.create = create;
-module.exports.createTypeScriptImportResolver = createTypeScriptImportResolver;
+
+if (typeof module !== 'undefined') {
+  module.exports = config;
+  module.exports.create = create;
+  module.exports.createTypeScriptImportResolver = createTypeScriptImportResolver;
+}
+
 export default config;

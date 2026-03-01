@@ -1,4 +1,4 @@
-import { getInstalledPackage } from '../getInstalledPackage';
+import { getInstalledPackage } from '../getInstalledPackage.ts';
 import type { AnyObject } from '../types';
 
 export function getInstalledPlugin(

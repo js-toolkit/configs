@@ -1,8 +1,11 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable camelcase */
 /* eslint-disable no-var */
 
-declare var __webpack_require__: typeof require;
-declare var __non_webpack_require__: typeof require;
+import { defaultRequire } from '../defaultRequire.ts';
+
+declare var __webpack_require__: NodeRequire;
+declare var __non_webpack_require__: NodeRequire;
 
 /** Original require function (non webpack) to correct load modules in universal projects */
-export default typeof __webpack_require__ === 'function' ? __non_webpack_require__ : require;
+export default typeof __webpack_require__ === 'function' ? __non_webpack_require__ : defaultRequire;

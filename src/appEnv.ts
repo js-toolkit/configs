@@ -25,7 +25,7 @@ export interface AppEnvironment {
   /** Stringify all values that we can feed into Webpack DefinePlugin. */
   envStringify(): { 'process.env': Record<string, string> };
 
-  has<T extends keyof AppEnvVars>(envVarName: T): boolean;
+  has(envVarName: keyof AppEnvVars): boolean;
 
   get<T extends keyof AppEnvVars>(envVarName: T): AppEnvVars[T];
 
@@ -54,7 +54,7 @@ export interface AppEnvironment {
 function parseJson(value?: string): EnvVarType {
   if (value == null) return value;
   try {
-    return JSON.parse(value);
+    return JSON.parse(value) as EnvVarType;
   } catch {
     // Simple string values are unable parsed so we just return origin.
     return value;
@@ -72,7 +72,7 @@ export function getAppEnvironment(): AppEnvironment {
   // Object with keys and their default values so we can feed into Webpack EnvironmentPlugin.
   const raw = Object.keys(rawEnv)
     .filter((key) => APP.test(key))
-    .reduce(
+    .reduce<AppEnvVars & CustomAppEnvVars>(
       (env, key) => {
         const prop = key as keyof CustomAppEnvVars;
         env[prop] = parseJson(rawEnv[key]);
@@ -84,22 +84,22 @@ export function getAppEnvironment(): AppEnvironment {
         NODE_ENV: parseJson(rawEnv.NODE_ENV || 'development') as NodeEnv,
         APP_SSR: false,
         APP_TEST: false,
-      } as AppEnvVars & CustomAppEnvVars
+      }
     );
 
   const appEnv: AppEnvironment = {
     raw,
 
     envStringify() {
-      const stringified = Object.keys(this.raw).reduce((env, key) => {
+      const stringified = Object.keys(this.raw).reduce<AnyObject>((env, key) => {
         const prop = key as keyof CustomAppEnvVars;
         env[key] = JSON.stringify(this.raw[prop]);
         return env;
-      }, {} as AnyObject);
+      }, {});
       return { 'process.env': stringified };
     },
 
-    has<T extends keyof AppEnvVars>(envVarName: T) {
+    has(envVarName: keyof AppEnvVars) {
       return envVarName in raw;
     },
 
@@ -108,7 +108,7 @@ export function getAppEnvironment(): AppEnvironment {
     },
 
     get ssr() {
-      return this.raw.APP_SSR === true;
+      return this.raw.APP_SSR;
     },
 
     get dev() {
@@ -116,7 +116,7 @@ export function getAppEnvironment(): AppEnvironment {
     },
 
     get test() {
-      return this.raw.NODE_ENV === 'test' || this.raw.APP_TEST === true;
+      return this.raw.NODE_ENV === 'test' || this.raw.APP_TEST;
     },
 
     get prod() {
@@ -151,6 +151,7 @@ export function getAppEnvironment(): AppEnvironment {
     },
   };
 
+  // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
   if ((typeof window === 'undefined' ? global : window).Proxy) {
     return new Proxy(appEnv, {
       // prop always is string or symbol, not number

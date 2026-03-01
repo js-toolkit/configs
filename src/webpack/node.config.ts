@@ -1,12 +1,14 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import type { Configuration, ExternalItem } from 'webpack';
 import webpackNodeExternals from 'webpack-node-externals';
 import type { RequiredStrict } from '../types';
-import appEnv from '../appEnv';
-import paths from '../paths';
-import buildConfig from '../buildConfig';
-import commonConfig from './common.config';
-import { webDefaultRules, type WebConfigOptions, prepareRules } from './web.config';
-import { TsLoaderType, css, cssNodeModules, getTsLoader } from './loaders';
+import appEnv from '../appEnv.ts';
+import paths from '../paths.ts';
+import buildConfig from '../buildConfig.ts';
+import commonConfig from './common.config.ts';
+import { webDefaultRules, type WebConfigOptions, prepareRules } from './web.config.ts';
+import { TsLoaderType, css, cssNodeModules, getTsLoader } from './loaders.ts';
 
 export const nodeDefaultRules: Pick<typeof webDefaultRules, 'jsRule' | 'tsBaseRule'> = {
   jsRule: {
@@ -57,12 +59,12 @@ export interface NodeConfigOptions extends WebConfigOptions {
   isUniversal?: boolean | undefined;
 }
 
-const nodeBuildConfig = buildConfig.node || buildConfig.default.node;
+const nodeBuildConfig = buildConfig.node ?? buildConfig.default.node;
 
 export default ({
-  outputPath = paths.node.output.path,
-  outputPublicPath = nodeBuildConfig.output.publicPath,
-  outputJsDir = '',
+  outputPath,
+  outputPublicPath,
+  outputJsDir,
   hash = false,
   chunkSuffix = '.chunk',
   typescript,
@@ -164,7 +166,7 @@ export default ({
       ...restOptions.resolve,
       modules: [
         ...(isUniversal ? paths.web.sources : paths.node.sources),
-        ...((restOptions.resolve && restOptions.resolve.modules) || []),
+        ...(restOptions.resolve?.modules ?? []),
       ],
       alias: {
         ...(isUniversal
@@ -174,7 +176,7 @@ export default ({
             }
           : undefined),
         ...(paths.shared.sources.length > 0 ? { shared: paths.shared.sources } : undefined),
-        ...((restOptions.resolve && restOptions.resolve.alias) || undefined),
+        ...restOptions.resolve?.alias,
       },
     },
 
@@ -184,7 +186,7 @@ export default ({
         ...Object.getOwnPropertyNames(moduleRules).map(
           (name) => moduleRules[name as keyof typeof moduleRules] || {}
         ),
-        ...((restOptions.module && restOptions.module.rules) || []),
+        ...(restOptions.module?.rules ?? []),
       ],
     },
 

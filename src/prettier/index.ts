@@ -1,4 +1,7 @@
-if (typeof exports !== 'undefined' && !exports.__esModule) {
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+
+if (typeof exports !== 'undefined' && !(exports.__esModule as boolean)) {
   Object.defineProperty(exports, '__esModule', { value: true });
 }
 

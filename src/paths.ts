@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import path from 'path';
-import { getBuildConfig } from './buildConfig';
+import { getBuildConfig } from './buildConfig.ts';
 
 export const moduleExtensions = [
   '.js',
@@ -23,9 +22,7 @@ function addStar(extensions: string[]): string[] {
 }
 
 export function getFilesGlob(extensions: string[], basePath?: string): string {
-  return (
-    path.join(basePath || '', '**/*.{') + extensions.map((ext) => ext.substring(1)).join(',') + '}'
-  );
+  return `${path.join(basePath || '', '**/*.{') + extensions.map((ext) => ext.substring(1)).join(',')}}`;
 }
 
 export function getTSExtensions(withStar = false): string[] {
@@ -53,6 +50,7 @@ export function getNonSXExtensions(withStar = false): string[] {
   return withStar ? addStar(list) : list;
 }
 
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function getPaths(baseDir = process.cwd(), buildConfig = getBuildConfig()) {
   return Object.freeze({
     root: baseDir,

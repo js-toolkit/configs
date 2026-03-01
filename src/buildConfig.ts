@@ -1,4 +1,5 @@
-import buildConfigDefaults, { type BuildConfigDefaults } from './buildConfigDefaults';
+import buildConfigDefaults, { type BuildConfigDefaults } from './buildConfigDefaults.ts';
+import { defaultRequire } from './defaultRequire.ts';
 import type { AnyObject } from './types';
 
 export interface BuildConfig extends Pick<BuildConfigDefaults, 'output' | 'nodeModules'> {
@@ -56,18 +57,33 @@ function merge<T1 extends AnyObject, T2 extends Partial<T1>>(
   );
 }
 
+declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace NodeJS {
+    interface ProcessEnv {
+      buildConfig?: string | undefined;
+    }
+  }
+}
+
 export function getBuildConfig(configPath = resolveConfigPath()): BuildConfig {
-  const buildConfig: BuildConfig =
-    process.env.buildConfig ||
+  type PartialBuildConfig = Pick<BuildConfig, keyof BuildConfigDefaults>;
+
+  const buildConfig: PartialBuildConfig =
+    (process.env.buildConfig
+      ? (JSON.parse(process.env.buildConfig) as BuildConfigDefaults)
+      : undefined) ??
     (configPath
-      ? // eslint-disable-next-line @typescript-eslint/no-require-imports
-        merge(buildConfigDefaults, require(configPath))
+      ? (merge(
+          buildConfigDefaults,
+          defaultRequire(configPath) as Partial<BuildConfigDefaults>
+        ) as PartialBuildConfig)
       : ({
           ...buildConfigDefaults,
           web: undefined,
           node: undefined,
           shared: undefined,
-        } satisfies Pick<BuildConfig, keyof BuildConfigDefaults>));
+        } satisfies PartialBuildConfig));
 
   return {
     ...buildConfig,

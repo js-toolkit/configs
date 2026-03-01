@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { defaultRequire } from './defaultRequire.ts';
 
 export interface GetInstalledPackageOptions {
   requireFn?: typeof require;
@@ -19,7 +20,7 @@ export function getInstalledPackage(
   name: string,
   options: GetInstalledPackageOptions = {}
 ): string | undefined {
-  const { requireFn = require, resolveFromCwd = false } = options;
+  const { requireFn = defaultRequire, resolveFromCwd = false } = options;
 
   try {
     if (!resolveFromCwd) {

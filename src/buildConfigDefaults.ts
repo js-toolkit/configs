@@ -80,7 +80,7 @@ export function getSharedConfig(root = 'shared') {
   };
 }
 
-export type BuildConfigDefaults = {
+export interface BuildConfigDefaults {
   output: {
     root: string;
   };
@@ -90,7 +90,7 @@ export type BuildConfigDefaults = {
   web: ReturnType<typeof getWebAppConfig>;
   node: ReturnType<typeof getNodeAppConfig>;
   shared: ReturnType<typeof getSharedConfig>;
-};
+}
 
 const buildConfigDefaults: BuildConfigDefaults = {
   output: {

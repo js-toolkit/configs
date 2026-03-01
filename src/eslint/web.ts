@@ -1,10 +1,14 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-require-imports */
 import globals from 'globals';
 import type { Linter } from 'eslint';
 import { fixupConfigRules, type FixupConfigArray } from '@eslint/compat';
-import { getFilesGlob, getNonSXExtensions, getSXExtensions, getTSXExtensions } from '../paths';
-import { getInstalledPackage } from '../getInstalledPackage';
+import { getFilesGlob, getNonSXExtensions, getSXExtensions, getTSXExtensions } from '../paths.ts';
+import { getInstalledPackage } from '../getInstalledPackage.ts';
+import { defaultRequire } from '../defaultRequire.ts';
 
 const hasReactPlugin = !!getInstalledPackage('eslint-plugin-react', { resolveFromCwd: true });
 const hasReactA11yPlugin = !!getInstalledPackage('eslint-plugin-jsx-a11y', {
@@ -28,8 +32,10 @@ const hasPrettierEslintPlugin = !!getInstalledPackage('eslint-plugin-prettier/re
 
 const filterAirbnbRules = (config: 'react' | 'react-a11y'): FixupConfigArray => {
   return fixupConfigRules({
-    rules: require(
-      require('eslint-config-airbnb').extends.find((url: string) => url.endsWith(`${config}.js`))
+    rules: defaultRequire(
+      defaultRequire('eslint-config-airbnb').extends.find((url: string) =>
+        url.endsWith(`${config}.js`)
+      )
     ).rules,
   });
 };
@@ -37,7 +43,7 @@ const filterAirbnbRules = (config: 'react' | 'react-a11y'): FixupConfigArray => 
 const config: Linter.Config[] = [
   ...(hasReactPlugin
     ? (() => {
-        const plugin = require('eslint-plugin-react');
+        const plugin = defaultRequire('eslint-plugin-react');
         return [
           plugin.configs.flat.recommended,
           plugin.configs.flat['jsx-runtime'],
@@ -88,7 +94,7 @@ const config: Linter.Config[] = [
 
   ...(hasReactA11yPlugin
     ? (() => {
-        const plugin = require('eslint-plugin-jsx-a11y');
+        const plugin = defaultRequire('eslint-plugin-jsx-a11y');
         return [
           plugin.flatConfigs.recommended,
           ...(hasConfigAirbnb ? filterAirbnbRules('react-a11y') : []),
@@ -125,13 +131,13 @@ const config: Linter.Config[] = [
 
   ...(hasReactHooksPlugin
     ? [
-        require('eslint-plugin-react-hooks').configs.flat['recommended-latest'],
+        defaultRequire('eslint-plugin-react-hooks').configs.flat['recommended-latest'],
         { rules: { 'react-hooks/exhaustive-deps': 'error' } },
       ]
     : []),
 
   ...[
-    hasWCPlugin && require('eslint-plugin-wc').configs['flat/best-practice'],
+    hasWCPlugin && defaultRequire('eslint-plugin-wc').configs['flat/best-practice'],
     hasWCPlugin && {
       settings: {
         wc: {
@@ -139,7 +145,7 @@ const config: Linter.Config[] = [
         },
       },
     },
-    hasLitPlugin && require('eslint-plugin-lit').configs['flat/recommended'],
+    hasLitPlugin && defaultRequire('eslint-plugin-lit').configs['flat/recommended'],
     hasLitPlugin && {
       settings: {
         lit: {
@@ -155,10 +161,13 @@ const config: Linter.Config[] = [
     })),
 
   // Redefine again to override react rules.
-  ...(hasPrettierEslintPlugin ? [require('eslint-plugin-prettier/recommended')] : []),
+  ...(hasPrettierEslintPlugin ? [defaultRequire('eslint-plugin-prettier/recommended')] : []),
 
-  ...(hasMobxPlugin ? [require('eslint-plugin-mobx').flatConfigs.recommended] : []),
+  ...(hasMobxPlugin ? [defaultRequire('eslint-plugin-mobx').flatConfigs.recommended] : []),
 ];
 
-module.exports = config;
+if (typeof module !== 'undefined') {
+  module.exports = config;
+}
+
 export default config;

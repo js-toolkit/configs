@@ -1,9 +1,14 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-function-type */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import type { RuleSetUseItem } from 'webpack';
-import appEnv from '../appEnv';
-import paths from '../paths';
-import nodeRequire from './nodeRequire';
+import appEnv from '../appEnv.ts';
+import paths from '../paths.ts';
+import nodeRequire from './nodeRequire.ts';
 
 export interface BaseTsOptions {
   tsconfig: string;
@@ -58,7 +63,7 @@ export function ts({
         ]
       : []),
 
-    ...(afterLoaders || []),
+    ...(afterLoaders ?? []),
 
     {
       loader: 'ts-loader',
@@ -76,6 +81,17 @@ export function ts({
       },
     },
   ];
+}
+
+export function babelLoader(options?: Record<PropertyKey, any>) {
+  return {
+    loader: 'babel-loader',
+    options: {
+      cacheDirectory: true,
+      cacheCompression: false,
+      ...options,
+    },
+  };
 }
 
 export function getTsLoader({ loaderType, ...rest }: GetTsLoaderOptions) {
@@ -106,22 +122,11 @@ export function getTsCheckerPlugin(options: Record<string, any> = {}) {
 export function tsRHL({ afterLoaders, ...rest }: TsDefaultLoaderOptions) {
   return ts({
     afterLoaders: [
-      ...(afterLoaders || []),
+      ...(afterLoaders ?? []),
       ...appEnv.ifDev(() => [{ loader: 'babel-loader' }], []),
     ],
     ...rest,
   });
-}
-
-export function babelLoader(options?: Record<PropertyKey, any>) {
-  return {
-    loader: 'babel-loader',
-    options: {
-      cacheDirectory: true,
-      cacheCompression: false,
-      ...options,
-    },
-  };
 }
 
 export const cssExtractLoader = 'mini-css-extract-plugin/dist/loader';
