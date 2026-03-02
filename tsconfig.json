@@ -2,7 +2,7 @@
   "extends": "./src/ts/common.tsconfig.json",
   "compilerOptions": {
     "target": "es2015",
-    "module": "es2015",
+    "module": "es2020",
     "moduleResolution": "bundler",
     "outDir": "dist/esm",
     "declarationDir": "dist/types",
@@ -10,5 +10,6 @@
     "sourceMap": false,
     "importHelpers": false
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["src/defaultRequire.cjs.ts"]
 }

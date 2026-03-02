@@ -463,4 +463,6 @@ export default config;
 
 if (typeof module !== 'undefined') {
   module.exports = config;
+  module.exports.create = create;
+  module.exports.createTypeScriptImportResolver = createTypeScriptImportResolver;
 }

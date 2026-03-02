@@ -104,10 +104,12 @@ const buildConfigDefaults: BuildConfigDefaults = {
   shared: getSharedConfig(),
 };
 
-const config = Object.freeze(buildConfigDefaults);
+export default buildConfigDefaults;
 
-export default config;
-
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 if (typeof module !== 'undefined') {
-  module.exports = config;
+  module.exports = buildConfigDefaults;
+  module.exports.getWebAppConfig = getWebAppConfig;
+  module.exports.getNodeAppConfig = getNodeAppConfig;
+  module.exports.getSharedConfig = getSharedConfig;
 }

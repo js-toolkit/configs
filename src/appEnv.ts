@@ -179,6 +179,8 @@ const appEnv = getAppEnvironment();
 
 export default appEnv;
 
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 if (typeof module !== 'undefined') {
   module.exports = appEnv;
+  module.exports.getAppEnvironment = getAppEnvironment;
 }

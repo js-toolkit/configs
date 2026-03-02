@@ -52,7 +52,7 @@ export function getNonSXExtensions(withStar = false): string[] {
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function getPaths(baseDir = process.cwd(), buildConfig = getBuildConfig()) {
-  return Object.freeze({
+  return {
     root: baseDir,
 
     nodeModules: {
@@ -160,7 +160,7 @@ export function getPaths(baseDir = process.cwd(), buildConfig = getBuildConfig()
         tsconfig: path.resolve(baseDir, shared.root, shared.tsconfig),
       };
     })(),
-  });
+  };
 }
 
 /** Do not use it in runtime in browser environment! */
@@ -168,6 +168,15 @@ const paths = getPaths();
 
 export default paths;
 
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 if (typeof module !== 'undefined') {
   module.exports = paths;
+  module.exports.moduleExtensions = moduleExtensions;
+  module.exports.getFilesGlob = getFilesGlob;
+  module.exports.getTSExtensions = getTSExtensions;
+  module.exports.getJSExtensions = getJSExtensions;
+  module.exports.getSXExtensions = getSXExtensions;
+  module.exports.getTSXExtensions = getTSXExtensions;
+  module.exports.getNonSXExtensions = getNonSXExtensions;
+  module.exports.getPaths = getPaths;
 }

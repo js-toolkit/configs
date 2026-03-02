@@ -5,11 +5,13 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "outDir": "dist/cjs",
+    "moduleSuffixes": [".cjs", ""],
     "verbatimModuleSyntax": false,
     "isolatedModules": true,
     "declaration": false,
     "sourceMap": false,
     "importHelpers": false
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["src/defaultRequire.ts"]
 }
