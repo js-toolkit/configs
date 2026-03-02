@@ -166,8 +166,4 @@ const config: Linter.Config[] = [
   ...(hasMobxPlugin ? [defaultRequire('eslint-plugin-mobx').flatConfigs.recommended] : []),
 ];
 
-if (typeof module !== 'undefined') {
-  module.exports = config;
-}
-
 export default config;

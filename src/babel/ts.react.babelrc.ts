@@ -3,5 +3,4 @@ const config = {
   presets: ['@babel/preset-typescript'],
 };
 
-module.exports = config;
 export default config;

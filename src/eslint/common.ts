@@ -3,7 +3,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable import-x/extensions */
-/* eslint-disable import-x/no-import-module-exports */
 
 import fs from 'fs';
 import path from 'path';
@@ -458,12 +457,6 @@ export function create(cwd: string): Linter.Config[] {
   ];
 }
 
-const config = create(process.cwd());
-
-if (typeof module !== 'undefined') {
-  module.exports = config;
-  module.exports.create = create;
-  module.exports.createTypeScriptImportResolver = createTypeScriptImportResolver;
-}
+const config: Linter.Config[] = create(process.cwd());
 
 export default config;

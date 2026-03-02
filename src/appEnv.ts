@@ -151,7 +151,6 @@ export function getAppEnvironment(): AppEnvironment {
     },
   };
 
-  // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
   if ((typeof window === 'undefined' ? global : window).Proxy) {
     return new Proxy(appEnv, {
       // prop always is string or symbol, not number

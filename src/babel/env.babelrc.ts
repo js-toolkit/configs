@@ -30,5 +30,4 @@ const config = {
   ].filter((p) => !!p),
 };
 
-module.exports = config;
 export default config;

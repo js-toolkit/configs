@@ -3,5 +3,4 @@ const config = {
   presets: ['@babel/preset-react'],
 };
 
-module.exports = config;
 export default config;

@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "module": "ESNext",
+    "module": "nodenext",
     "moduleResolution": "nodenext",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "jsx": "react-jsx",
@@ -10,7 +10,6 @@
     "allowJs": false,
     "esModuleInterop": true,
     "resolveJsonModule": true,
-    "resolvePackageJsonImports": true,
     "importHelpers": true,
     "verbatimModuleSyntax": true,
     "rewriteRelativeImportExtensions": true,
