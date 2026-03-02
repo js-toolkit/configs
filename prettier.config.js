@@ -1,1 +1,1 @@
-module.exports = require('./src/prettier/index.ts');
+export { default } from './src/prettier/index.ts';
