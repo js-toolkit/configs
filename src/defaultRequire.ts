@@ -1,3 +1,7 @@
+/* eslint-disable no-new-func */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-implied-eval */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { createRequire } from 'module';
 import path from 'path';
 
@@ -5,6 +9,5 @@ import path from 'path';
 export const defaultRequire = createRequire(
   typeof __dirname !== 'undefined'
     ? path.join(__dirname, 'index.js') // CJS
-    : // @ts-expect-error Universal require for ESM, createRequire needs a file path, but we can use the current module URL
-      import.meta.url // ESM
+    : new Function('return import.meta.url')() // ESM: Hide `import` from the parser, so it doesn't complain about using `import` in CJS.
 );

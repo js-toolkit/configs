@@ -104,4 +104,10 @@ const buildConfigDefaults: BuildConfigDefaults = {
   shared: getSharedConfig(),
 };
 
-export default Object.freeze(buildConfigDefaults);
+const config = Object.freeze(buildConfigDefaults);
+
+export default config;
+
+if (typeof module !== 'undefined') {
+  module.exports = config;
+}

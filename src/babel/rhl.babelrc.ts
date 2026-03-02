@@ -3,3 +3,7 @@ const config = {
 };
 
 export default config;
+
+if (typeof module !== 'undefined') {
+  module.exports = config;
+}

@@ -460,3 +460,7 @@ export function create(cwd: string): Linter.Config[] {
 const config: Linter.Config[] = create(process.cwd());
 
 export default config;
+
+if (typeof module !== 'undefined') {
+  module.exports = config;
+}

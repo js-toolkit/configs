@@ -167,3 +167,7 @@ export function getPaths(baseDir = process.cwd(), buildConfig = getBuildConfig()
 const paths = getPaths();
 
 export default paths;
+
+if (typeof module !== 'undefined') {
+  module.exports = paths;
+}

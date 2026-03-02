@@ -104,3 +104,7 @@ export function getBuildConfig(configPath = resolveConfigPath()): BuildConfig {
 const buildConfig = getBuildConfig();
 
 export default buildConfig;
+
+if (typeof module !== 'undefined') {
+  module.exports = buildConfig;
+}

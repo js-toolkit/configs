@@ -178,3 +178,7 @@ export function getAppEnvironment(): AppEnvironment {
 const appEnv = getAppEnvironment();
 
 export default appEnv;
+
+if (typeof module !== 'undefined') {
+  module.exports = appEnv;
+}

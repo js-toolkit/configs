@@ -10,7 +10,7 @@ export interface Options {
   autoprefixer?: boolean | undefined;
 }
 
-export default ({
+const config = ({
   import: importConfig = paths.web.sources.length > 0 ? { path: paths.web.sources } : false,
   presetEnv,
   nested = true,
@@ -39,3 +39,9 @@ export default ({
     minimizer && ['cssnano', { preset: ['default', { discardComments: { removeAll: true } }] }],
   ].filter(Boolean),
 });
+
+export default config;
+
+if (typeof module !== 'undefined') {
+  module.exports = config;
+}
