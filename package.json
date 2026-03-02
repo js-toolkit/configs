@@ -30,7 +30,7 @@
   },
   "scripts": {
     "clean": "rimraf dist/*",
-    "copy:configs": "copyfiles package.json .npmignore README.md LICENSE ./dist/",
+    "copy:configs": "copyfiles package.json .npmignore README.md LICENSE ./dist/ && node scripts/postbuild.ts",
     "copy": "copyfiles --exclude './src/**/*.ts' --up 1 './src/**/*' ./dist/ && npm run copy:configs",
     "minify": "node ../node-utils/dist/bin/minify.js --replace ./dist",
     "build:cjs": "tsc -p tsconfig.cjs.json",
