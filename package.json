@@ -8,6 +8,7 @@
     "type": "git",
     "url": "https://github.com/js-toolkit/configs"
   },
+  "type": "module",
   "exports": {
     "./js/*.json": "./js/*.json",
     "./ts/*.json": "./ts/*.json",

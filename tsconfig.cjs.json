@@ -2,8 +2,8 @@
   "extends": "./src/ts/common.tsconfig.json",
   "compilerOptions": {
     "target": "es2015",
-    "module": "nodenext",
-    "moduleResolution": "nodenext",
+    "module": "commonjs",
+    "moduleResolution": "node",
     "outDir": "dist/cjs",
     "verbatimModuleSyntax": false,
     "isolatedModules": true,
