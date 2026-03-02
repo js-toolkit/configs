@@ -18,7 +18,9 @@
       "types": "./types/*/*.d.ts",
       "import": "./esm/*/*.js",
       "require": "./cjs/*/*.js"
-    }
+    },
+    "./js/*.json": "./js/*.json",
+    "./ts/*.json": "./ts/*.json"
   },
   "scripts": {
     "clean": "rimraf dist/*",
