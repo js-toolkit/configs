@@ -9,18 +9,23 @@
     "url": "https://github.com/js-toolkit/configs"
   },
   "exports": {
-    "./*": {
-      "types": "./types/*.d.ts",
-      "require": "./cjs/*.js",
-      "import": "./esm/*.js"
+    "./js/*.json": "./js/*.json",
+    "./ts/*.json": "./ts/*.json",
+    "./prettier": {
+      "types": "./types/prettier/index.d.ts",
+      "import": "./esm/prettier/index.js",
+      "require": "./cjs/prettier/index.js"
     },
     "./*/*": {
       "types": "./types/*/*.d.ts",
       "import": "./esm/*/*.js",
       "require": "./cjs/*/*.js"
     },
-    "./js/*.json": "./js/*.json",
-    "./ts/*.json": "./ts/*.json"
+    "./*": {
+      "types": "./types/*.d.ts",
+      "require": "./cjs/*.js",
+      "import": "./esm/*.js"
+    }
   },
   "scripts": {
     "clean": "rimraf dist/*",
