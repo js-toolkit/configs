@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import fs from 'fs';
 import type { Linter } from 'eslint';
-import { defaultRequire } from '../defaultRequire.ts';
+import paths from '../paths.ts';
 import buildConfig, { type BuildConfig } from '../buildConfig.ts';
-import paths, { getFilesGlob, moduleExtensions } from '../paths.ts';
+import { getFilesGlob, moduleExtensions } from '../extensions.ts';
+import { defaultRequire } from '../defaultRequire.ts';
 
 const filesGlobs: Record<keyof Pick<BuildConfig, 'web' | 'node' | 'shared'> | 'other', string[]> = {
   web:

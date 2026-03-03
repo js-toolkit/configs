@@ -6,7 +6,7 @@
 import globals from 'globals';
 import type { Linter } from 'eslint';
 import { fixupConfigRules, type FixupConfigArray } from '@eslint/compat';
-import { getFilesGlob, getNonSXExtensions, getSXExtensions, getTSXExtensions } from '../paths.ts';
+import { getFilesGlob, getNonSXExtensions, getSXExtensions, getTSXExtensions } from '../extensions.ts';
 import { getInstalledPackage } from '../getInstalledPackage.ts';
 import { defaultRequire } from '../defaultRequire.ts';
 
@@ -117,12 +117,13 @@ const config: Linter.Config[] = [
         {
           files: [getFilesGlob(getTSXExtensions())],
           rules: {
+            // ESLint v10.
             // TypeError: Error while loading rule 'react/jsx-filename-extension': context.getFilename is not a function
             // https://github.com/vercel/next.js/issues/89764#issuecomment-3928272828
-            // 'react/jsx-filename-extension': [
-            //   'error',
-            //   { allow: 'as-needed', extensions: getSXExtensions() },
-            // ],
+            'react/jsx-filename-extension': [
+              'error',
+              { allow: 'as-needed', extensions: getSXExtensions() },
+            ],
             'react/require-default-props': 'off',
           },
         } satisfies Linter.Config,

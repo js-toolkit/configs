@@ -1,5 +1,5 @@
 import path from 'path';
-import paths from '../paths';
+import paths from '../paths.ts';
 
 const config = {
   extends: ['stylelint-config-standard', 'stylelint-config-css-modules'],

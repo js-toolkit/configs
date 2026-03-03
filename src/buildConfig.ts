@@ -18,7 +18,7 @@ export function resolveConfigPath(moduleNames = ['build.config'], paths = [proce
   for (let i = 0, name = moduleNames[i]; i < length; i += 1) {
     try {
       // With node 12 it is needed to use prefix './'
-      module = require.resolve(`./${name}`, { paths });
+      module = defaultRequire.resolve(`./${name}`, { paths });
       if (module) {
         return module;
       }

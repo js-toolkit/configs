@@ -1,5 +1,5 @@
-import appEnv from '../appEnv';
-import paths from '../paths';
+import appEnv from '../appEnv.ts';
+import paths from '../paths.ts';
 
 export interface Options {
   import?: { path: string[] | string } | false | undefined;

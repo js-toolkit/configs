@@ -8,3 +8,11 @@ export type OptionalToUndefined<T> = {
 export type RequiredStrict<T> = {
   [P in keyof T]-?: Exclude<T[P], undefined>;
 };
+
+export type PickInner<T, K extends keyof T, IK extends keyof NonNullable<T[K]>> = T extends T
+  ? {
+      [P in keyof T]: P extends K
+        ? Pick<NonNullable<T[P]>, IK extends keyof T[P] ? IK : never>
+        : T[P];
+    }
+  : never;

@@ -7,8 +7,9 @@ import path from 'path';
 import webpack from 'webpack';
 import type { OptionalToUndefined } from '../types';
 import appEnv from '../appEnv.ts';
+import paths from '../paths.ts';
 import buildConfig from '../buildConfig.ts';
-import paths, { getJSExtensions, moduleExtensions } from '../paths.ts';
+import { getJSExtensions, moduleExtensions } from '../extensions.ts';
 import { TsLoaderType, getTsCheckerPlugin } from './loaders.ts';
 import nodeRequire from './nodeRequire.ts';
 

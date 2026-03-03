@@ -3,7 +3,7 @@ import path from 'path';
 import { defaultRequire } from './defaultRequire.ts';
 
 export interface GetInstalledPackageOptions {
-  requireFn?: typeof require;
+  requireFn?: NodeRequire;
   resolveFromCwd?: boolean;
 }
 

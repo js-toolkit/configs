@@ -1,57 +1,23 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import path from 'path';
 import { getBuildConfig } from './buildConfig.ts';
+import { defaultRequire } from './defaultRequire.ts';
+import type { BuildConfigDefaults } from './buildConfigDefaults.ts';
+import type { PickInner } from './types/index.ts';
 
-export const moduleExtensions = [
-  '.js',
-  '.mjs',
-  '.cjs',
-  '.jsx',
-  '.mjsx',
-  '.cjsx',
-  '.ts',
-  '.mts',
-  '.cts',
-  '.tsx',
-  '.mtsx',
-  '.ctsx',
-  '.d.ts',
-];
-
-function addStar(extensions: string[]): string[] {
-  return extensions.map((ext) => `*${ext}`);
+export interface Paths extends Omit<BuildConfigDefaults, 'web' | 'node'> {
+  root: string;
+  web: PickInner<
+    Omit<BuildConfigDefaults['web'], 'html' | 'staticContent'>,
+    'output',
+    'root' | 'js'
+  > & { staticContent: Exclude<BuildConfigDefaults['web']['staticContent'][number], string>[] };
+  node: PickInner<BuildConfigDefaults['node'], 'output', 'root'>;
+  /** Any installed package. */
+  getNodeModulesRoot(packageName: string): string;
 }
 
-export function getFilesGlob(extensions: string[], basePath?: string): string {
-  return `${path.join(basePath || '', '**/*.{') + extensions.map((ext) => ext.substring(1)).join(',')}}`;
-}
-
-export function getTSExtensions(withStar = false): string[] {
-  const list = moduleExtensions.filter((ext) => ext.includes('ts'));
-  return withStar ? addStar(list) : list;
-}
-
-export function getJSExtensions(withStar = false): string[] {
-  const list = moduleExtensions.filter((ext) => ext.includes('js'));
-  return withStar ? addStar(list) : list;
-}
-
-export function getSXExtensions(withStar = false): string[] {
-  const list = moduleExtensions.filter((ext) => ext.endsWith('sx'));
-  return withStar ? addStar(list) : list;
-}
-
-export function getTSXExtensions(withStar = false): string[] {
-  const list = moduleExtensions.filter((ext) => ext.endsWith('tsx'));
-  return withStar ? addStar(list) : list;
-}
-
-export function getNonSXExtensions(withStar = false): string[] {
-  const list = moduleExtensions.filter((ext) => !ext.endsWith('sx'));
-  return withStar ? addStar(list) : list;
-}
-
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function getPaths(baseDir = process.cwd(), buildConfig = getBuildConfig()) {
+export function getPaths(baseDir = process.cwd(), buildConfig = getBuildConfig()): Paths {
   return {
     root: baseDir,
 
@@ -59,10 +25,11 @@ export function getPaths(baseDir = process.cwd(), buildConfig = getBuildConfig()
       root: (() => {
         const dir = buildConfig.nodeModules.root;
         try {
-          const idx = __dirname.indexOf(dir);
-          // Id cwd is inside node_modules dir.
+          const currentDir = import.meta.dirname;
+          const idx = currentDir.indexOf(dir);
+          // If cwd is inside node_modules dir.
           if (idx >= 0) {
-            return __dirname.substring(0, idx + dir.length);
+            return currentDir.substring(0, idx + dir.length);
           }
           return path.resolve(baseDir, dir);
         } catch {
@@ -71,95 +38,90 @@ export function getPaths(baseDir = process.cwd(), buildConfig = getBuildConfig()
       })(),
     },
 
-    /** Any installed package. */
-    getNodeModulesRoot(packageName: string): string {
-      const modulePath = require.resolve(packageName);
-      const dir = 'node_modules';
-      return modulePath.substring(0, modulePath.indexOf(dir) + dir.length);
-    },
-
     output: {
       root: path.resolve(baseDir, buildConfig.output.root),
     },
 
-    web: (() => {
-      const { web } = buildConfig;
+    web: buildConfig.web
+      ? {
+          root: path.resolve(baseDir, buildConfig.web.root),
+          sources: buildConfig.web.sources.map((p) =>
+            path.resolve(baseDir, buildConfig.web!.root, p)
+          ),
+          assets: buildConfig.web.assets.map((p) =>
+            path.resolve(baseDir, buildConfig.web!.root, p)
+          ),
+          staticContent: buildConfig.web.staticContent.map((item) => {
+            const p = typeof item === 'string' ? { path: item } : item;
+            return path.isAbsolute(p.path)
+              ? p
+              : { ...p, path: path.resolve(baseDir, buildConfig.web!.root, p.path) };
+          }),
 
-      if (!web) {
-        return {
+          tsconfig: path.resolve(baseDir, buildConfig.web.root, buildConfig.web.tsconfig),
+
+          output: {
+            root: path.resolve(baseDir, buildConfig.output.root, buildConfig.web.output.root),
+            js: path.resolve(
+              baseDir,
+              buildConfig.output.root,
+              buildConfig.web.output.root,
+              buildConfig.web.output.js
+            ),
+          },
+        }
+      : {
           root: '',
           sources: [],
           assets: [],
           staticContent: [],
           tsconfig: '',
           output: {
-            path: '',
-            jsPath: '',
+            root: '',
+            js: '',
           },
-        };
-      }
-
-      return {
-        root: path.resolve(baseDir, web.root),
-        sources: web.sources.map((p) => path.resolve(baseDir, web.root, p)),
-        assets: web.assets.map((p) => path.resolve(baseDir, web.root, p)),
-        staticContent: web.staticContent.map((item) => {
-          const p = typeof item === 'string' ? { path: item } : item;
-          return path.isAbsolute(p.path)
-            ? p
-            : { ...p, path: path.resolve(baseDir, web.root, p.path) };
-        }),
-
-        tsconfig: path.resolve(baseDir, web.root, web.tsconfig),
-
-        output: {
-          path: path.resolve(baseDir, buildConfig.output.root, web.output.root),
-          jsPath: path.resolve(baseDir, buildConfig.output.root, web.output.root, web.output.js),
         },
-      };
-    })(),
 
-    node: (() => {
-      const { node } = buildConfig;
-
-      if (!node) {
-        return {
+    node: buildConfig.node
+      ? {
+          root: path.resolve(baseDir, buildConfig.node.root),
+          sources: buildConfig.node.sources.map((p) =>
+            path.resolve(baseDir, buildConfig.node!.root, p)
+          ),
+          tsconfig: path.resolve(baseDir, buildConfig.node.root, buildConfig.node.tsconfig),
+          output: {
+            root: path.resolve(baseDir, buildConfig.output.root, buildConfig.node.output.root),
+          },
+        }
+      : {
           root: '',
           sources: [],
           tsconfig: '',
           output: {
-            path: '',
+            root: '',
           },
-        };
-      }
-
-      return {
-        root: path.resolve(baseDir, node.root),
-        sources: node.sources.map((p) => path.resolve(baseDir, node.root, p)),
-        tsconfig: path.resolve(baseDir, node.root, node.tsconfig),
-        output: {
-          path: path.resolve(baseDir, buildConfig.output.root, node.output.root),
         },
-      };
-    })(),
 
-    shared: (() => {
-      const { shared } = buildConfig;
-
-      if (!shared) {
-        return {
+    shared: buildConfig.shared
+      ? {
+          root: path.resolve(baseDir, buildConfig.shared.root),
+          sources: buildConfig.shared.sources.map((p) =>
+            path.resolve(baseDir, buildConfig.shared!.root, p)
+          ),
+          tsconfig: path.resolve(baseDir, buildConfig.shared.root, buildConfig.shared.tsconfig),
+        }
+      : {
           root: '',
           sources: [],
           tsconfig: '',
-        };
-      }
+        },
 
-      return {
-        root: path.resolve(baseDir, shared.root),
-        sources: shared.sources.map((p) => path.resolve(baseDir, shared.root, p)),
-        tsconfig: path.resolve(baseDir, shared.root, shared.tsconfig),
-      };
-    })(),
+    /** Any installed package. */
+    getNodeModulesRoot(packageName: string): string {
+      const modulePath = defaultRequire.resolve(packageName);
+      const dir = 'node_modules';
+      return modulePath.substring(0, modulePath.indexOf(dir) + dir.length);
+    },
   };
 }
 
@@ -168,15 +130,6 @@ const paths = getPaths();
 
 export default paths;
 
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 if (typeof module !== 'undefined') {
   module.exports = paths;
-  module.exports.moduleExtensions = moduleExtensions;
-  module.exports.getFilesGlob = getFilesGlob;
-  module.exports.getTSExtensions = getTSExtensions;
-  module.exports.getJSExtensions = getJSExtensions;
-  module.exports.getSXExtensions = getSXExtensions;
-  module.exports.getTSXExtensions = getTSXExtensions;
-  module.exports.getNonSXExtensions = getNonSXExtensions;
-  module.exports.getPaths = getPaths;
 }

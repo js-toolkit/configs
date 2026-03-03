@@ -12,12 +12,8 @@ import { defineConfig } from 'eslint/config';
 import eslintJs from '@eslint/js';
 import { fixupConfigRules, type FixupConfigArray } from '@eslint/compat';
 import type { AnyObject } from '../types';
-import paths, {
-  getFilesGlob,
-  getJSExtensions,
-  getTSExtensions,
-  moduleExtensions,
-} from '../paths.ts';
+import paths from '../paths.ts';
+import { getFilesGlob, getJSExtensions, getTSExtensions, moduleExtensions } from '../extensions.ts';
 import { getInstalledPackage } from '../getInstalledPackage.ts';
 import { defaultRequire } from '../defaultRequire.ts';
 import { eslintTsProject } from './consts.ts';
