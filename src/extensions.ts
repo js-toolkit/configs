@@ -50,7 +50,7 @@ export function getNonSXExtensions(withStar = false): string[] {
 }
 
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-if (typeof module !== 'undefined') {
+if (typeof module !== 'undefined' && module.exports) {
   module.exports.moduleExtensions = moduleExtensions;
   module.exports.getFilesGlob = getFilesGlob;
   module.exports.getTSExtensions = getTSExtensions;

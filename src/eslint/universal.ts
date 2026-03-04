@@ -65,6 +65,6 @@ const config: Linter.Config[] = [
 
 export default config;
 
-if (typeof module !== 'undefined') {
+if (typeof module !== 'undefined' && module.exports) {
   module.exports = config;
 }

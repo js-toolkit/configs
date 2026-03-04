@@ -457,7 +457,7 @@ const config: Linter.Config[] = create(process.cwd());
 
 export default config;
 
-if (typeof module !== 'undefined') {
+if (typeof module !== 'undefined' && module.exports) {
   module.exports = config;
   module.exports.create = create;
   module.exports.createTypeScriptImportResolver = createTypeScriptImportResolver;

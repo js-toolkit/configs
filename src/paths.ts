@@ -131,7 +131,7 @@ const paths = getPaths();
 export default paths;
 
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-if (typeof module !== 'undefined') {
+if (typeof module !== 'undefined' && module.exports) {
   module.exports = paths;
   module.exports.getPaths = getPaths;
 }

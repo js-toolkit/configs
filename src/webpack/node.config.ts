@@ -201,7 +201,7 @@ const config = ({
 
 export default config;
 
-if (typeof module !== 'undefined') {
+if (typeof module !== 'undefined' && module.exports) {
   module.exports = config;
   module.exports.nodeDefaultRules = nodeDefaultRules;
   module.exports.universalDefaultRules = universalDefaultRules;

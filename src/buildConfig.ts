@@ -106,7 +106,7 @@ const buildConfig = getBuildConfig();
 export default buildConfig;
 
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-if (typeof module !== 'undefined') {
+if (typeof module !== 'undefined' && module.exports) {
   module.exports = buildConfig;
   module.exports.getBuildConfig = getBuildConfig;
   module.exports.resolveConfigPath = resolveConfigPath;
