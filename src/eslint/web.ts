@@ -49,6 +49,7 @@ export function create(cwd: string): Linter.Config[] {
           const plugin = defaultRequire('eslint-plugin-react');
           return [
             plugin.configs.flat.recommended,
+            ...(hasConfigAirbnb ? filterAirbnbRules('react') : []),
             plugin.configs.flat['jsx-runtime'],
             {
               languageOptions: {
@@ -57,15 +58,12 @@ export function create(cwd: string): Linter.Config[] {
                   ...globals.browser,
                 },
               },
-            },
-            ...(hasConfigAirbnb ? filterAirbnbRules('react') : []),
-            {
               settings: {
                 react: {
-                  // version: 'detect',
+                  version: 'detect',
                   // Avoids auto-detection crash:
                   // https://github.com/vercel/next.js/issues/89764#issuecomment-3928272828
-                  version: '19',
+                  // version: '19',
                 },
               },
               rules: {
