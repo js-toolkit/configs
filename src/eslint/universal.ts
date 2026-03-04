@@ -1,10 +1,10 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import fs from 'fs';
 import type { Linter } from 'eslint';
 import paths from '../paths.ts';
 import buildConfig, { type BuildConfig } from '../buildConfig.ts';
 import { getFilesGlob, moduleExtensions } from '../extensions.ts';
-import { defaultRequire } from '../defaultRequire.ts';
+import { create as createCommon } from './common.ts';
+import { create as createWeb } from './web.ts';
 
 const filesGlobs: Record<keyof Pick<BuildConfig, 'web' | 'node' | 'shared'> | 'other', string[]> = {
   web:
@@ -22,49 +22,70 @@ const filesGlobs: Record<keyof Pick<BuildConfig, 'web' | 'node' | 'shared'> | 'o
   other: moduleExtensions.map((ext) => `*${ext}`),
 };
 
-const config: Linter.Config[] = [
-  {
-    // Add to settings because we can export only valid configuration object without other named exports.
-    settings: { filesGlobs, getFilesGlob },
-  },
+export function create(cwd: string): Linter.Config[] {
+  const webConfig = createWeb(cwd);
+  const commonConfig = createCommon(cwd);
 
-  ...(filesGlobs.web.length > 0
-    ? [
-        {
-          files: filesGlobs.web,
-          rules: {},
-        },
-        ...defaultRequire('./web.ts'),
-      ]
-    : []),
+  return [
+    {
+      // Add to settings because we can export only valid configuration object without other named exports.
+      settings: { filesGlobs, getFilesGlob },
+    },
 
-  ...(filesGlobs.node.length > 0
-    ? [
-        {
-          files: filesGlobs.node,
-          rules: {},
-        },
-        ...defaultRequire('./web.ts'),
-        ...defaultRequire('./node.ts'),
-      ]
-    : []),
+    ...(filesGlobs.web.length > 0
+      ? commonConfig.map((conf) => ({
+          ...conf,
+          files: [...(conf.files ?? []), ...filesGlobs.web],
+        }))
+      : []),
+    ...(filesGlobs.web.length > 0
+      ? webConfig.map((conf) => ({
+          ...conf,
+          files: [...(conf.files ?? []), ...filesGlobs.web],
+        }))
+      : []),
 
-  ...(filesGlobs.shared.length > 0 ? [...defaultRequire('./common.ts')] : []),
+    ...(filesGlobs.node.length > 0
+      ? commonConfig.map((conf) => ({
+          ...conf,
+          files: [...(conf.files ?? []), ...filesGlobs.node],
+        }))
+      : []),
+    ...(filesGlobs.node.length > 0
+      ? webConfig.map((conf) => ({
+          ...conf,
+          files: [...(conf.files ?? []), ...filesGlobs.node],
+        }))
+      : []),
 
-  ...(filesGlobs.other.length > 0
-    ? [
-        {
-          files: filesGlobs.other,
-          ignores: [...filesGlobs.web, ...filesGlobs.node, ...filesGlobs.shared].filter(Boolean),
-          rules: {},
-        },
-        ...defaultRequire('./common.ts'),
-      ]
-    : []),
-];
+    ...(filesGlobs.shared.length > 0
+      ? commonConfig.map((conf) => ({
+          ...conf,
+          files: [...(conf.files ?? []), ...filesGlobs.shared],
+        }))
+      : []),
+
+    ...(filesGlobs.other.length > 0
+      ? commonConfig.map((conf) => ({
+          ...conf,
+          files: [...(conf.files ?? []), ...filesGlobs.other],
+          ignores: [
+            ...(conf.ignores ?? []),
+            ...filesGlobs.web,
+            ...filesGlobs.node,
+            ...filesGlobs.shared,
+          ].filter(Boolean),
+        }))
+      : []),
+  ];
+}
+
+const config: Linter.Config[] = create(process.cwd());
 
 export default config;
 
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = config;
+  module.exports.create = create;
 }
