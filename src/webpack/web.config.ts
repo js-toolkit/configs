@@ -6,7 +6,7 @@
 import path from 'path';
 import type { Configuration, RuleSetRule, RuleSetUse } from 'webpack';
 import type {} from 'webpack-dev-server';
-import type { AnyObject, RequiredStrict } from '../types';
+import type { AnyObject, PartialSome, RequiredStrict } from '../types';
 import appEnv from '../appEnv.ts';
 import paths from '../paths.ts';
 import buildConfig from '../buildConfig.ts';
@@ -106,11 +106,14 @@ export const webDefaultRules: Record<
 type DefaultRuleValue = RuleSetRule | ((defaults: RuleSetRule) => RuleSetRule);
 
 type WebDefaultRules = Record<
-  Exclude<keyof typeof webDefaultRules, 'tsBaseRule'>,
+  Exclude<keyof typeof webDefaultRules, 'tsBaseRule' | 'tsRule'>,
   DefaultRuleValue
-> & { tsRule: (defaults: RuleSetRule) => RuleSetRule };
+>;
 
-export interface WebConfigOptions extends Omit<CommonConfigOptions, 'typescript'> {
+export interface WebConfigOptions extends PartialSome<
+  Omit<CommonConfigOptions, 'typescript'>,
+  'outputPath' | 'outputPublicPath' | 'outputJsDir'
+> {
   typescript?:
     | (CommonConfigOptions['typescript'] & {
         loaderOptions?: Record<string, any> | undefined;
@@ -119,7 +122,7 @@ export interface WebConfigOptions extends Omit<CommonConfigOptions, 'typescript'
       })
     | boolean
     | undefined;
-  rules?: (Partial<WebDefaultRules> & Record<string, RuleSetRule>) | undefined;
+  rules?: (Partial<WebDefaultRules> | Record<string, RuleSetRule>) | undefined;
 }
 
 function containsLoader(rules: Record<string, RuleSetRule>, loader: string): boolean {
@@ -158,14 +161,14 @@ function normalizeHtml(
 
 const webBuildConfig = buildConfig.web ?? buildConfig.default.web;
 
-export default ({
-  outputPath,
-  outputPublicPath,
-  outputJsDir,
+const config = ({
+  outputPath = paths.web.output.root,
+  outputJsDir = webBuildConfig.output.js,
+  outputPublicPath = webBuildConfig.output.publicPath,
   hash = true,
   chunkSuffix = '.chunk',
   typescript,
-  rules: { tsBaseRule, ...rules } = {},
+  rules = {},
   ...restOptions
 }: WebConfigOptions): Configuration => {
   const tsConfig: RequiredStrict<Extract<WebConfigOptions['typescript'], object>> = {
@@ -184,7 +187,6 @@ export default ({
   const defaultRules: Omit<typeof webDefaultRules, 'tsBaseRule'> & { tsRule: RuleSetRule } = {
     tsRule: {
       ...defaultTsBaseRule,
-      ...tsBaseRule,
       use: getTsLoader({
         tsconfig: tsConfig.configFile,
         forkedChecks: tsConfig.forkedChecks,
@@ -450,3 +452,11 @@ export default ({
     },
   });
 };
+
+export default config;
+
+if (typeof module !== 'undefined') {
+  module.exports = config;
+  module.exports.webDefaultRules = webDefaultRules;
+  module.exports.prepareRules = prepareRules;
+}

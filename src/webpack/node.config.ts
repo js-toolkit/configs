@@ -61,14 +61,14 @@ export interface NodeConfigOptions extends WebConfigOptions {
 
 const nodeBuildConfig = buildConfig.node ?? buildConfig.default.node;
 
-export default ({
-  outputPath,
-  outputPublicPath,
-  outputJsDir,
+const config = ({
+  outputPath = paths.node.output.root,
+  outputJsDir = '',
+  outputPublicPath = nodeBuildConfig.output.publicPath,
   hash = false,
   chunkSuffix = '.chunk',
   typescript,
-  rules: { tsBaseRule, ...rules } = {},
+  rules = {},
   nodeExternalsOptions,
   isUniversal,
   ...restOptions
@@ -93,7 +93,6 @@ export default ({
   const defaultRules = {
     tsRule: {
       ...defaultTsBaseRule,
-      ...tsBaseRule,
       use: getTsLoader({
         tsconfig: tsConfig.configFile,
         forkedChecks: tsConfig.forkedChecks,
@@ -199,3 +198,11 @@ export default ({
     },
   });
 };
+
+export default config;
+
+if (typeof module !== 'undefined') {
+  module.exports = config;
+  module.exports.nodeDefaultRules = nodeDefaultRules;
+  module.exports.universalDefaultRules = universalDefaultRules;
+}

@@ -14,17 +14,19 @@ export interface BaseTsOptions {
   tsconfig: string;
 }
 
-export enum TsLoaderType {
-  Default = 'ts',
-  Babel = 'babel',
-}
+export const TsLoaderType = {
+  Default: 'ts',
+  Babel: 'babel',
+} as const;
+
+export type TsLoaderType = (typeof TsLoaderType)[keyof typeof TsLoaderType];
 
 interface GetTsLoaderOptionsBase extends BaseTsOptions {
   loaderType: TsLoaderType;
 }
 
 interface GetTsDefaultLoaderOptions extends GetTsLoaderOptionsBase {
-  loaderType: TsLoaderType.Default;
+  loaderType: typeof TsLoaderType.Default;
   forkedChecks?: boolean | undefined;
   useThreadLoader?: boolean | undefined;
   threadLoaderOptions?: Record<string, any> | undefined;

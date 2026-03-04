@@ -33,7 +33,7 @@ export interface CommonConfigOptions extends OptionalToUndefined<webpack.Configu
   minimizerPluginOptions?: Record<string, any> | readonly Record<string, any>[] | undefined;
 }
 
-export default ({
+const config = ({
   outputPath,
   outputPublicPath,
   outputJsDir,
@@ -216,3 +216,9 @@ export default ({
     },
   } as webpack.Configuration;
 };
+
+export default config;
+
+if (typeof module !== 'undefined') {
+  module.exports = config;
+}

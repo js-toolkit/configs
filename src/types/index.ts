@@ -16,3 +16,7 @@ export type PickInner<T, K extends keyof T, IK extends keyof NonNullable<T[K]>> 
         : T[P];
     }
   : never;
+
+export type PartialSome<T, K extends keyof T> = T extends T
+  ? Omit<T, K> & { [P in K]?: T[P] }
+  : never;
