@@ -22,7 +22,7 @@ const filesGlobs: Record<keyof Pick<BuildConfig, 'web' | 'node' | 'shared'> | 'o
   other: moduleExtensions.map((ext) => `*${ext}`),
 };
 
-export function create(cwd: string): Linter.Config[] {
+export function create(cwd: string | string[]): Linter.Config[] {
   const webConfig = createWeb(cwd);
   const commonConfig = createCommon(cwd);
 

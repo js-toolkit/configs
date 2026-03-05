@@ -28,8 +28,8 @@ const filterAirbnbRules = (config: 'react' | 'react-a11y'): FixupConfigArray => 
   });
 };
 
-export function create(cwd: string): Linter.Config[] {
-  const resolvePaths = [cwd];
+export function create(cwd: string | string[]): Linter.Config[] {
+  const resolvePaths = typeof cwd === 'string' ? [cwd] : cwd;
 
   const hasReactPlugin = !!getInstalledPackage('eslint-plugin-react', { resolvePaths });
   const hasReactA11yPlugin = !!getInstalledPackage('eslint-plugin-jsx-a11y', { resolvePaths });

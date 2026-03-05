@@ -34,8 +34,13 @@ export function createTypeScriptImportResolver(options?: AnyObject): AnyObject {
   });
 }
 
-export function create(cwd: string): Linter.Config[] {
-  const resolvePaths = [cwd];
+// export interface CreateOptions {
+//   packageResolvePaths: NonNullable<GetInstalledPackageOptions['resolvePaths']>;
+//   configResolvePaths: this['packageResolvePaths'];
+// }
+
+export function create(cwd: string | string[]): Linter.Config[] {
+  const resolvePaths = typeof cwd === 'string' ? [cwd] : cwd;
 
   const hasBabelParser = !!getInstalledPackage('@babel/eslint-parser', { resolvePaths });
   const hasPromisePlugin = !!getInstalledPackage('eslint-plugin-promise', { resolvePaths });
@@ -96,11 +101,13 @@ export function create(cwd: string): Linter.Config[] {
     return fixupConfigRules(list);
   };
 
-  const eslintTsConfig = hasTypescriptEslintPlugin ? path.resolve(cwd, eslintTsProject) : undefined;
+  const eslintTsConfig = hasTypescriptEslintPlugin
+    ? path.resolve(...resolvePaths, eslintTsProject)
+    : undefined;
   const tsconfig =
     eslintTsConfig && fs.existsSync(eslintTsConfig)
       ? eslintTsConfig
-      : path.resolve(cwd, 'tsconfig.json');
+      : path.resolve(...resolvePaths, 'tsconfig.json');
 
   return [
     eslintJs.configs.recommended,
@@ -294,16 +301,17 @@ export function create(cwd: string): Linter.Config[] {
             languageOptions: {
               parserOptions: {
                 // Defaults to the dir of eslint config file.
-                tsconfigRootDir: cwd,
+                tsconfigRootDir: resolvePaths[0],
                 projectService: {
                   // Defaults to the nearest tsconfig file.
                   defaultProject: tsconfig,
-                  allowDefaultProject: [
-                    '*.config.ts',
-                    '*.config.mts',
-                    'packages/*/*.config.ts',
-                    'packages/*/*.config.mts',
-                  ],
+                  allowDefaultProject: [],
+                  // allowDefaultProject: [
+                  //   '*.config.ts',
+                  //   '*.config.mts',
+                  //   'packages/*/*.config.ts',
+                  //   'packages/*/*.config.mts',
+                  // ],
                 },
               },
             },
