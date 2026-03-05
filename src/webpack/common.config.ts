@@ -1,9 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import path from 'path';
+// eslint-disable-next-line import-x/no-named-as-default
 import webpack from 'webpack';
 import type { OptionalToUndefined } from '../types';
 import appEnv from '../appEnv.ts';

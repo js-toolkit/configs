@@ -1,5 +1,3 @@
-import fs from 'fs';
-import path from 'path';
 import { defaultRequire } from './defaultRequire.ts';
 
 export interface GetInstalledPackageOptions {
@@ -9,12 +7,6 @@ export interface GetInstalledPackageOptions {
 
 /**
  * Resolves a package from the linted project's perspective (process.cwd()).
- *
- * - If the project has its own node_modules: only accept packages from
- *   cwd/node_modules (reject hoisted deps from root that the project doesn't have).
- * - If the project has no node_modules (flat workspace): accept resolution from root.
- *
- * @param resolvePaths - when true, resolve from cwd; when false (default), use plain require.
  */
 export function getInstalledPackage(
   name: string,
@@ -29,14 +21,13 @@ export function getInstalledPackage(
     }
 
     const paths = resolvePaths === true ? [process.cwd()] : resolvePaths;
-    const resolved = requireFn.resolve(name, { paths });
-    const cwdNodeModules = path.resolve(...paths, 'node_modules');
-    const hasOwnNodeModules = fs.existsSync(cwdNodeModules);
-    if (!hasOwnNodeModules) {
-      return name;
-    }
-    const isLocal = !path.relative(cwdNodeModules, resolved).startsWith('..');
-    return isLocal ? name : undefined;
+    requireFn.resolve(name, { paths });
+    return name;
+    // const resolved = requireFn.resolve(name, { paths });
+    // const cwdNodeModules = findPath('node_modules', paths);
+    // if (!cwdNodeModules) return name;
+    // const isLocal = !path.relative(cwdNodeModules, resolved).startsWith('..');
+    // return isLocal ? name : undefined;
   } catch {
     return undefined;
   }

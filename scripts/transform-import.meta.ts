@@ -4,7 +4,7 @@ export default function transformImportMetaToCjs(): ts.TransformerFactory<ts.Sou
   return (context: ts.TransformationContext) => {
     return (sourceFile: ts.SourceFile) => {
       const visitor = (node: ts.Node): ts.Node => {
-        // Ищем import.meta.dirname
+        // Ищем import.meta
         if (
           ts.isPropertyAccessExpression(node) &&
           ts.isMetaProperty(node.expression) &&

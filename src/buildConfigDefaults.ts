@@ -106,7 +106,6 @@ const buildConfigDefaults: BuildConfigDefaults = {
 
 export default buildConfigDefaults;
 
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = buildConfigDefaults;
   module.exports.getWebAppConfig = getWebAppConfig;

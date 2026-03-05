@@ -1,9 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-
 import globals from 'globals';
 import type { Linter } from 'eslint';
 import { fixupConfigRules, type FixupConfigArray } from '@eslint/compat';
@@ -13,8 +7,10 @@ import {
   getSXExtensions,
   getTSXExtensions,
 } from '../extensions.ts';
+import { getProjectDependencies } from '../getProjectDependencies.ts';
 import { getInstalledPackage } from '../getInstalledPackage.ts';
 import { defaultRequire } from '../defaultRequire.ts';
+import type { CreateOptions } from './common.ts';
 
 // delete (globals.browser as any)['AudioWorkletGlobalScope '];
 
@@ -28,20 +24,24 @@ const filterAirbnbRules = (config: 'react' | 'react-a11y'): FixupConfigArray => 
   });
 };
 
-export function create(cwd: string | string[]): Linter.Config[] {
-  const resolvePaths = typeof cwd === 'string' ? [cwd] : cwd;
+export function create({ resolvePaths: resolvePaths0, depsOnly }: CreateOptions): Linter.Config[] {
+  const resolvePaths = typeof resolvePaths0 === 'string' ? [resolvePaths0] : resolvePaths0;
+  const deps = depsOnly && getProjectDependencies(resolvePaths);
 
-  const hasReactPlugin = !!getInstalledPackage('eslint-plugin-react', { resolvePaths });
-  const hasReactA11yPlugin = !!getInstalledPackage('eslint-plugin-jsx-a11y', { resolvePaths });
-  const hasReactHooksPlugin = !!getInstalledPackage('eslint-plugin-react-hooks', { resolvePaths });
-  const hasWCPlugin = !!getInstalledPackage('eslint-plugin-wc', { resolvePaths });
-  const hasLitPlugin = !!getInstalledPackage('eslint-plugin-lit', { resolvePaths });
-  const hasMobxPlugin = !!getInstalledPackage('eslint-plugin-mobx', { resolvePaths });
-  const hasConfigAirbnb = !!getInstalledPackage('eslint-config-airbnb', { resolvePaths });
-  const hasTypescriptEslintPlugin = !!getInstalledPackage('typescript-eslint', { resolvePaths });
-  const hasPrettierEslintPlugin = !!getInstalledPackage('eslint-plugin-prettier/recommended', {
-    resolvePaths,
-  });
+  const hasDep = (name: string): boolean => {
+    if (deps && !deps.has(name)) return false;
+    return !!getInstalledPackage(name, { resolvePaths });
+  };
+
+  const hasReactPlugin = hasDep('eslint-plugin-react');
+  const hasReactA11yPlugin = hasDep('eslint-plugin-jsx-a11y');
+  const hasReactHooksPlugin = hasDep('eslint-plugin-react-hooks');
+  const hasWCPlugin = hasDep('eslint-plugin-wc');
+  const hasLitPlugin = hasDep('eslint-plugin-lit');
+  const hasMobxPlugin = hasDep('eslint-plugin-mobx');
+  const hasConfigAirbnb = hasDep('eslint-config-airbnb');
+  const hasTypescriptPlugin = hasDep('typescript-eslint');
+  const hasPrettierPlugin = hasDep('eslint-plugin-prettier');
 
   return [
     ...(hasReactPlugin
@@ -77,6 +77,8 @@ export function create(cwd: string | string[]): Linter.Config[] {
                 ],
               },
             },
+            // Redefine again to override react rules.
+            // ...(hasPrettierPlugin ? [defaultRequire('eslint-plugin-prettier/recommended')] : []),
           ];
         })()
       : [
@@ -113,7 +115,7 @@ export function create(cwd: string | string[]): Linter.Config[] {
       files: [...(conf.files ?? []), getFilesGlob(getSXExtensions())],
     })),
 
-    ...(hasReactPlugin && hasTypescriptEslintPlugin
+    ...(hasReactPlugin && hasTypescriptPlugin
       ? [
           {
             files: [getFilesGlob(getTSXExtensions())],
@@ -163,13 +165,13 @@ export function create(cwd: string | string[]): Linter.Config[] {
       })),
 
     // Redefine again to override react rules.
-    ...(hasPrettierEslintPlugin ? [defaultRequire('eslint-plugin-prettier/recommended')] : []),
+    ...(hasPrettierPlugin ? [defaultRequire('eslint-plugin-prettier/recommended')] : []),
 
     ...(hasMobxPlugin ? [defaultRequire('eslint-plugin-mobx').flatConfigs.recommended] : []),
   ];
 }
 
-const config: Linter.Config[] = create(process.cwd());
+const config: Linter.Config[] = create({ resolvePaths: process.cwd() });
 
 export default config;
 

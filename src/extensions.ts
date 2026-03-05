@@ -49,7 +49,6 @@ export function getNonSXExtensions(withStar = false): string[] {
   return withStar ? addStar(list) : list;
 }
 
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 if (typeof module !== 'undefined' && module.exports) {
   module.exports.moduleExtensions = moduleExtensions;
   module.exports.getFilesGlob = getFilesGlob;

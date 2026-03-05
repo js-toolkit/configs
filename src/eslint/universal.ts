@@ -3,7 +3,7 @@ import type { Linter } from 'eslint';
 import paths from '../paths.ts';
 import buildConfig, { type BuildConfig } from '../buildConfig.ts';
 import { getFilesGlob, moduleExtensions } from '../extensions.ts';
-import { create as createCommon } from './common.ts';
+import { create as createCommon, type CreateOptions } from './common.ts';
 import { create as createWeb } from './web.ts';
 
 const filesGlobs: Record<keyof Pick<BuildConfig, 'web' | 'node' | 'shared'> | 'other', string[]> = {
@@ -22,9 +22,9 @@ const filesGlobs: Record<keyof Pick<BuildConfig, 'web' | 'node' | 'shared'> | 'o
   other: moduleExtensions.map((ext) => `*${ext}`),
 };
 
-export function create(cwd: string | string[]): Linter.Config[] {
-  const webConfig = createWeb(cwd);
-  const commonConfig = createCommon(cwd);
+export function create(options: CreateOptions): Linter.Config[] {
+  const webConfig = createWeb(options);
+  const commonConfig = createCommon(options);
 
   return [
     {
@@ -80,11 +80,10 @@ export function create(cwd: string | string[]): Linter.Config[] {
   ];
 }
 
-const config: Linter.Config[] = create(process.cwd());
+const config: Linter.Config[] = create({ resolvePaths: import.meta.dirname });
 
 export default config;
 
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = config;
   module.exports.create = create;

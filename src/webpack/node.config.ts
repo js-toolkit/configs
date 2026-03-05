@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import type { Configuration, ExternalItem } from 'webpack';
 import webpackNodeExternals from 'webpack-node-externals';
 import type { RequiredStrict } from '../types';

@@ -1,13 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable import-x/extensions */
-
-import fs from 'fs';
-import path from 'path';
 import globals from 'globals';
 import type { Linter } from 'eslint';
+// eslint-disable-next-line import-x/extensions
 import { defineConfig } from 'eslint/config';
 import eslintJs from '@eslint/js';
 import { fixupConfigRules, type FixupConfigArray } from '@eslint/compat';
@@ -15,7 +8,9 @@ import type { AnyObject } from '../types';
 import paths from '../paths.ts';
 import { getFilesGlob, getJSExtensions, getTSExtensions, moduleExtensions } from '../extensions.ts';
 import { getInstalledPackage } from '../getInstalledPackage.ts';
+import { getProjectDependencies } from '../getProjectDependencies.ts';
 import { defaultRequire } from '../defaultRequire.ts';
+import { findPath } from '../findPath.ts';
 import { eslintTsProject } from './consts.ts';
 
 // Disable all rules in favor of airbnb and standard configs.
@@ -34,32 +29,34 @@ export function createTypeScriptImportResolver(options?: AnyObject): AnyObject {
   });
 }
 
-// export interface CreateOptions {
-//   packageResolvePaths: NonNullable<GetInstalledPackageOptions['resolvePaths']>;
-//   configResolvePaths: this['packageResolvePaths'];
-// }
+export interface CreateOptions {
+  resolvePaths: string | string[];
+  depsOnly?: boolean;
+}
 
-export function create(cwd: string | string[]): Linter.Config[] {
-  const resolvePaths = typeof cwd === 'string' ? [cwd] : cwd;
+export function create({ resolvePaths: resolvePaths0, depsOnly }: CreateOptions): Linter.Config[] {
+  const resolvePaths = typeof resolvePaths0 === 'string' ? [resolvePaths0] : resolvePaths0;
+  const deps = depsOnly && getProjectDependencies(resolvePaths);
 
-  const hasBabelParser = !!getInstalledPackage('@babel/eslint-parser', { resolvePaths });
-  const hasPromisePlugin = !!getInstalledPackage('eslint-plugin-promise', { resolvePaths });
-  const hasImportXPlugin = !!getInstalledPackage('eslint-plugin-import-x', { resolvePaths });
-  const hasImportPlugin = !!getInstalledPackage('eslint-plugin-import', { resolvePaths });
-  const hasConfigStandard = !!getInstalledPackage('eslint-config-standard', { resolvePaths });
-  const hasConfigAirbnbBase = !!getInstalledPackage('eslint-config-airbnb-base', { resolvePaths });
-  const hasJsDocPlugin = !!getInstalledPackage('eslint-plugin-jsdoc', { resolvePaths });
-  const hasTsDocPlugin = !!getInstalledPackage('eslint-plugin-tsdoc', { resolvePaths });
-  const hasPrettierEslintPlugin = !!getInstalledPackage('eslint-plugin-prettier/recommended', {
-    resolvePaths,
-  });
-  const hasTypescriptEslintPlugin = !!getInstalledPackage('typescript-eslint', { resolvePaths });
-  const hasImportResolverTypescript = !!getInstalledPackage('eslint-import-resolver-typescript', {
-    resolvePaths,
-  });
+  const hasDep = (name: string): boolean => {
+    if (deps && !deps.has(name)) return false;
+    return !!getInstalledPackage(name, { resolvePaths });
+  };
+
+  const hasBabelParser = hasDep('@babel/eslint-parser');
+  const hasPromisePlugin = hasDep('eslint-plugin-promise');
+  const hasImportXPlugin = hasDep('eslint-plugin-import-x');
+  const hasImportPlugin = hasDep('eslint-plugin-import');
+  const hasConfigStandard = hasDep('eslint-config-standard');
+  const hasConfigAirbnbBase = hasDep('eslint-config-airbnb-base');
+  const hasJsDocPlugin = hasDep('eslint-plugin-jsdoc');
+  const hasTsDocPlugin = hasDep('eslint-plugin-tsdoc');
+  const hasPrettierPlugin = hasDep('eslint-plugin-prettier');
+  const hasTypescriptPlugin = hasDep('typescript-eslint');
+  const hasImportResolverTypescript = hasDep('eslint-import-resolver-typescript');
 
   const withFilteredStandardRules = (): { readonly rules: Readonly<Linter.RulesRecord> } => {
-    const hasNodePlugin = !!getInstalledPackage('eslint-plugin-n', { resolvePaths });
+    const hasNodePlugin = hasDep('eslint-plugin-n');
 
     const rules = Object.entries(
       (defaultRequire('eslint-config-standard') as Linter.Config).rules ?? {}
@@ -101,13 +98,8 @@ export function create(cwd: string | string[]): Linter.Config[] {
     return fixupConfigRules(list);
   };
 
-  const eslintTsConfig = hasTypescriptEslintPlugin
-    ? path.resolve(...resolvePaths, eslintTsProject)
-    : undefined;
-  const tsconfig =
-    eslintTsConfig && fs.existsSync(eslintTsConfig)
-      ? eslintTsConfig
-      : path.resolve(...resolvePaths, 'tsconfig.json');
+  const eslintTsConfig = hasTypescriptPlugin ? findPath(eslintTsProject, resolvePaths) : undefined;
+  const tsconfig = eslintTsConfig || findPath('tsconfig.json', resolvePaths) || 'tsconfig.json';
 
   return [
     eslintJs.configs.recommended,
@@ -276,7 +268,7 @@ export function create(cwd: string | string[]): Linter.Config[] {
     },
 
     // overrides
-    ...(hasTypescriptEslintPlugin
+    ...(hasTypescriptPlugin
       ? (() => {
           const eslintTs = defaultRequire('typescript-eslint');
           return defineConfig({
@@ -443,7 +435,7 @@ export function create(cwd: string | string[]): Linter.Config[] {
         })()
       : []),
 
-    ...(hasPrettierEslintPlugin ? [defaultRequire('eslint-plugin-prettier/recommended')] : []),
+    ...(hasPrettierPlugin ? [defaultRequire('eslint-plugin-prettier/recommended')] : []),
 
     // Special overrides for TS declaration files
     {
@@ -459,7 +451,7 @@ export function create(cwd: string | string[]): Linter.Config[] {
   ];
 }
 
-const config: Linter.Config[] = create(process.cwd());
+const config: Linter.Config[] = create({ resolvePaths: process.cwd() });
 
 export default config;
 
