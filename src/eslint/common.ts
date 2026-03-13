@@ -415,7 +415,7 @@ export function create({ resolvePaths: resolvePaths0, depsOnly }: CreateOptions)
 
               '@typescript-eslint/no-confusing-void-expression': [
                 'error',
-                { ignoreVoidReturningFunctions: true },
+                { ignoreArrowShorthand: true, ignoreVoidReturningFunctions: true },
               ],
 
               '@typescript-eslint/restrict-template-expressions': [
