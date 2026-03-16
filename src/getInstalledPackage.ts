@@ -1,7 +1,7 @@
 import { defaultRequire } from './defaultRequire.ts';
 
 export interface GetInstalledPackageOptions {
-  requireFn?: NodeRequire;
+  requireFn?: NodeJS.Require;
   resolvePaths?: string[] | boolean;
 }
 

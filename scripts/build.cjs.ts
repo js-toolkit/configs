@@ -1,12 +1,13 @@
-import ts from 'typescript';
+/* eslint-disable import-x/no-named-as-default-member */
 import path from 'path';
+import ts from 'typescript';
 import transformer from './transform-import.meta.ts';
 
 // Читаем tsconfig
-const configPath = ts.findConfigFile('./', ts.sys.fileExists, 'tsconfig.cjs.json');
+const configPath = ts.findConfigFile('./', ts.sys.fileExists.bind(ts.sys), 'tsconfig.cjs.json');
 if (!configPath) throw new Error('tsconfig.cjs.json not found');
 
-const configFile = ts.readConfigFile(configPath, ts.sys.readFile);
+const configFile = ts.readConfigFile(configPath, ts.sys.readFile.bind(ts.sys));
 const parsedConfig = ts.parseJsonConfigFileContent(
   configFile.config,
   ts.sys,

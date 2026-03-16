@@ -4,8 +4,8 @@
 
 import { defaultRequire } from '../defaultRequire.ts';
 
-declare var __webpack_require__: NodeRequire;
-declare var __non_webpack_require__: NodeRequire;
+declare var __webpack_require__: NodeJS.Require;
+declare var __non_webpack_require__: NodeJS.Require;
 
 /** Original require function (non webpack) to correct load modules in universal projects */
 const nodeRequire =

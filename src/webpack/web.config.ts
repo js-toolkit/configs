@@ -252,11 +252,20 @@ const config = ({
     resolve: {
       ...restOptions.resolve,
       modules: [...paths.web.sources, ...(restOptions.resolve?.modules ?? [])],
-      alias: {
+      alias: [
         // for universal projects
-        ...(paths.shared.sources.length > 0 && { shared: paths.shared.sources }),
-        ...restOptions.resolve?.alias,
-      },
+        ...(paths.shared.sources.length > 0
+          ? [{ name: 'shared', alias: paths.shared.sources }]
+          : []),
+        ...((restOptions.resolve?.alias &&
+          (Array.isArray(restOptions.resolve.alias)
+            ? restOptions.resolve.alias
+            : Object.entries(restOptions.resolve.alias).map(([name, alias]) => ({
+                name,
+                alias,
+              })))) ||
+          []),
+      ],
     },
 
     module: {

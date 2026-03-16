@@ -165,16 +165,25 @@ const config = ({
         ...(isUniversal ? paths.web.sources : paths.node.sources),
         ...(restOptions.resolve?.modules ?? []),
       ],
-      alias: {
+      alias: [
         ...(isUniversal
-          ? {
-              node: paths.node.sources,
-              web: paths.web.sources,
-            }
-          : undefined),
-        ...(paths.shared.sources.length > 0 ? { shared: paths.shared.sources } : undefined),
-        ...restOptions.resolve?.alias,
-      },
+          ? [
+              { name: 'node', alias: paths.node.sources },
+              { name: 'web', alias: paths.web.sources },
+            ]
+          : []),
+        ...(paths.shared.sources.length > 0
+          ? [{ name: 'shared', alias: paths.shared.sources }]
+          : []),
+        ...((restOptions.resolve?.alias &&
+          (Array.isArray(restOptions.resolve.alias)
+            ? restOptions.resolve.alias
+            : Object.entries(restOptions.resolve.alias).map(([name, alias]) => ({
+                name,
+                alias,
+              })))) ||
+          []),
+      ],
     },
 
     module: {
