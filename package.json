@@ -36,6 +36,7 @@
     "build:cjs": "node scripts/build.cjs.ts",
     "build:esm": "tsc -p tsconfig.json",
     "build": "npm run clean && npm run build:esm && npm run build:cjs && node scripts/postbuild.ts",
+    "lint": "eslint '**/*.{js,jsx,ts,tsx}' --flag unstable_native_nodejs_ts_config",
     "patch-publish": "yarn run build && yarn run minify && npm version patch --no-workspaces-update -m 'v%s' && yarn run copy && cd ./dist && npm publish --access public && git push --follow-tags",
     "minor-publish": "yarn run build && yarn run minify && npm version minor --no-workspaces-update -m 'v%s' && yarn run copy && cd ./dist && npm publish --access public && git push --follow-tags"
   },
