@@ -177,21 +177,12 @@ const config = ({
           paths.root,
           ...(restOptions.resolve?.modules ?? []),
         ],
-        plugins: [
-          ...(typescript
-            ? [
-                (() => {
-                  const getName = (): string => 'tsconfig-paths-webpack-plugin';
-                  const TSConfigPathsWebpackPlugin = nodeRequire(getName());
-                  return new TSConfigPathsWebpackPlugin({
-                    configFile: typescript.configFile,
-                    extensions,
-                  });
-                })(),
-              ]
-            : []),
-          ...(restOptions.resolve?.plugins ?? []),
-        ],
+        ...(typescript && {
+          tsconfig: {
+            configFile: typescript.configFile,
+            references: 'auto',
+          },
+        }),
       };
     })(),
 
