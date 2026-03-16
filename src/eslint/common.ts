@@ -225,6 +225,7 @@ export function create({ resolvePaths: resolvePaths0, depsOnly }: CreateOptions)
 
         'no-restricted-syntax': [
           'error',
+          // 'FunctionExpression',
           'ForInStatement',
           // 'ForOfStatement',
           'LabeledStatement',
@@ -355,6 +356,16 @@ export function create({ resolvePaths: resolvePaths0, depsOnly }: CreateOptions)
               // https://github.com/typescript-eslint/typescript-eslint/blob/v3.0.0/packages/eslint-plugin/docs/rules/no-floating-promises.md#ignorevoid
               'no-void': ['error', { allowAsStatement: true }],
 
+              // Exclude `ForInStatement` in favor of `@typescript-eslint/no-for-in-array`
+              'no-restricted-syntax': [
+                'error',
+                // 'FunctionExpression',
+                'LabeledStatement',
+                'WithStatement',
+                "CallExpression[callee.name='setTimeout'][arguments.length!=2]",
+                "CallExpression[arguments.length!=2] > MemberExpression[object.name='window'][property.name='setTimeout']",
+              ],
+
               '@typescript-eslint/explicit-member-accessibility': 'off',
               '@typescript-eslint/explicit-function-return-type': [
                 'warn',
@@ -379,6 +390,11 @@ export function create({ resolvePaths: resolvePaths0, depsOnly }: CreateOptions)
               ],
 
               '@typescript-eslint/no-unused-expressions': ['error', { allowShortCircuit: true }],
+
+              // '@typescript-eslint/no-explicit-any': [
+              //   'error',
+              //   { fixToUnknown: false, ignoreRestArgs: true },
+              // ],
 
               '@typescript-eslint/prefer-nullish-coalescing': [
                 'error',
@@ -421,6 +437,11 @@ export function create({ resolvePaths: resolvePaths0, depsOnly }: CreateOptions)
               '@typescript-eslint/restrict-template-expressions': [
                 'error',
                 { allowNumber: true, allowBoolean: true },
+              ],
+
+              '@typescript-eslint/prefer-promise-reject-errors': [
+                'error',
+                { allowThrowingAny: true, allowThrowingUnknown: true },
               ],
 
               ...(hasImportXPlugin && {
