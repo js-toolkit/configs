@@ -25,7 +25,7 @@ export interface CommonConfigOptions extends OptionalToUndefined<webpack.Configu
       }
     | undefined;
   /** Default `terser`. */
-  minimizerPlugin?: 'terser' | 'closure';
+  minimizerPlugin?: 'terser';
   minimizerPluginOptions?: Record<string, any> | readonly Record<string, any>[] | undefined;
 }
 
@@ -100,33 +100,6 @@ const config = ({
                     },
                   },
                 });
-              })(),
-
-            minimizerPlugin === 'closure' &&
-              (() => {
-                const [pluginOptions, compilerOptions] = Array.isArray(minimizerPluginOptions)
-                  ? ((minimizerPluginOptions as readonly Record<string, any>[]) ?? [])
-                  : [minimizerPluginOptions, undefined];
-
-                return new (nodeRequire('closure-webpack-plugin'))(
-                  // https://github.com/webpack-contrib/closure-webpack-plugin?tab=readme-ov-file#options
-                  {
-                    mode: 'STANDARD',
-                    ...pluginOptions,
-                  },
-                  // https://github.com/google/closure-compiler/wiki/Flags-and-Options
-                  {
-                    ...appEnv.ifDev(
-                      {
-                        formatting: 'PRETTY_PRINT',
-                        debug: true,
-                        renaming: false,
-                      },
-                      undefined
-                    ),
-                    ...compilerOptions,
-                  }
-                );
               })(),
 
             ...(restOptions.optimization?.minimizer ?? []),
