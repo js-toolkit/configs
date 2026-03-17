@@ -1,3 +1,4 @@
+import path from 'path';
 import globals from 'globals';
 import type { Linter } from 'eslint';
 // eslint-disable-next-line import-x/extensions
@@ -18,6 +19,13 @@ import { eslintTsProject } from './consts.ts';
 //   const config: Linter.Config = defaultRequire('eslint-plugin-import-x').flatConfigs.recommended;
 //   return { ...config, rules: {} };
 // };
+
+function replaceExtension(name: string): string {
+  const origin = path.extname(name);
+  const current = path.extname(import.meta.filename);
+  if (origin !== current) return name.replace(origin, current);
+  return name;
+}
 
 export function createTypeScriptImportResolver(options?: AnyObject): AnyObject {
   return defaultRequire('eslint-import-resolver-typescript').createTypeScriptImportResolver({
@@ -289,6 +297,12 @@ export function create({ resolvePaths: resolvePaths0, depsOnly }: CreateOptions)
 
             plugins: {
               ...(hasTsDocPlugin && { tsdoc: defaultRequire('eslint-plugin-tsdoc') }),
+              local: defaultRequire(
+                path.resolve(
+                  import.meta.dirname,
+                  replaceExtension('./rules/no-namespace-except-class-merge.ts')
+                )
+              ).plugin,
             },
 
             languageOptions: {
@@ -443,6 +457,9 @@ export function create({ resolvePaths: resolvePaths0, depsOnly }: CreateOptions)
                 'error',
                 { allowThrowingAny: true, allowThrowingUnknown: true },
               ],
+
+              '@typescript-eslint/no-namespace': 'off',
+              'local/no-namespace-except-class-merge': 'error',
 
               ...(hasImportXPlugin && {
                 'import-x/named': 'off',
