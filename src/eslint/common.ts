@@ -297,11 +297,8 @@ export function create({ resolvePaths: resolvePaths0, depsOnly }: CreateOptions)
 
             plugins: {
               ...(hasTsDocPlugin && { tsdoc: defaultRequire('eslint-plugin-tsdoc') }),
-              local: defaultRequire(
-                path.resolve(
-                  import.meta.dirname,
-                  replaceExtension('./rules/no-namespace-except-class-merge.ts')
-                )
+              '@js-toolkit': defaultRequire(
+                path.resolve(import.meta.dirname, replaceExtension('./rules/plugin.ts'))
               ).plugin,
             },
 
@@ -413,22 +410,8 @@ export function create({ resolvePaths: resolvePaths0, depsOnly }: CreateOptions)
               '@typescript-eslint/prefer-nullish-coalescing': [
                 'error',
                 {
-                  ignorePrimitives: { string: true, number: true },
+                  ignorePrimitives: { string: true, boolean: true, number: false, bigint: false },
                   ignoreMixedLogicalExpressions: true,
-                },
-              ],
-
-              '@typescript-eslint/strict-boolean-expressions': [
-                'error',
-                {
-                  allowAny: false,
-                  allowNullableEnum: false,
-                  allowNullableNumber: false,
-                  allowNullableBoolean: true,
-                  allowNullableObject: true,
-                  allowNullableString: true,
-                  allowNumber: false,
-                  allowString: true,
                 },
               ],
 
@@ -459,7 +442,24 @@ export function create({ resolvePaths: resolvePaths0, depsOnly }: CreateOptions)
               ],
 
               '@typescript-eslint/no-namespace': 'off',
-              'local/no-namespace-except-class-merge': 'error',
+              '@js-toolkit/no-namespace-except-declaration-merge': 'error',
+
+              '@typescript-eslint/strict-boolean-expressions': 'off',
+              '@js-toolkit/strict-boolean-expressions': [
+                'error',
+                {
+                  allowNullableEnum: false,
+                  allowNullableNumber: false,
+                  allowNullableBoolean: true,
+                  allowNullableObject: true,
+                  allowNullableString: true,
+                  allowString: true,
+                  allowNumber: false,
+                  allowAny: false,
+                  allowUnknown: false,
+                  allowNever: false,
+                },
+              ],
 
               ...(hasImportXPlugin && {
                 'import-x/named': 'off',
@@ -493,7 +493,7 @@ const config: Linter.Config[] = create({ resolvePaths: process.cwd() });
 
 export default config;
 
-if (typeof module !== 'undefined' && module.exports) {
+if (typeof module !== 'undefined' && module.exports != null) {
   module.exports = config;
   module.exports.create = create;
   module.exports.createTypeScriptImportResolver = createTypeScriptImportResolver;

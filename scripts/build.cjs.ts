@@ -46,7 +46,7 @@ const diagnostics = ts
   .concat(result.diagnostics)
   .filter((d) => !IGNORED_CODES.has(d.code));
 
-if (diagnostics.length) {
+if (diagnostics.length > 0) {
   const formatted = ts.formatDiagnosticsWithColorAndContext(diagnostics, {
     getCurrentDirectory: () => process.cwd(),
     getCanonicalFileName: (f) => f,
