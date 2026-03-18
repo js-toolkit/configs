@@ -40,6 +40,7 @@ export interface Options {
   allowAny?: boolean;
   allowUnknown?: boolean;
   allowNever?: boolean;
+  allowNonBooleanExpressions?: boolean;
 }
 
 type TypeKind =
@@ -161,6 +162,35 @@ function isArrayLikeType(type: ts.Type, checker: ts.TypeChecker): boolean {
   if (checker.isArrayType(type) || checker.isTupleType(type)) return true;
   if (type.isUnion()) return type.types.every((t) => isArrayLikeType(t, checker));
   return false;
+}
+
+/**
+ * Returns true if the classified result type contains only non-boolean value types
+ * (object, string, number, enum) optionally mixed with nullish — and NO boolean.
+ * Used to detect value-producing logical chains like `(a && <X />) || null`.
+ */
+function isNonBooleanValueType(kinds: Set<TypeKind>): boolean {
+  let hasValue = false;
+  for (const kind of kinds) {
+    if (kind === 'boolean' || kind === 'nullableBoolean') {
+      return false;
+    }
+    switch (kind) {
+      case 'object':
+      case 'nullableObject':
+      case 'string':
+      case 'nullableString':
+      case 'number':
+      case 'nullableNumber':
+      case 'enum':
+      case 'nullableEnum':
+        hasValue = true;
+        break;
+      default:
+        break;
+    }
+  }
+  return hasValue;
 }
 
 function needsWrapping(node: TSESTree.Expression): boolean {
@@ -394,6 +424,7 @@ export const rule = createRule<[Options], MessageId>({
           allowAny: { type: 'boolean' },
           allowUnknown: { type: 'boolean' },
           allowNever: { type: 'boolean' },
+          allowNonBooleanExpressions: { type: 'boolean' },
         },
         additionalProperties: false,
       },
@@ -413,6 +444,7 @@ export const rule = createRule<[Options], MessageId>({
       allowAny: userOptions.allowAny ?? false,
       allowUnknown: userOptions.allowUnknown ?? false,
       allowNever: userOptions.allowNever ?? false,
+      allowNonBooleanExpressions: userOptions.allowNonBooleanExpressions ?? false,
     };
 
     const services = ESLintUtils.getParserServices(context);
@@ -571,14 +603,15 @@ export const rule = createRule<[Options], MessageId>({
     function traverseNode(
       node: TSESTree.Expression,
       isCondition: boolean,
-      contextStr: string
+      contextStr: string,
+      isValueProducing?: boolean
     ): void {
       if (traversedNodes.has(node)) return;
       traversedNodes.add(node);
 
       if (node.type === AST_NODE_TYPES.LogicalExpression && node.operator !== '??') {
         // eslint-disable-next-line @typescript-eslint/no-use-before-define -- mutual recursion
-        traverseLogicalExpression(node, isCondition, contextStr);
+        traverseLogicalExpression(node, isCondition, contextStr, isValueProducing);
         return;
       }
 
@@ -590,10 +623,23 @@ export const rule = createRule<[Options], MessageId>({
     function traverseLogicalExpression(
       node: TSESTree.LogicalExpression,
       isCondition: boolean,
-      contextStr: string
+      contextStr: string,
+      parentIsValueProducing?: boolean
     ): void {
-      traverseNode(node.left, true, contextStr);
-      traverseNode(node.right, isCondition, contextStr);
+      let valueProducing = parentIsValueProducing;
+      if (valueProducing === undefined && !isCondition && options.allowNonBooleanExpressions) {
+        const tsNode = services.esTreeNodeToTSNodeMap.get(node);
+        const resultType = checker.getTypeAtLocation(tsNode);
+        const resultKinds = classifyType(resultType, checker);
+        valueProducing = isNonBooleanValueType(resultKinds);
+      }
+
+      traverseNode(node.left, true, contextStr, valueProducing);
+
+      const rightIsCondition =
+        node.operator === '&&' && valueProducing === true ? false : isCondition;
+
+      traverseNode(node.right, rightIsCondition, contextStr, valueProducing);
     }
 
     // ── Truthiness assertions ───────────────────────────────────────────

@@ -458,6 +458,7 @@ export function create({ resolvePaths: resolvePaths0, depsOnly }: CreateOptions)
                   allowAny: false,
                   allowUnknown: false,
                   allowNever: false,
+                  allowNonBooleanExpressions: true,
                 },
               ],
 
