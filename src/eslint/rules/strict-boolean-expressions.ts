@@ -78,7 +78,11 @@ function resolveAndFlatten(type: ts.Type, checker: ts.TypeChecker): ts.Type[] {
   if (type.isUnion()) {
     return type.types.flatMap((t) => resolveAndFlatten(t, checker));
   }
-  if ((type.flags & ts.TypeFlags.TypeParameter) !== 0) {
+  if (
+    (type.flags &
+      (ts.TypeFlags.TypeParameter | ts.TypeFlags.IndexedAccess | ts.TypeFlags.Conditional)) !==
+    0
+  ) {
     const resolved = checker.getBaseConstraintOfType(type);
     if (resolved && resolved !== type) {
       return resolveAndFlatten(resolved, checker);
@@ -630,7 +634,7 @@ export const rule = createRule<[Options], MessageId>({
 
     // ── Core check ──────────────────────────────────────────────────────
 
-    function checkNode(node: TSESTree.Expression, contextStr: string): void {
+    function checkNode(node: TSESTree.Expression, contextStr: string): MessageId | null {
       const tsNode = services.esTreeNodeToTSNodeMap.get(node);
       const type = checker.getTypeAtLocation(tsNode);
       const kinds = classifyType(type, checker);
@@ -644,6 +648,7 @@ export const rule = createRule<[Options], MessageId>({
           ...(suggest.length > 0 ? { suggest } : {}),
         });
       }
+      return violation ?? null;
     }
 
     // ── Traversal ───────────────────────────────────────────────────────
@@ -660,6 +665,18 @@ export const rule = createRule<[Options], MessageId>({
       if (node.type === AST_NODE_TYPES.LogicalExpression && node.operator !== '??') {
         // eslint-disable-next-line @typescript-eslint/no-use-before-define -- mutual recursion
         traverseLogicalExpression(node, isCondition, contextStr, isValueProducing);
+        return;
+      }
+
+      if (node.type === AST_NODE_TYPES.UnaryExpression && node.operator === '!') {
+        if (isCondition) {
+          const violation = checkNode(node, contextStr);
+          if (violation === 'conditionAlwaysTruthy' || violation === 'conditionAlwaysFalsy') {
+            traversedNodes.add(node.argument);
+            return;
+          }
+        }
+        traverseNode(node.argument, true, contextStr);
         return;
       }
 
@@ -843,10 +860,10 @@ export const rule = createRule<[Options], MessageId>({
         traverseNode(node.test, true, 'conditional');
       },
       'UnaryExpression[operator="!"]': function (node: TSESTree.UnaryExpression) {
-        traverseNode(node.argument, true, 'conditional');
+        traverseNode(node, true, 'conditional');
       },
       'LogicalExpression[operator!="??"]': function (node: TSESTree.LogicalExpression) {
-        traverseLogicalExpression(node, false, 'conditional');
+        traverseNode(node, false, 'conditional');
       },
       CallExpression: traverseCallExpression,
     };
