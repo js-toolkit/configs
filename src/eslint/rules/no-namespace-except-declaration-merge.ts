@@ -39,6 +39,18 @@ function getDeclarationName(node: TSESTree.Node): string | undefined {
   }
 }
 
+function isInDeclareContext(node: TSESTree.TSModuleDeclaration): boolean {
+  if (node.declare) return true;
+  let current: TSESTree.Node | undefined = node.parent;
+  while (current) {
+    if (current.type === AST_NODE_TYPES.TSModuleDeclaration && current.declare) {
+      return true;
+    }
+    current = current.parent;
+  }
+  return false;
+}
+
 export default createRule<[], MessageId>({
   name: 'no-namespace-except-declaration-merge',
   meta: {
@@ -58,7 +70,7 @@ export default createRule<[], MessageId>({
   create(context) {
     return {
       TSModuleDeclaration(node) {
-        if (node.declare) return;
+        if (isInDeclareContext(node)) return;
 
         if (node.kind === 'module' && node.id.type === AST_NODE_TYPES.Literal) return;
 

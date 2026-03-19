@@ -16,6 +16,8 @@ type MessageId =
   | 'conditionErrorNumber'
   | 'conditionErrorObject'
   | 'conditionErrorString'
+  | 'conditionAlwaysTruthy'
+  | 'conditionAlwaysFalsy'
   | 'noStrictNullCheck'
   | 'fixCastBoolean'
   | 'fixCompareTrue'
@@ -46,6 +48,8 @@ export interface Options {
 type TypeKind =
   | 'never'
   | 'boolean'
+  | 'truthyBooleanLiteral'
+  | 'falsyBooleanLiteral'
   | 'nullableBoolean'
   | 'string'
   | 'nullableString'
@@ -139,6 +143,13 @@ function isTrueLiteral(type: ts.Type): boolean {
   );
 }
 
+function isFalseLiteral(type: ts.Type): boolean {
+  return (
+    isBooleanLiteral(type) &&
+    (type as unknown as { intrinsicName: string }).intrinsicName === 'false'
+  );
+}
+
 function isBrandedBoolean(type: ts.Type): boolean {
   return (
     type.isIntersection() && type.types.some((t) => (t.flags & ts.TypeFlags.BooleanLike) !== 0)
@@ -172,7 +183,12 @@ function isArrayLikeType(type: ts.Type, checker: ts.TypeChecker): boolean {
 function isNonBooleanValueType(kinds: Set<TypeKind>): boolean {
   let hasValue = false;
   for (const kind of kinds) {
-    if (kind === 'boolean' || kind === 'nullableBoolean') {
+    if (
+      kind === 'boolean' ||
+      kind === 'nullableBoolean' ||
+      kind === 'truthyBooleanLiteral' ||
+      kind === 'falsyBooleanLiteral'
+    ) {
       return false;
     }
     switch (kind) {
@@ -210,8 +226,10 @@ function needsWrapping(node: TSESTree.Expression): boolean {
  *
  * 1. Resolves type parameter constraints and flattens unions to leaves.
  * 2. null/undefined/void are nullable markers that make sibling types nullable.
- * 3. For boolean/string/number, detects truthy literals:
- *    - `true | null` → always OK (valid null check)
+ * 3. For boolean/string/number, detects truthy/falsy literals:
+ *    - `true` → truthyBooleanLiteral (always truthy)
+ *    - `false` → falsyBooleanLiteral (always falsy)
+ *    - `true | null` → nullableBoolean (controlled by allowNullableBoolean)
  *    - `"hello" | null` → controlled by allowString (not allowNullableString)
  *    - `42 | null` → controlled by allowNumber (not allowNullableNumber)
  * 4. Branded booleans (`boolean & { __brand }`) are treated as boolean.
@@ -256,8 +274,12 @@ function classifyType(type: ts.Type, checker: ts.TypeChecker): Set<TypeKind> {
 
   if (booleanLeaves.length > 0) {
     const allTruthy = booleanLeaves.every(isTrueLiteral);
+    const allFalsy = booleanLeaves.every(isFalseLiteral);
+
     if (allTruthy) {
-      kinds.add('boolean');
+      kinds.add(hasNullish ? 'nullableBoolean' : 'truthyBooleanLiteral');
+    } else if (allFalsy) {
+      kinds.add(hasNullish ? 'nullableBoolean' : 'falsyBooleanLiteral');
     } else {
       kinds.add(hasNullish ? 'nullableBoolean' : 'boolean');
     }
@@ -300,6 +322,10 @@ function getViolation(kinds: Set<TypeKind>, options: Required<Options>): Message
     return null;
   }
 
+  let hasAlwaysTruthy = false;
+  let hasAlwaysFalsy = false;
+  let hasOther = false;
+
   for (const kind of kinds) {
     switch (kind) {
       case 'never':
@@ -307,55 +333,75 @@ function getViolation(kinds: Set<TypeKind>, options: Required<Options>): Message
         break;
 
       case 'boolean':
+        hasOther = true;
+        break;
+
+      case 'truthyBooleanLiteral':
+      case 'object':
+        hasAlwaysTruthy = true;
+        break;
+
+      case 'falsyBooleanLiteral':
+      case 'nullish':
+        hasAlwaysFalsy = true;
         break;
 
       case 'nullableBoolean':
         if (!options.allowNullableBoolean) return 'conditionErrorNullableBoolean';
+        hasOther = true;
         break;
 
       case 'string':
         if (!options.allowString) return 'conditionErrorString';
+        hasOther = true;
         break;
 
       case 'nullableString':
         if (!options.allowNullableString) return 'conditionErrorNullableString';
+        hasOther = true;
         break;
 
       case 'number':
         if (!options.allowNumber) return 'conditionErrorNumber';
+        hasOther = true;
         break;
 
       case 'nullableNumber':
         if (!options.allowNullableNumber) return 'conditionErrorNullableNumber';
+        hasOther = true;
         break;
-
-      case 'object':
-        return 'conditionErrorObject';
 
       case 'nullableObject':
         if (!options.allowNullableObject) return 'conditionErrorNullableObject';
+        hasOther = true;
         break;
-
-      case 'nullish':
-        return 'conditionErrorNullish';
 
       case 'enum':
       case 'nullableEnum':
         if (!options.allowNullableEnum) return 'conditionErrorNullableEnum';
+        hasOther = true;
         break;
 
       case 'any':
         if (!options.allowAny) return 'conditionErrorAny';
+        hasOther = true;
         break;
 
       case 'unknown':
         if (!options.allowUnknown) return 'conditionErrorOther';
+        hasOther = true;
         break;
 
       default:
         break;
     }
   }
+
+  if (!hasOther) {
+    if (hasAlwaysTruthy && !hasAlwaysFalsy) return 'conditionAlwaysTruthy';
+    if (hasAlwaysFalsy && !hasAlwaysTruthy) return 'conditionAlwaysFalsy';
+  }
+
   return null;
 }
 
@@ -393,6 +439,8 @@ export const rule = createRule<[Options], MessageId>({
       conditionErrorNumber:
         'Unexpected number value in {{context}}. An explicit zero/NaN check is required.',
       conditionErrorObject: 'Unexpected object value in {{context}}. The condition is always true.',
+      conditionAlwaysTruthy: 'Unexpected value in {{context}}. The condition is always true.',
+      conditionAlwaysFalsy: 'Unexpected value in {{context}}. The condition is always false.',
       conditionErrorString:
         'Unexpected string value in {{context}}. An explicit empty string check is required.',
       noStrictNullCheck:
@@ -721,9 +769,15 @@ export const rule = createRule<[Options], MessageId>({
       return results;
     }
 
+    function isExplicitBooleanLiteral(node: TSESTree.Expression): boolean {
+      return node.type === AST_NODE_TYPES.Literal && typeof node.value === 'boolean';
+    }
+
     function checkPredicateBody(body: TSESTree.BlockStatement): void {
       for (const expr of findReturnExpressions(body)) {
-        traverseNode(expr, true, 'filtering an array');
+        if (!isExplicitBooleanLiteral(expr)) {
+          traverseNode(expr, true, 'filtering an array');
+        }
       }
     }
 
@@ -756,7 +810,9 @@ export const rule = createRule<[Options], MessageId>({
 
         if (predicate.type === AST_NODE_TYPES.ArrowFunctionExpression) {
           if (predicate.body.type !== AST_NODE_TYPES.BlockStatement) {
-            traverseNode(predicate.body, true, 'filtering an array');
+            if (!isExplicitBooleanLiteral(predicate.body)) {
+              traverseNode(predicate.body, true, 'filtering an array');
+            }
           } else {
             checkPredicateBody(predicate.body);
           }
