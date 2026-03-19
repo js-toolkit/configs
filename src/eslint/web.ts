@@ -48,9 +48,9 @@ export function create({ resolvePaths: resolvePaths0, depsOnly }: CreateOptions)
       ? (() => {
           const plugin = defaultRequire('eslint-plugin-react');
           return [
-            plugin.configs.flat.recommended,
+            plugin.configs.flat.recommended as Linter.Config,
             ...(hasConfigAirbnb ? filterAirbnbRules('react') : []),
-            plugin.configs.flat['jsx-runtime'],
+            plugin.configs.flat['jsx-runtime'] as Linter.Config,
             {
               languageOptions: {
                 ...plugin.configs.flat.recommended.languageOptions,
@@ -76,7 +76,7 @@ export function create({ resolvePaths: resolvePaths0, depsOnly }: CreateOptions)
                   },
                 ],
               },
-            },
+            } satisfies Linter.Config as Linter.Config,
             // Redefine again to override react rules.
             // ...(hasPrettierPlugin ? [defaultRequire('eslint-plugin-prettier/recommended')] : []),
           ];
@@ -88,7 +88,7 @@ export function create({ resolvePaths: resolvePaths0, depsOnly }: CreateOptions)
                 ...globals.browser,
               },
             },
-          },
+          } satisfies Linter.Config as Linter.Config,
         ]
     ).map((conf) => ({
       ...conf,
@@ -99,14 +99,14 @@ export function create({ resolvePaths: resolvePaths0, depsOnly }: CreateOptions)
       ? (() => {
           const plugin = defaultRequire('eslint-plugin-jsx-a11y');
           return [
-            plugin.flatConfigs.recommended,
+            plugin.flatConfigs.recommended as Linter.Config,
             ...(hasConfigAirbnb ? filterAirbnbRules('react-a11y') : []),
             {
               rules: {
                 'jsx-a11y/anchor-is-valid': ['error', { specialLink: ['to'] }],
                 'jsx-a11y/label-has-for': ['error', { allowChildren: true }],
               },
-            },
+            } satisfies Linter.Config as Linter.Config,
           ];
         })()
       : []
@@ -129,36 +129,44 @@ export function create({ resolvePaths: resolvePaths0, depsOnly }: CreateOptions)
               ],
               'react/require-default-props': 'off',
             },
-          } satisfies Linter.Config,
+          } satisfies Linter.Config as Linter.Config,
         ]
       : []),
 
     ...(hasReactHooksPlugin
       ? [
-          defaultRequire('eslint-plugin-react-hooks').configs.flat['recommended-latest'],
-          { rules: { 'react-hooks/exhaustive-deps': 'error' } },
+          defaultRequire('eslint-plugin-react-hooks').configs.flat[
+            'recommended-latest'
+          ] as Linter.Config,
+          {
+            rules: { 'react-hooks/exhaustive-deps': 'error' },
+          } satisfies Linter.Config as Linter.Config,
         ]
       : []),
 
     ...[
-      hasWCPlugin && defaultRequire('eslint-plugin-wc').configs['flat/best-practice'],
-      hasWCPlugin && {
-        settings: {
-          wc: {
-            elementBaseClasses: ['HTMLElement'],
+      hasWCPlugin &&
+        (defaultRequire('eslint-plugin-wc').configs['flat/best-practice'] as Linter.Config),
+      hasWCPlugin &&
+        ({
+          settings: {
+            wc: {
+              elementBaseClasses: ['HTMLElement'],
+            },
           },
-        },
-      },
-      hasLitPlugin && defaultRequire('eslint-plugin-lit').configs['flat/recommended'],
-      hasLitPlugin && {
-        settings: {
-          lit: {
-            elementBaseClasses: ['LitElement'],
+        } satisfies Linter.Config as Linter.Config),
+      hasLitPlugin &&
+        (defaultRequire('eslint-plugin-lit').configs['flat/recommended'] as Linter.Config),
+      hasLitPlugin &&
+        ({
+          settings: {
+            lit: {
+              elementBaseClasses: ['LitElement'],
+            },
           },
-        },
-      },
+        } satisfies Linter.Config as Linter.Config),
     ]
-      .filter(Boolean)
+      .filter<Linter.Config>((conf) => !!conf)
       .map((conf) => ({
         ...conf,
         files: [...(conf.files ?? []), getFilesGlob(getNonSXExtensions())],
@@ -175,7 +183,7 @@ const config: Linter.Config[] = create({ resolvePaths: process.cwd() });
 
 export default config;
 
-if (typeof module !== 'undefined' && module.exports) {
+if (typeof module !== 'undefined' && module.exports != null) {
   module.exports = config;
   module.exports.create = create;
 }

@@ -25,6 +25,6 @@ const config = {
 
 export default config;
 
-if (typeof module !== 'undefined' && module.exports) {
+if (typeof module !== 'undefined' && module.exports != null) {
   module.exports = config;
 }

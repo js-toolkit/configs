@@ -49,7 +49,7 @@ export function getNonSXExtensions(withStar = false): string[] {
   return withStar ? addStar(list) : list;
 }
 
-if (typeof module !== 'undefined' && module.exports) {
+if (typeof module !== 'undefined' && module.exports != null) {
   module.exports.moduleExtensions = moduleExtensions;
   module.exports.getFilesGlob = getFilesGlob;
   module.exports.getTSExtensions = getTSExtensions;

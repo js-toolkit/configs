@@ -130,7 +130,7 @@ const paths = getPaths();
 
 export default paths;
 
-if (typeof module !== 'undefined' && module.exports) {
+if (typeof module !== 'undefined' && module.exports != null) {
   module.exports = paths;
   module.exports.getPaths = getPaths;
 }

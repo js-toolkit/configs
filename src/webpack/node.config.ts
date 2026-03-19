@@ -1,4 +1,4 @@
-import type { Configuration, ExternalItem } from 'webpack';
+import type { Configuration, ExternalItem, RuleSetRule } from 'webpack';
 import webpackNodeExternals from 'webpack-node-externals';
 import type { RequiredStrict } from '../types';
 import appEnv from '../appEnv.ts';
@@ -105,7 +105,10 @@ const config = ({
 
   const preparedRules = prepareRules(rules, defaultRules);
 
-  const moduleRules = { ...defaultRules, ...preparedRules };
+  const moduleRules: Partial<Record<string, RuleSetRule | false>> = {
+    ...defaultRules,
+    ...preparedRules,
+  };
 
   return commonConfig({
     outputPath,
@@ -189,9 +192,7 @@ const config = ({
     module: {
       ...restOptions.module,
       rules: [
-        ...Object.getOwnPropertyNames(moduleRules).map(
-          (name) => moduleRules[name as keyof typeof moduleRules] || {}
-        ),
+        ...Object.getOwnPropertyNames(moduleRules).map((name) => moduleRules[name] || {}),
         ...(restOptions.module?.rules ?? []),
       ],
     },
@@ -208,7 +209,7 @@ const config = ({
 
 export default config;
 
-if (typeof module !== 'undefined' && module.exports) {
+if (typeof module !== 'undefined' && module.exports != null) {
   module.exports = config;
   module.exports.nodeDefaultRules = nodeDefaultRules;
   module.exports.universalDefaultRules = universalDefaultRules;

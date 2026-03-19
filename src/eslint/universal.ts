@@ -84,7 +84,7 @@ const config: Linter.Config[] = create({ resolvePaths: import.meta.dirname });
 
 export default config;
 
-if (typeof module !== 'undefined' && module.exports) {
+if (typeof module !== 'undefined' && module.exports != null) {
   module.exports = config;
   module.exports.create = create;
 }

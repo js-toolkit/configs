@@ -13,6 +13,6 @@ const nodeRequire =
 
 export default nodeRequire;
 
-if (typeof module !== 'undefined' && module.exports) {
+if (typeof module !== 'undefined' && module.exports != null) {
   module.exports = nodeRequire;
 }

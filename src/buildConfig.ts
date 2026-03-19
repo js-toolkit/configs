@@ -58,7 +58,6 @@ function merge<T1 extends AnyObject, T2 extends Partial<T1>>(
 }
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace NodeJS {
     interface ProcessEnv {
       buildConfig?: string | undefined;
@@ -105,7 +104,7 @@ const buildConfig = getBuildConfig();
 
 export default buildConfig;
 
-if (typeof module !== 'undefined' && module.exports) {
+if (typeof module !== 'undefined' && module.exports != null) {
   module.exports = buildConfig;
   module.exports.getBuildConfig = getBuildConfig;
   module.exports.resolveConfigPath = resolveConfigPath;

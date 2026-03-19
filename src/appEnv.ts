@@ -151,6 +151,7 @@ export function getAppEnvironment(): AppEnvironment {
     },
   };
 
+  // eslint-disable-next-line @js-toolkit/strict-boolean-expressions
   if ((typeof window === 'undefined' ? global : window).Proxy) {
     return new Proxy(appEnv, {
       // prop always is string or symbol, not number
@@ -179,7 +180,7 @@ const appEnv = getAppEnvironment();
 
 export default appEnv;
 
-if (typeof module !== 'undefined' && module.exports) {
+if (typeof module !== 'undefined' && module.exports != null) {
   module.exports = appEnv;
   module.exports.getAppEnvironment = getAppEnvironment;
 }

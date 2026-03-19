@@ -120,11 +120,14 @@ export interface WebConfigOptions extends PartialSome<
   rules?: (Partial<WebDefaultRules> | Record<string, RuleSetRule>) | undefined;
 }
 
-function containsLoader(rules: Record<string, RuleSetRule>, loader: string): boolean {
+function containsLoader(
+  rules: Partial<Record<string, RuleSetRule | false>>,
+  loader: string
+): boolean {
   const checkRule = (use?: RuleSetUse | null | string | false | 0): boolean => {
     if (typeof use === 'string') return use.includes(loader);
     if (Array.isArray(use)) return use.some(checkRule);
-    if (typeof use !== 'function' && use && use.loader) return use.loader.includes(loader);
+    if (typeof use === 'object' && use?.loader) return use.loader.includes(loader);
     return false;
   };
 
@@ -135,10 +138,10 @@ function containsLoader(rules: Record<string, RuleSetRule>, loader: string): boo
 }
 
 export function prepareRules(
-  rules: Record<string, DefaultRuleValue>,
-  defaultRules: Record<string, RuleSetRule>
-): Record<string, RuleSetRule> {
-  return Object.entries<DefaultRuleValue>(rules).reduce<AnyObject>((acc, [key, value]) => {
+  rules: Partial<Record<string, DefaultRuleValue>>,
+  defaultRules: Partial<Record<string, RuleSetRule>>
+): Partial<Record<string, RuleSetRule>> {
+  return Object.entries(rules).reduce<AnyObject>((acc, [key, value]) => {
     if (typeof value === 'function' && key in defaultRules && defaultRules[key]) {
       acc[key] = value(defaultRules[key]);
     } else {
@@ -196,7 +199,10 @@ const config = ({
 
   const preparedRules = prepareRules(rules, defaultRules);
 
-  const moduleRules = { ...defaultRules, ...preparedRules };
+  const moduleRules: Partial<Record<string, RuleSetRule | false>> = {
+    ...defaultRules,
+    ...preparedRules,
+  };
 
   return commonConfig({
     outputPath,
@@ -271,9 +277,7 @@ const config = ({
     module: {
       ...restOptions.module,
       rules: [
-        ...Object.getOwnPropertyNames(moduleRules).map(
-          (name) => moduleRules[name as keyof typeof moduleRules] || {}
-        ),
+        ...Object.getOwnPropertyNames(moduleRules).map((name) => moduleRules[name] || {}),
         // Provide pug loader if html template is pug template
         ...(() => {
           const html = normalizeHtml(webBuildConfig.html);
@@ -354,7 +358,7 @@ const config = ({
         (() => {
           const { fileName, filterTemplate } = webBuildConfig.output.assetManifest;
           const isNeedFilter =
-            !!filterTemplate && !!Object.getOwnPropertyNames(filterTemplate).length;
+            !!filterTemplate && Object.getOwnPropertyNames(filterTemplate).length > 0;
 
           const getName = (): string => 'webpack-manifest-plugin';
           const WebpackManifestPlugin = nodeRequire(getName());
@@ -439,6 +443,7 @@ const config = ({
         })(),
 
       ...(restOptions.plugins ?? []),
+      // eslint-disable-next-line @js-toolkit/strict-boolean-expressions
     ].filter(Boolean),
 
     devServer: {
@@ -459,7 +464,7 @@ const config = ({
 
 export default config;
 
-if (typeof module !== 'undefined' && module.exports) {
+if (typeof module !== 'undefined' && module.exports != null) {
   module.exports = config;
   module.exports.webDefaultRules = webDefaultRules;
   module.exports.prepareRules = prepareRules;

@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-
 import type { AnyObject } from './types';
 
 // todo: Сделать типы web, node, common и только один тип для файла конфигурации?
@@ -106,7 +105,7 @@ const buildConfigDefaults: BuildConfigDefaults = {
 
 export default buildConfigDefaults;
 
-if (typeof module !== 'undefined' && module.exports) {
+if (typeof module !== 'undefined' && module.exports != null) {
   module.exports = buildConfigDefaults;
   module.exports.getWebAppConfig = getWebAppConfig;
   module.exports.getNodeAppConfig = getNodeAppConfig;
