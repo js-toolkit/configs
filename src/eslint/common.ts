@@ -415,17 +415,6 @@ export function create({ resolvePaths: resolvePaths0, depsOnly }: CreateOptions)
                 },
               ],
 
-              // Doesn't work correctly with chain conditions: `(a === 'w' && 'q') || `(a === 'e' && 'r') || 'default'`.
-              // So disable it for now, but it is better to enable in the future with correct configuration.
-              '@typescript-eslint/no-unnecessary-condition': 'off',
-              // '@typescript-eslint/no-unnecessary-condition': [
-              //   'error',
-              //   {
-              //     checkTypePredicates: false,
-              //     allowConstantLoopConditions: 'only-allowed-literals',
-              //   },
-              // ],
-
               '@typescript-eslint/no-confusing-void-expression': [
                 'error',
                 { ignoreArrowShorthand: true, ignoreVoidReturningFunctions: true },
@@ -440,6 +429,18 @@ export function create({ resolvePaths: resolvePaths0, depsOnly }: CreateOptions)
                 'error',
                 { allowThrowingAny: true, allowThrowingUnknown: true },
               ],
+
+              // Doesn't work correctly with chain conditions: `(a === 'w' && 'q') || `(a === 'e' && 'r') || 'default'`.
+              // So disable it for now, but it is better to enable in the future with correct configuration.
+              '@typescript-eslint/no-unnecessary-condition': 'off',
+              // '@typescript-eslint/no-unnecessary-condition': [
+              //   'error',
+              //   {
+              //     checkTypePredicates: false,
+              //     allowConstantLoopConditions: 'only-allowed-literals',
+              //   },
+              // ],
+              '@js-toolkit/no-unnecessary-optional-chain': 'error',
 
               '@typescript-eslint/no-namespace': 'off',
               '@js-toolkit/no-namespace-except-declaration-merge': 'error',
