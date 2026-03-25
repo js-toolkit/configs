@@ -1,5 +1,10 @@
-/* eslint-disable no-bitwise */
 import { AST_NODE_TYPES, ESLintUtils, type TSESLint, TSESTree } from '@typescript-eslint/utils';
+import {
+  isFalseLiteralType,
+  isStrictCompilerOptionEnabled,
+  isTypeFlagSet,
+  isTrueLiteralType,
+} from 'ts-api-utils';
 import * as ts from 'typescript';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -79,9 +84,9 @@ function resolveAndFlatten(type: ts.Type, checker: ts.TypeChecker): ts.Type[] {
     return type.types.flatMap((t) => resolveAndFlatten(t, checker));
   }
   if (
-    (type.flags &
-      (ts.TypeFlags.TypeParameter | ts.TypeFlags.IndexedAccess | ts.TypeFlags.Conditional)) !==
-    0
+    isTypeFlagSet(type, ts.TypeFlags.TypeParameter) ||
+    isTypeFlagSet(type, ts.TypeFlags.IndexedAccess) ||
+    isTypeFlagSet(type, ts.TypeFlags.Conditional)
   ) {
     const resolved = checker.getBaseConstraintOfType(type);
     if (resolved && resolved !== type) {
@@ -92,43 +97,45 @@ function resolveAndFlatten(type: ts.Type, checker: ts.TypeChecker): ts.Type[] {
 }
 
 function isNullOrUndefined(type: ts.Type): boolean {
-  return (type.flags & (ts.TypeFlags.Null | ts.TypeFlags.Undefined | ts.TypeFlags.Void)) !== 0;
-}
-
-function isBooleanLiteral(type: ts.Type): boolean {
-  return (type.flags & ts.TypeFlags.BooleanLiteral) !== 0;
+  return (
+    isTypeFlagSet(type, ts.TypeFlags.Null) ||
+    isTypeFlagSet(type, ts.TypeFlags.Undefined) ||
+    isTypeFlagSet(type, ts.TypeFlags.Void)
+  );
 }
 
 function isBoolean(type: ts.Type): boolean {
-  return (type.flags & ts.TypeFlags.BooleanLike) !== 0;
+  return isTypeFlagSet(type, ts.TypeFlags.BooleanLike);
 }
 
 function isString(type: ts.Type): boolean {
-  return (type.flags & ts.TypeFlags.StringLike) !== 0;
+  return isTypeFlagSet(type, ts.TypeFlags.StringLike);
 }
 
 function isNumber(type: ts.Type): boolean {
-  return (type.flags & (ts.TypeFlags.NumberLike | ts.TypeFlags.BigIntLike)) !== 0;
+  return (
+    isTypeFlagSet(type, ts.TypeFlags.NumberLike) || isTypeFlagSet(type, ts.TypeFlags.BigIntLike)
+  );
 }
 
 function isAny(type: ts.Type): boolean {
-  return (type.flags & ts.TypeFlags.Any) !== 0;
+  return isTypeFlagSet(type, ts.TypeFlags.Any);
 }
 
 function isUnknown(type: ts.Type): boolean {
-  return (type.flags & ts.TypeFlags.Unknown) !== 0;
+  return isTypeFlagSet(type, ts.TypeFlags.Unknown);
 }
 
 function isNever(type: ts.Type): boolean {
-  return (type.flags & ts.TypeFlags.Never) !== 0;
+  return isTypeFlagSet(type, ts.TypeFlags.Never);
 }
 
 function isTypeParameter(type: ts.Type): boolean {
-  return (type.flags & ts.TypeFlags.TypeParameter) !== 0;
+  return isTypeFlagSet(type, ts.TypeFlags.TypeParameter);
 }
 
 function isEnumType(type: ts.Type): boolean {
-  return (type.flags & ts.TypeFlags.EnumLike) !== 0;
+  return isTypeFlagSet(type, ts.TypeFlags.EnumLike);
 }
 
 // function isObjectLike(type: ts.Type): boolean {
@@ -140,23 +147,9 @@ function isEnumType(type: ts.Type): boolean {
 //   );
 // }
 
-function isTrueLiteral(type: ts.Type): boolean {
-  return (
-    isBooleanLiteral(type) &&
-    (type as unknown as { intrinsicName: string }).intrinsicName === 'true'
-  );
-}
-
-function isFalseLiteral(type: ts.Type): boolean {
-  return (
-    isBooleanLiteral(type) &&
-    (type as unknown as { intrinsicName: string }).intrinsicName === 'false'
-  );
-}
-
 function isBrandedBoolean(type: ts.Type): boolean {
   return (
-    type.isIntersection() && type.types.some((t) => (t.flags & ts.TypeFlags.BooleanLike) !== 0)
+    type.isIntersection() && type.types.some((t) => isTypeFlagSet(t, ts.TypeFlags.BooleanLike))
   );
 }
 
@@ -169,8 +162,7 @@ function isTruthyNumberLiteral(type: ts.Type): boolean {
 }
 
 function isStrictNullChecksEnabled(compilerOptions: ts.CompilerOptions): boolean {
-  if (compilerOptions.strictNullChecks !== undefined) return compilerOptions.strictNullChecks;
-  return compilerOptions.strict === true;
+  return isStrictCompilerOptionEnabled(compilerOptions, 'strictNullChecks');
 }
 
 function isArrayLikeType(type: ts.Type, checker: ts.TypeChecker): boolean {
@@ -277,8 +269,8 @@ function classifyType(type: ts.Type, checker: ts.TypeChecker): Set<TypeKind> {
   }
 
   if (booleanLeaves.length > 0) {
-    const allTruthy = booleanLeaves.every(isTrueLiteral);
-    const allFalsy = booleanLeaves.every(isFalseLiteral);
+    const allTruthy = booleanLeaves.every(isTrueLiteralType);
+    const allFalsy = booleanLeaves.every(isFalseLiteralType);
 
     if (allTruthy) {
       kinds.add(hasNullish ? 'nullableBoolean' : 'truthyBooleanLiteral');
