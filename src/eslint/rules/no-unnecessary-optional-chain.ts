@@ -73,7 +73,7 @@ export default createRule<[Options], MessageId>({
   },
 
   create(context, [userOptions]) {
-    const autofix = userOptions.autofix ?? true;
+    const autofix = userOptions.autofix ?? false;
     const services = ESLintUtils.getParserServices(context);
     const checker = services.program.getTypeChecker();
     const compilerOptions = services.program.getCompilerOptions();
