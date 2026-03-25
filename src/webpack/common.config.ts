@@ -88,7 +88,7 @@ const config = ({
                       (acc, item) => ({ ...acc, ...item }),
                       {}
                     )
-                  : (minimizerPluginOptions as Record<string, any>);
+                  : (minimizerPluginOptions as Record<string, any> | undefined);
                 return new (nodeRequire('terser-webpack-plugin'))({
                   extractComments: false,
                   ...options,

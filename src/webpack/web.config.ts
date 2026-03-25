@@ -315,7 +315,7 @@ const config = ({
           const entryHashStr = appEnv.prod && entryHash ? '.[contenthash:8]' : '';
           const chunkHashStr = appEnv.prod && chunkHash ? '.[contenthash:8]' : '';
           const { styles } = webBuildConfig.output;
-          const dir = (typeof styles === 'string' ? styles : styles?.dir) || '.';
+          const dir = (typeof styles === 'string' ? styles : styles.dir) || '.';
           return new MiniCssExtractPlugin({
             filename: `${dir}/[name]${entryHashStr}.css`,
             chunkFilename: `${dir}/[name]${chunkHashStr}${chunkSuffix ?? ''}.css`,
