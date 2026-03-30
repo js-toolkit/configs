@@ -233,12 +233,9 @@ export function create({ resolvePaths: resolvePaths0, depsOnly }: CreateOptions)
 
         'no-restricted-syntax': [
           'error',
-          // 'FunctionExpression',
           'ForInStatement',
-          // 'ForOfStatement',
           'LabeledStatement',
           'WithStatement',
-          // "BinaryExpression[operator='in']",
           "CallExpression[callee.name='setTimeout'][arguments.length!=2]",
           "CallExpression[arguments.length!=2] > MemberExpression[object.name='window'][property.name='setTimeout']",
         ],
@@ -370,7 +367,6 @@ export function create({ resolvePaths: resolvePaths0, depsOnly }: CreateOptions)
               // Exclude `ForInStatement` in favor of `@typescript-eslint/no-for-in-array`
               'no-restricted-syntax': [
                 'error',
-                // 'FunctionExpression',
                 'LabeledStatement',
                 'WithStatement',
                 "CallExpression[callee.name='setTimeout'][arguments.length!=2]",

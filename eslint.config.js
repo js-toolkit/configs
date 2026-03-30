@@ -15,8 +15,7 @@ export default [
       },
     },
 
-    rules: {
-      '@typescript-eslint/strict-boolean-expressions': 'off',
+    rules: {     
       '@typescript-eslint/no-unsafe-return': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',
       '@typescript-eslint/no-unsafe-call': 'off',
