@@ -426,6 +426,11 @@ export function create({ resolvePaths: resolvePaths0, depsOnly }: CreateOptions)
                 { allowThrowingAny: true, allowThrowingUnknown: true },
               ],
 
+              '@typescript-eslint/unified-signatures': [
+                'error',
+                { ignoreDifferentlyNamedParameters: true, ignoreOverloadsWithDifferentJSDoc: true },
+              ],
+
               // Doesn't work correctly with chain conditions: `(a === 'w' && 'q') || `(a === 'e' && 'r') || 'default'`.
               // So disable it for now, but it is better to enable in the future with correct configuration.
               '@typescript-eslint/no-unnecessary-condition': 'off',
