@@ -1,0 +1,17 @@
+{
+  "extends": "@js-toolkit/tsconfig/common",
+  "compilerOptions": {
+    "target": "es2015",
+    "module": "es2020",
+    "moduleResolution": "bundler",
+    "types": ["node"],
+    "rootDir": "src",
+    "outDir": "dist",
+    "tsBuildInfoFile": "dist/tsconfig.tsbuildinfo",
+    "declaration": true,
+    "sourceMap": false,
+    "importHelpers": false,
+    "incremental": true
+  },
+  "include": ["src"]
+}

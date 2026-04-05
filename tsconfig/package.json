@@ -1,0 +1,20 @@
+{
+  "name": "@js-toolkit/tsconfig",
+  "version": "0.1.0",
+  "description": "Shared TypeScript configurations",
+  "author": "VZH",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/js-toolkit/configs",
+    "directory": "tsconfig"
+  },
+  "exports": {
+    "./common": "./common.json",
+    "./bundler": "./bundler.json"
+  },
+  "files": [
+    "*.json",
+    "!package.json"
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "name": "@js-toolkit/prettier-config",
+  "version": "0.1.0",
+  "description": "Shared Prettier config",
+  "author": "VZH",
+  "license": "MIT",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/js-toolkit/configs",
+    "directory": "prettier-config"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "clean": "rimraf dist/*",
+    "build": "npm run clean && tsc -p tsconfig.json"
+  },
+  "peerDependencies": {
+    "prettier": ">=3.0.0"
+  },
+  "devDependencies": {
+    "@js-toolkit/tsconfig": "workspace:*"
+  }
+}

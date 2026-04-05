@@ -1,1 +1,1 @@
-export { default } from './src/prettier/index.ts';
+export { default } from '@js-toolkit/prettier-config';

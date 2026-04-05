@@ -1,0 +1,105 @@
+{
+  "name": "@js-toolkit/eslint-config",
+  "version": "0.1.0",
+  "description": "Shared ESLint flat config with custom rules (common + web)",
+  "author": "VZH",
+  "license": "MIT",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/js-toolkit/configs",
+    "directory": "eslint-config"
+  },
+  "exports": {
+    "./plugin": {
+      "types": "./dist/rules/plugin.d.ts",
+      "import": "./dist/rules/plugin.js"
+    },
+    "./*": {
+      "types": "./dist/*.d.ts",
+      "import": "./dist/*.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "clean": "rimraf dist/*",
+    "build": "npm run clean && tsc -p tsconfig.json"
+  },
+  "peerDependencies": {
+    "@eslint/compat": ">=2.0.0",
+    "@eslint/js": ">=10.0.0",
+    "eslint": ">=9.0.0",
+    "globals": ">=15.0.0",
+    "ts-api-utils": ">=2.5.0",
+    "typescript": ">=5.0.0",
+    "typescript-eslint": ">=8.0.0"
+  },
+  "peerDependenciesMeta": {
+    "eslint-config-airbnb-base": {
+      "optional": true
+    },
+    "eslint-config-airbnb": {
+      "optional": true
+    },
+    "eslint-config-standard": {
+      "optional": true
+    },
+    "eslint-plugin-import": {
+      "optional": true
+    },
+    "eslint-plugin-import-x": {
+      "optional": true
+    },
+    "eslint-import-resolver-typescript": {
+      "optional": true
+    },
+    "eslint-plugin-promise": {
+      "optional": true
+    },
+    "eslint-plugin-react": {
+      "optional": true
+    },
+    "eslint-plugin-react-hooks": {
+      "optional": true
+    },
+    "eslint-plugin-jsx-a11y": {
+      "optional": true
+    },
+    "eslint-plugin-prettier": {
+      "optional": true
+    },
+    "eslint-config-prettier": {
+      "optional": true
+    },
+    "eslint-plugin-jsdoc": {
+      "optional": true
+    },
+    "eslint-plugin-tsdoc": {
+      "optional": true
+    },
+    "eslint-plugin-wc": {
+      "optional": true
+    },
+    "eslint-plugin-lit": {
+      "optional": true
+    },
+    "eslint-plugin-mobx": {
+      "optional": true
+    },
+    "@babel/eslint-parser": {
+      "optional": true
+    }
+  },
+  "dependencies": {
+    "@js-toolkit/config-utils": "workspace:^"
+  },
+  "devDependencies": {
+    "eslint-plugin-jsx-a11y": "6.10.2",
+    "eslint-plugin-react": "7.37.5",
+    "eslint-plugin-react-hooks": "7.0.1",
+    "ts-api-utils": "2.5.0",
+    "@js-toolkit/tsconfig": "workspace:*"
+  }
+}

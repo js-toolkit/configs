@@ -1,0 +1,6 @@
+packages:
+  - "config-utils"
+  - "eslint-config"
+  - "prettier-config"
+  - "tsconfig"
+  - "build-utils"

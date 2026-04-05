@@ -1,0 +1,8 @@
+{
+  "$schema": "https://www.schemastore.org/tsconfig",
+  "extends": "@js-toolkit/tsconfig/bundler",
+  "compilerOptions": {
+    "moduleResolution": "bundler",
+    "types": ["node"]
+  }
+}

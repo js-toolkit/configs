@@ -1,0 +1,46 @@
+{
+  "name": "@js-toolkit/build-utils",
+  "version": "0.1.0",
+  "description": "Build configuration utilities for Webpack, Babel, PostCSS, and project paths",
+  "author": "VZH",
+  "license": "MIT",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/js-toolkit/configs",
+    "directory": "build-utils"
+  },
+  "exports": {
+    "./*/*": {
+      "types": "./dist/types/*/*.d.ts",
+      "import": "./dist/esm/*/*.js",
+      "require": "./dist/cjs/*/*.js"
+    },
+    "./*": {
+      "types": "./dist/types/*.d.ts",
+      "require": "./dist/cjs/*.js",
+      "import": "./dist/esm/*.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "clean": "rimraf dist/*",
+    "build:esm": "tsc -p tsconfig.json",
+    "build:cjs": "node scripts/build.cjs.ts",
+    "build": "npm run clean && npm run build:esm && npm run build:cjs && node scripts/postbuild.ts"
+  },
+  "dependencies": {
+    "@js-toolkit/config-utils": "workspace:^"
+  },
+  "devDependencies": {
+    "@types/webpack-node-externals": "3.0.4",
+    "copy-webpack-plugin": "14.0.0",
+    "html-webpack-plugin": "5.6.6",
+    "webpack": "5.105.4",
+    "webpack-dev-server": "5.2.3",
+    "webpack-node-externals": "3.0.0",
+    "@js-toolkit/tsconfig": "workspace:*"
+  }
+}

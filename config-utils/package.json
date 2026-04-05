@@ -1,0 +1,29 @@
+{
+  "name": "@js-toolkit/config-utils",
+  "version": "0.1.0",
+  "description": "Shared utilities for project configuration: extensions, paths, dependency detection",
+  "author": "VZH",
+  "license": "MIT",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/js-toolkit/configs",
+    "directory": "config-utils"
+  },
+  "exports": {
+    "./*": {
+      "types": "./dist/*.d.ts",
+      "import": "./dist/*.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "clean": "rimraf dist/*",
+    "build": "npm run clean && tsc -p tsconfig.json"
+  },
+  "devDependencies": {
+    "@js-toolkit/tsconfig": "workspace:*"
+  }
+}
