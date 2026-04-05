@@ -1,6 +1,6 @@
 {
   "name": "@js-toolkit/build-utils",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Build configuration utilities for Webpack, Babel, PostCSS, and project paths",
   "author": "VZH",
   "license": "MIT",
