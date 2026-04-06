@@ -35,9 +35,14 @@ export function createTypeScriptImportResolver(options?: AnyObject): AnyObject {
 export interface CreateOptions {
   resolvePaths: string | string[];
   depsOnly?: boolean;
+  replaceImportPlugin?: boolean;
 }
 
-export function create({ resolvePaths: resolvePaths0, depsOnly }: CreateOptions): Linter.Config[] {
+export function create({
+  resolvePaths: resolvePaths0,
+  depsOnly,
+  replaceImportPlugin,
+}: CreateOptions): Linter.Config[] {
   const resolvePaths = typeof resolvePaths0 === 'string' ? [resolvePaths0] : resolvePaths0;
   const deps = depsOnly && getProjectDependencies(resolvePaths);
 
@@ -49,7 +54,8 @@ export function create({ resolvePaths: resolvePaths0, depsOnly }: CreateOptions)
   const hasBabelParser = hasDep('@babel/eslint-parser');
   const hasPromisePlugin = hasDep('eslint-plugin-promise');
   const hasImportXPlugin = hasDep('eslint-plugin-import-x');
-  const hasImportPlugin = hasDep('eslint-plugin-import');
+  const hasImportPlugin =
+    hasDep('eslint-plugin-import') && (!hasImportXPlugin || !replaceImportPlugin);
   const hasNPlugin = hasDep('eslint-plugin-n');
   const hasConfigAirbnbBase = hasDep('eslint-config-airbnb-base');
   const hasJsDocPlugin = hasDep('eslint-plugin-jsdoc');
@@ -61,19 +67,26 @@ export function create({ resolvePaths: resolvePaths0, depsOnly }: CreateOptions)
   const filterAirbnbRules = (): FixupConfigArray => {
     const list: FixupConfigArray = defaultRequire('eslint-config-airbnb-base').extends.map(
       (url: string) => {
-        return {
-          rules: url.endsWith('imports.js')
-            ? (hasImportXPlugin &&
-                Object.entries(
-                  defaultRequire(url).rules as Linter.RulesRecord,
-                ).reduce<Linter.RulesRecord>((acc, [name, value]) => {
-                  acc[name.replace('import/', 'import-x/')] = value;
-                  return acc;
-                }, {})) ||
-              (hasImportPlugin && (defaultRequire(url).rules as Linter.RulesRecord)) ||
-              {}
-            : (defaultRequire(url).rules as Linter.RulesRecord),
-        };
+        if (url.endsWith('imports.js')) {
+          if (hasImportXPlugin) {
+            return {
+              rules: Object.entries(
+                defaultRequire(url).rules as Linter.RulesRecord,
+              ).reduce<Linter.RulesRecord>((acc, [name, value]) => {
+                acc[name.replace('import/', 'import-x/')] = value;
+                if (hasImportPlugin) {
+                  acc[name] = value;
+                }
+                return acc;
+              }, {}),
+            };
+          }
+          if (hasImportPlugin) {
+            return { rules: defaultRequire(url).rules as Linter.RulesRecord };
+          }
+          return {};
+        }
+        return { rules: defaultRequire(url).rules as Linter.RulesRecord };
       },
     );
     return fixupConfigRules(list);
@@ -89,11 +102,9 @@ export function create({ resolvePaths: resolvePaths0, depsOnly }: CreateOptions)
       ? [defaultRequire('eslint-plugin-promise').configs['flat/recommended']]
       : []),
 
-    ...(hasImportPlugin && !hasImportXPlugin
-      ? defaultRequire('eslint-plugin-import').flatConfigs.recommended
-      : []),
-
     ...(hasImportXPlugin ? [defaultRequire('eslint-plugin-import-x').flatConfigs.recommended] : []),
+
+    ...(hasImportPlugin ? defaultRequire('eslint-plugin-import').flatConfigs.recommended : []),
 
     ...(hasNPlugin ? [defaultRequire('eslint-plugin-n').configs['flat/recommended']] : []),
 
@@ -130,22 +141,21 @@ export function create({ resolvePaths: resolvePaths0, depsOnly }: CreateOptions)
       },
 
       settings: {
-        ...(hasImportPlugin &&
-          !hasImportXPlugin && {
-            'import/extensions': getJSExtensions(),
-            'import-x/extensions': getJSExtensions(),
-            'import/resolver': {
-              node: {
-                extensions: getJSExtensions(),
-              },
+        ...(hasImportPlugin && {
+          'import/extensions': getJSExtensions(),
+          'import-x/extensions': getJSExtensions(),
+          'import/resolver': {
+            node: {
+              extensions: getJSExtensions(),
             },
+          },
 
-            ...(hasBabelParser && {
-              'import/parsers': {
-                '@babel/eslint-parser': getJSExtensions(),
-              },
-            }),
+          ...(hasBabelParser && {
+            'import/parsers': {
+              '@babel/eslint-parser': getJSExtensions(),
+            },
           }),
+        }),
 
         ...(hasImportXPlugin && {
           'import-x/resolver-next': [
@@ -210,8 +220,12 @@ export function create({ resolvePaths: resolvePaths0, depsOnly }: CreateOptions)
             ],
             'import/prefer-default-export': 'off',
           }).reduce<AnyObject>((acc, [name, value]) => {
-            if (hasImportXPlugin) acc[name.replace('import/', 'import-x/')] = value;
-            else acc[name] = value;
+            if (hasImportXPlugin) {
+              acc[name.replace('import/', 'import-x/')] = value;
+            }
+            if (hasImportPlugin) {
+              acc[name] = value;
+            }
             return acc;
           }, {})),
 
@@ -230,7 +244,7 @@ export function create({ resolvePaths: resolvePaths0, depsOnly }: CreateOptions)
             extends: [
               ...eslintTs.configs.strictTypeChecked,
               ...eslintTs.configs.stylisticTypeChecked,
-              ...(hasImportPlugin && !hasImportXPlugin
+              ...(hasImportPlugin
                 ? defaultRequire('eslint-plugin-import').flatConfigs.recommended
                 : []),
               ...(hasImportXPlugin
@@ -258,22 +272,21 @@ export function create({ resolvePaths: resolvePaths0, depsOnly }: CreateOptions)
             },
 
             settings: {
-              ...(hasImportPlugin &&
-                !hasImportXPlugin && {
-                  'import/extensions': moduleExtensions,
-                  'import/resolver': {
-                    node: {
-                      extensions: moduleExtensions,
-                    },
-                    typescript: {
-                      project: tsconfig,
-                    },
+              ...(hasImportPlugin && {
+                'import/extensions': moduleExtensions,
+                'import/resolver': {
+                  node: {
+                    extensions: moduleExtensions,
                   },
-                  'import/parsers': {
-                    '@typescript-eslint/parser': moduleExtensions,
-                    ...(hasBabelParser && { '@babel/eslint-parser': [] }),
+                  typescript: {
+                    project: tsconfig,
                   },
-                }),
+                },
+                'import/parsers': {
+                  '@typescript-eslint/parser': moduleExtensions,
+                  ...(hasBabelParser && { '@babel/eslint-parser': [] }),
+                },
+              }),
 
               ...(hasImportXPlugin && {
                 'import-x/extensions': moduleExtensions,
