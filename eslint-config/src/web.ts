@@ -5,6 +5,7 @@ import {
   getFilesGlob,
   getNonSXExtensions,
   getSXExtensions,
+  getTSExtensions,
   getTSXExtensions,
 } from '@js-toolkit/config-utils/extensions';
 import { getProjectDependencies } from '@js-toolkit/config-utils/getProjectDependencies';
@@ -23,7 +24,11 @@ const filterAirbnbRules = (config: 'react' | 'react-a11y'): FixupConfigArray => 
   });
 };
 
-export function create({ resolvePaths: resolvePaths0, depsOnly }: CreateOptions): Linter.Config[] {
+export function create({
+  resolvePaths: resolvePaths0,
+  depsOnly,
+  replaceImportPlugin,
+}: CreateOptions): Linter.Config[] {
   const resolvePaths = typeof resolvePaths0 === 'string' ? [resolvePaths0] : resolvePaths0;
   const deps = depsOnly && getProjectDependencies(resolvePaths);
 
@@ -39,8 +44,30 @@ export function create({ resolvePaths: resolvePaths0, depsOnly }: CreateOptions)
   const hasLitPlugin = hasDep('eslint-plugin-lit');
   const hasMobxPlugin = hasDep('eslint-plugin-mobx');
   const hasConfigAirbnb = hasDep('eslint-config-airbnb');
+  const hasConfigNext = hasDep('eslint-config-next');
   const hasTypescriptPlugin = hasDep('typescript-eslint');
   const hasPrettierPlugin = hasDep('eslint-plugin-prettier');
+  const hasImportXPlugin = hasDep('eslint-plugin-import-x');
+
+  const replaceNextConfig = (): Linter.Config[] => {
+    const configs = defaultRequire('eslint-config-next/core-web-vitals') as Linter.Config[];
+    if (replaceImportPlugin && hasImportXPlugin) {
+      configs.forEach((config) => {
+        delete config.plugins?.import;
+        delete config.settings?.['import/parsers'];
+        if (config.rules) {
+          config.rules = Object.entries(config.rules).reduce<Linter.RulesRecord>(
+            (acc, [name, value]) => {
+              if (value != null) acc[name.replace('import/', 'import-x/')] = value;
+              return acc;
+            },
+            {},
+          );
+        }
+      });
+    }
+    return configs;
+  };
 
   return [
     ...(hasReactPlugin
@@ -127,6 +154,13 @@ export function create({ resolvePaths: resolvePaths0, depsOnly }: CreateOptions)
             rules: { 'react-hooks/exhaustive-deps': 'error' },
           } satisfies Linter.Config as Linter.Config,
         ]
+      : []),
+
+    ...(hasConfigNext ? replaceNextConfig() : []),
+    ...(hasConfigNext && hasTypescriptPlugin
+      ? (defaultRequire('eslint-config-next/typescript') as Linter.Config[]).map((conf) =>
+          addFilesGlob(conf, getFilesGlob(getTSExtensions())),
+        )
       : []),
 
     ...[
