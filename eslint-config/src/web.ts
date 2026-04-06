@@ -52,25 +52,52 @@ export function create({
   const replaceNextConfig = (): Linter.Config[] => {
     const configs = defaultRequire('eslint-config-next/core-web-vitals') as Linter.Config[];
 
-    configs.forEach((config) => {
-      if (hasReactPlugin) delete config.plugins?.react;
-      if (hasReactHooksPlugin) delete config.plugins?.['react-hooks'];
-      if (hasReactA11yPlugin) delete config.plugins?.['jsx-a11y'];
-
+    configs.reduce<Linter.Config[]>((nextAcc, config) => {
+      if (hasReactPlugin) {
+        delete config.plugins?.react;
+        delete config.settings?.react;
+      }
+      if (hasReactA11yPlugin) {
+        delete config.plugins?.['jsx-a11y'];
+      }
+      if (hasReactHooksPlugin) {
+        delete config.plugins?.['react-hooks'];
+      }
       if (replaceImportPlugin && hasImportXPlugin) {
         delete config.plugins?.import;
         delete config.settings?.['import/parsers'];
-        if (config.rules) {
-          config.rules = Object.entries(config.rules).reduce<Linter.RulesRecord>(
-            (acc, [name, value]) => {
-              if (value != null) acc[name.replace('import/', 'import-x/')] = value;
-              return acc;
-            },
-            {},
-          );
-        }
       }
-    });
+      if (config.rules) {
+        let reactConfig: Linter.Config | undefined;
+        let jsxConfig: Linter.Config | undefined;
+
+        config.rules = Object.entries(config.rules).reduce<Partial<Linter.RulesRecord>>(
+          (acc, [name, value]) => {
+            if (name.startsWith('import/') && replaceImportPlugin && hasImportXPlugin) {
+              acc[name.replace('import/', 'import-x/')] = value;
+            } else if (name.startsWith('react/') && hasReactPlugin) {
+              reactConfig ??= {};
+              reactConfig.rules ??= {};
+              reactConfig.rules[name] = value;
+            } else if (name.startsWith('jsx-a11y/') && hasReactA11yPlugin) {
+              jsxConfig ??= {};
+              jsxConfig.rules ??= {};
+              jsxConfig.rules[name] = value;
+            } else {
+              acc[name] = value;
+            }
+            return acc;
+          },
+          {},
+        );
+
+        reactConfig && nextAcc.push(addFilesGlob(reactConfig, getFilesGlob(getSXExtensions())));
+        jsxConfig && nextAcc.push(addFilesGlob(jsxConfig, getFilesGlob(getSXExtensions())));
+      }
+      nextAcc.push(config);
+
+      return nextAcc;
+    }, []);
 
     return configs;
   };
