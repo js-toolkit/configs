@@ -15,7 +15,7 @@
     "lint": "eslint .",
     "changeset": "changeset",
     "version": "changeset version",
-    "publish": "pnpm build && changeset publish"
+    "publish": "pnpm build && changeset publish && git push --follow-tags"
   },
   "devDependencies": {
     "@changesets/cli": "^2.30.0",
