@@ -1,5 +1,11 @@
 # @js-toolkit/eslint-config
 
+## 1.1.2
+
+### Patch Changes
+
+- Improve eslint-config-next filtering
+
 ## 1.1.1
 
 ### Patch Changes
