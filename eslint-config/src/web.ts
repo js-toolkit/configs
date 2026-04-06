@@ -194,6 +194,6 @@ export function create({
   ];
 }
 
-const config: Linter.Config[] = create({ resolvePaths: process.cwd() });
+const config: Linter.Config[] = create({ resolvePaths: process.cwd(), replaceImportPlugin: true });
 
 export default config;

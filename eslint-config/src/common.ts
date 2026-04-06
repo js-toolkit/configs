@@ -105,7 +105,7 @@ export function create({
 
     ...(hasImportXPlugin ? [defaultRequire('eslint-plugin-import-x').flatConfigs.recommended] : []),
 
-    ...(hasImportPlugin ? defaultRequire('eslint-plugin-import').flatConfigs.recommended : []),
+    ...(hasImportPlugin ? [defaultRequire('eslint-plugin-import').flatConfigs.recommended] : []),
 
     ...(hasNPlugin ? [defaultRequire('eslint-plugin-n').configs['flat/recommended']] : []),
 
@@ -246,7 +246,7 @@ export function create({
               ...eslintTs.configs.strictTypeChecked,
               ...eslintTs.configs.stylisticTypeChecked,
               ...(hasImportPlugin
-                ? defaultRequire('eslint-plugin-import').flatConfigs.recommended
+                ? [defaultRequire('eslint-plugin-import').flatConfigs.recommended]
                 : []),
               ...(hasImportXPlugin
                 ? [defaultRequire('eslint-plugin-import-x').flatConfigs.typescript]
@@ -424,6 +424,6 @@ export function create({
   ];
 }
 
-const config: Linter.Config[] = create({ resolvePaths: process.cwd() });
+const config: Linter.Config[] = create({ resolvePaths: process.cwd(), replaceImportPlugin: true });
 
 export default config;
