@@ -1,6 +1,6 @@
 {
   "name": "@js-toolkit/eslint-config",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Shared ESLint flat config with custom rules (common + web)",
   "author": "VZH",
   "license": "MIT",
