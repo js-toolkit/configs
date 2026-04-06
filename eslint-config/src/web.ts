@@ -51,8 +51,13 @@ export function create({
 
   const replaceNextConfig = (): Linter.Config[] => {
     const configs = defaultRequire('eslint-config-next/core-web-vitals') as Linter.Config[];
-    if (replaceImportPlugin && hasImportXPlugin) {
-      configs.forEach((config) => {
+
+    configs.forEach((config) => {
+      if (hasReactPlugin) delete config.plugins?.react;
+      if (hasReactHooksPlugin) delete config.plugins?.['react-hooks'];
+      if (hasReactA11yPlugin) delete config.plugins?.['jsx-a11y'];
+
+      if (replaceImportPlugin && hasImportXPlugin) {
         delete config.plugins?.import;
         delete config.settings?.['import/parsers'];
         if (config.rules) {
@@ -64,8 +69,9 @@ export function create({
             {},
           );
         }
-      });
-    }
+      }
+    });
+
     return configs;
   };
 
