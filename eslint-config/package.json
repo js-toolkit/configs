@@ -43,9 +43,6 @@
     "eslint-config-airbnb": {
       "optional": true
     },
-    "eslint-config-standard": {
-      "optional": true
-    },
     "eslint-plugin-import": {
       "optional": true
     },
