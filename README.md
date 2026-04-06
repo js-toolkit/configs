@@ -50,7 +50,9 @@ This monorepo uses [Changesets](https://github.com/changesets/changesets) for in
 ```bash
 pnpm changeset          # create a changeset
 pnpm version            # bump versions based on changesets
+git commit -m "chore: version packages"
 pnpm publish            # build and publish all changed packages
+git push --follow-tags
 ```
 
 ## Repository
