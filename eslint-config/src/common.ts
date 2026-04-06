@@ -15,6 +15,7 @@ import { getProjectDependencies } from '@js-toolkit/config-utils/getProjectDepen
 import { defaultRequire } from '@js-toolkit/config-utils/defaultRequire';
 import { findPath } from '@js-toolkit/config-utils/findPath';
 import { eslintTsProject } from './consts.ts';
+import { addFilesGlob } from './utils.ts';
 
 type AnyObject = Record<string, any>;
 
@@ -110,10 +111,10 @@ export function create({
 
     ...(hasJsDocPlugin
       ? [
-          {
-            ...defaultRequire('eslint-plugin-jsdoc').configs['flat/recommended'],
-            files: [getFilesGlob(getJSExtensions())],
-          },
+          addFilesGlob(
+            defaultRequire('eslint-plugin-jsdoc').configs['flat/recommended'],
+            getFilesGlob(getJSExtensions()),
+          ),
         ]
       : []),
 

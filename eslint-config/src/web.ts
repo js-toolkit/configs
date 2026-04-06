@@ -10,6 +10,7 @@ import {
 import { getProjectDependencies } from '@js-toolkit/config-utils/getProjectDependencies';
 import { getInstalledPackage } from '@js-toolkit/config-utils/getInstalledPackage';
 import { defaultRequire } from '@js-toolkit/config-utils/defaultRequire';
+import { addFilesGlob } from './utils.ts';
 import type { CreateOptions } from './common.ts';
 
 const filterAirbnbRules = (config: 'react' | 'react-a11y'): FixupConfigArray => {
@@ -83,10 +84,7 @@ export function create({ resolvePaths: resolvePaths0, depsOnly }: CreateOptions)
             },
           } satisfies Linter.Config as Linter.Config,
         ]
-    ).map((conf) => ({
-      ...conf,
-      files: [...(conf.files ?? []), getFilesGlob(getSXExtensions())],
-    })),
+    ).map((conf) => addFilesGlob(conf, getFilesGlob(getSXExtensions()))),
 
     ...(hasReactA11yPlugin
       ? (() => {
@@ -103,10 +101,7 @@ export function create({ resolvePaths: resolvePaths0, depsOnly }: CreateOptions)
           ];
         })()
       : []
-    ).map((conf) => ({
-      ...conf,
-      files: [...(conf.files ?? []), getFilesGlob(getSXExtensions())],
-    })),
+    ).map((conf) => addFilesGlob(conf, getFilesGlob(getSXExtensions()))),
 
     ...(hasReactPlugin && hasTypescriptPlugin
       ? [
@@ -157,10 +152,7 @@ export function create({ resolvePaths: resolvePaths0, depsOnly }: CreateOptions)
         } satisfies Linter.Config as Linter.Config),
     ]
       .filter((conf): conf is Linter.Config => !!conf)
-      .map((conf) => ({
-        ...conf,
-        files: [...(conf.files ?? []), getFilesGlob(getNonSXExtensions())],
-      })),
+      .map((conf) => addFilesGlob(conf, getFilesGlob(getNonSXExtensions()))),
 
     ...(hasPrettierPlugin ? [defaultRequire('eslint-plugin-prettier/recommended')] : []),
 
