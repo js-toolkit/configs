@@ -5,7 +5,6 @@ import {
   getFilesGlob,
   getNonSXExtensions,
   getSXExtensions,
-  getTSExtensions,
   getTSXExtensions,
 } from '@js-toolkit/config-utils/extensions';
 import { getProjectDependencies } from '@js-toolkit/config-utils/getProjectDependencies';
@@ -45,7 +44,8 @@ export function create({
   const hasMobxPlugin = hasDep('eslint-plugin-mobx');
   const hasConfigAirbnb = hasDep('eslint-config-airbnb');
   const hasConfigNext = hasDep('eslint-config-next');
-  const hasTypescriptPlugin = hasDep('typescript-eslint');
+  const hasTypescriptPlugin =
+    hasDep('typescript-eslint') || hasDep('@typescript-eslint/eslint-plugin');
   const hasPrettierPlugin = hasDep('eslint-plugin-prettier');
   const hasImportXPlugin = hasDep('eslint-plugin-import-x');
 
@@ -53,19 +53,17 @@ export function create({
     const configs = defaultRequire('eslint-config-next/core-web-vitals') as Linter.Config[];
 
     configs.reduce<Linter.Config[]>((nextAcc, config) => {
-      if (hasReactPlugin) {
-        delete config.plugins?.react;
-        delete config.settings?.react;
+      if (config.name === 'next/typescript') {
+        return nextAcc;
       }
-      if (hasReactA11yPlugin) {
-        delete config.plugins?.['jsx-a11y'];
-      }
-      if (hasReactHooksPlugin) {
-        delete config.plugins?.['react-hooks'];
-      }
+      delete config.plugins?.react;
+      delete config.settings?.react;
+      delete config.plugins?.['jsx-a11y'];
+      delete config.plugins?.['react-hooks'];
       if (replaceImportPlugin && hasImportXPlugin) {
         delete config.plugins?.import;
         delete config.settings?.['import/parsers'];
+        delete config.settings?.['import/resolver'];
       }
       if (config.rules) {
         let reactConfig: Linter.Config | undefined;
@@ -75,15 +73,15 @@ export function create({
           (acc, [name, value]) => {
             if (name.startsWith('import/') && replaceImportPlugin && hasImportXPlugin) {
               acc[name.replace('import/', 'import-x/')] = value;
-            } else if (name.startsWith('react/') && hasReactPlugin) {
+            } else if (name.startsWith('react/')) {
               reactConfig ??= {};
               reactConfig.rules ??= {};
               reactConfig.rules[name] = value;
-            } else if (name.startsWith('jsx-a11y/') && hasReactA11yPlugin) {
+            } else if (name.startsWith('jsx-a11y/')) {
               jsxConfig ??= {};
               jsxConfig.rules ??= {};
               jsxConfig.rules[name] = value;
-            } else {
+            } else if (!name.startsWith('@typescript-eslint/')) {
               acc[name] = value;
             }
             return acc;
@@ -190,11 +188,6 @@ export function create({
       : []),
 
     ...(hasConfigNext ? replaceNextConfig() : []),
-    ...(hasConfigNext && hasTypescriptPlugin
-      ? (defaultRequire('eslint-config-next/typescript') as Linter.Config[]).map((conf) =>
-          addFilesGlob(conf, getFilesGlob(getTSExtensions())),
-        )
-      : []),
 
     ...[
       hasWCPlugin &&

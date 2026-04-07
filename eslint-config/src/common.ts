@@ -62,7 +62,8 @@ export function create({
   const hasJsDocPlugin = hasDep('eslint-plugin-jsdoc');
   const hasTsDocPlugin = hasDep('eslint-plugin-tsdoc');
   const hasPrettierPlugin = hasDep('eslint-plugin-prettier');
-  const hasTypescriptPlugin = hasDep('typescript-eslint');
+  const hasTypescriptPlugin =
+    hasDep('typescript-eslint') || hasDep('@typescript-eslint/eslint-plugin');
   const hasImportResolverTypescript = hasDep('eslint-import-resolver-typescript');
 
   const filterAirbnbRules = (): FixupConfigArray => {
