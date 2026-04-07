@@ -1,5 +1,13 @@
 # @js-toolkit/eslint-config
 
+## 1.1.3
+
+### Patch Changes
+
+- Keep only next.js specific options from eslint-config-next
+- Updated dependencies
+  - @js-toolkit/config-utils@1.0.1
+
 ## 1.1.2
 
 ### Patch Changes

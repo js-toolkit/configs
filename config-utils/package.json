@@ -1,6 +1,6 @@
 {
   "name": "@js-toolkit/config-utils",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Shared utilities for project configuration: extensions, paths, dependency detection",
   "author": "VZH",
   "license": "MIT",
