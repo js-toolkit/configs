@@ -112,10 +112,10 @@ importers:
   eslint-config:
     dependencies:
       '@eslint/compat':
-        specifier: '>=2.0.0'
-        version: 2.0.3(eslint@9.39.4)
+        specifier: 2.0.4
+        version: 2.0.4(eslint@9.39.4)
       '@eslint/js':
-        specifier: '>=10.0.0'
+        specifier: 10.0.1
         version: 10.0.1(eslint@9.39.4)
       '@js-toolkit/config-utils':
         specifier: workspace:^
@@ -124,8 +124,11 @@ importers:
         specifier: '>=9.0.0'
         version: 9.39.4
       globals:
-        specifier: '>=15.0.0'
+        specifier: 17.4.0
         version: 17.4.0
+      ts-api-utils:
+        specifier: 2.5.0
+        version: 2.5.0(typescript@6.0.2)
       typescript:
         specifier: '>=5.0.0'
         version: 6.0.2
@@ -145,9 +148,6 @@ importers:
       eslint-plugin-react-hooks:
         specifier: 7.0.1
         version: 7.0.1(eslint@9.39.4)
-      ts-api-utils:
-        specifier: 2.5.0
-        version: 2.5.0(typescript@6.0.2)
 
   prettier-config:
     dependencies:
@@ -317,6 +317,15 @@ packages:
       eslint:
         optional: true
 
+  '@eslint/compat@2.0.4':
+    resolution: {integrity: sha512-o598tCGstJv9Kk4XapwP+oDij9HD9Qr3V37ABzTfdzVvbFciV+sfg9zSW6olj6G/IXj7p89SwSzPnZ+JUEPIPg==}
+    engines: {node: ^20.19.0 || ^22.13.0 || >=24}
+    peerDependencies:
+      eslint: ^8.40 || 9 || 10
+    peerDependenciesMeta:
+      eslint:
+        optional: true
+
   '@eslint/config-array@0.21.2':
     resolution: {integrity: sha512-nJl2KGTlrf9GjLimgIru+V/mzgSK0ABCDQRvxw5BjURL7WfH5uoWmizbH7QB6MmnMBd8cIC9uceWnezL1VZWWw==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
@@ -329,8 +338,8 @@ packages:
     resolution: {integrity: sha512-yL/sLrpmtDaFEiUj1osRP4TI2MDz1AddJL+jZ7KSqvBuliN4xqYY54IfdN8qD8Toa6g1iloph1fxQNkjOxrrpQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@eslint/core@1.1.1':
-    resolution: {integrity: sha512-QUPblTtE51/7/Zhfv8BDwO0qkkzQL7P/aWWbqcf4xWLEYn1oKjdO0gglQBB4GAsu7u6wjijbCmzsUTy6mnk6oQ==}
+  '@eslint/core@1.2.0':
+    resolution: {integrity: sha512-8FTGbNzTvmSlc4cZBaShkC6YvFMG0riksYWRFKXztqVdXaQbcZLXlFbSpC05s70sGEsXAw0qwhx69JiW7hQS7A==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24}
 
   '@eslint/eslintrc@3.3.5':
@@ -3314,7 +3323,13 @@ snapshots:
 
   '@eslint/compat@2.0.3(eslint@9.39.4)':
     dependencies:
-      '@eslint/core': 1.1.1
+      '@eslint/core': 1.2.0
+    optionalDependencies:
+      eslint: 9.39.4
+
+  '@eslint/compat@2.0.4(eslint@9.39.4)':
+    dependencies:
+      '@eslint/core': 1.2.0
     optionalDependencies:
       eslint: 9.39.4
 
@@ -3334,7 +3349,7 @@ snapshots:
     dependencies:
       '@types/json-schema': 7.0.15
 
-  '@eslint/core@1.1.1':
+  '@eslint/core@1.2.0':
     dependencies:
       '@types/json-schema': 7.0.15
 
