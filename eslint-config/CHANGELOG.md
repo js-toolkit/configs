@@ -1,5 +1,11 @@
 # @js-toolkit/eslint-config
 
+## 1.1.4
+
+### Patch Changes
+
+- Move some peer dependencies to normal
+
 ## 1.1.3
 
 ### Patch Changes
