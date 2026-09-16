@@ -406,7 +406,7 @@ export function create({
                 'tsdoc/syntax': 'warn',
               }),
             },
-          } as Linter.Config);
+          });
         })()
       : []),
 
