@@ -4,3 +4,5 @@ packages:
   - "prettier-config"
   - "tsconfig"
   - "build-utils"
+allowBuilds:
+  unrs-resolver: false
