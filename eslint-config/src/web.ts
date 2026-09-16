@@ -13,7 +13,7 @@ import { defaultRequire } from '@js-toolkit/config-utils/defaultRequire';
 import { addFilesGlob } from './utils.ts';
 import type { CreateOptions } from './common.ts';
 
-const filterAirbnbRules = (config: 'react' | 'react-a11y'): FixupConfigArray => {
+function filterAirbnbRules(config: 'react' | 'react-a11y'): FixupConfigArray {
   return fixupConfigRules({
     rules: defaultRequire(
       defaultRequire('eslint-config-airbnb').extends.find((url: string) =>
@@ -21,7 +21,7 @@ const filterAirbnbRules = (config: 'react' | 'react-a11y'): FixupConfigArray => 
       ),
     ).rules,
   });
-};
+}
 
 export function create({
   resolvePaths: resolvePaths0,
@@ -37,6 +37,8 @@ export function create({
   };
 
   const hasReactPlugin = hasDep('eslint-plugin-react');
+  const hasReact2Plugin = hasDep('@eslint-react/eslint-plugin');
+  const hasReactCompilerPlugin = hasDep('eslint-plugin-react-compiler');
   const hasReactA11yPlugin = hasDep('eslint-plugin-jsx-a11y');
   const hasReactHooksPlugin = hasDep('eslint-plugin-react-hooks');
   const hasWCPlugin = hasDep('eslint-plugin-wc');
@@ -183,6 +185,30 @@ export function create({
           ] as Linter.Config,
           {
             rules: { 'react-hooks/exhaustive-deps': 'error' },
+          } satisfies Linter.Config as Linter.Config,
+        ]
+      : []),
+
+    ...(hasReact2Plugin
+      ? (() => {
+          const plugin = defaultRequire('@eslint-react/eslint-plugin');
+          return [
+            plugin.configs[
+              hasTypescriptPlugin ? 'recommended-type-checked' : 'recommended'
+            ] as Linter.Config,
+            {
+              rules: {},
+            } satisfies Linter.Config as Linter.Config,
+          ];
+        })()
+      : []
+    ).map((conf) => addFilesGlob(conf, getFilesGlob(getSXExtensions()))),
+
+    ...(hasReactCompilerPlugin
+      ? [
+          defaultRequire('eslint-plugin-react-compiler').configs.recommended as Linter.Config,
+          {
+            rules: {},
           } satisfies Linter.Config as Linter.Config,
         ]
       : []),
