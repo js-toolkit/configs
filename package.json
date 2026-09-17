@@ -13,9 +13,9 @@
     "build": "pnpm -r run build",
     "lint_": "pnpm -r run lint",
     "lint": "eslint .",
-    "changeset": "changeset",
-    "version": "changeset version",
-    "publish": "pnpm build && changeset publish && git push --follow-tags"
+    "changeset_": "changeset",
+    "version_": "changeset version",
+    "publish_": "pnpm build && changeset publish && git push --follow-tags"
   },
   "devDependencies": {
     "@changesets/cli": "3.0.3",
