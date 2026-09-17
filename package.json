@@ -13,12 +13,11 @@
     "build": "pnpm -r run build",
     "lint_": "pnpm -r run lint",
     "lint": "eslint .",
-    "changeset_": "changeset",
-    "version_": "changeset version",
-    "publish_": "pnpm build && changeset publish && git push --follow-tags"
+    "changeset_disable": "changeset",
+    "version_disable": "changeset version",
+    "publish_disable": "pnpm build && changeset publish && git push --follow-tags"
   },
   "devDependencies": {
-    "@changesets/cli": "3.0.3",
     "@eslint/compat": "2.1.1",
     "@eslint/js": "10.0.1",
     "@js-toolkit/config-utils": "workspace:^",
