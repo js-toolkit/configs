@@ -185,8 +185,8 @@ importers:
         specifier: workspace:^
         version: link:tsconfig
       '@release-it/conventional-changelog':
-        specifier: 12.0.0
-        version: 12.0.0(conventional-commits-filter@6.0.1)(conventional-commits-parser@7.1.2)(release-it@21.0.2(@types/node@26.1.1)(supports-color@8.1.1))
+        specifier: 12.0.2
+        version: 12.0.2(conventional-commits-filter@6.0.1)(conventional-commits-parser@7.1.2)(release-it@21.0.3(@types/node@26.1.1)(supports-color@8.1.1))
       '@types/eslint':
         specifier: 9.6.1
         version: 9.6.1
@@ -227,8 +227,8 @@ importers:
         specifier: 3.9.6
         version: 3.9.6
       release-it:
-        specifier: 21.0.2
-        version: 21.0.2(@types/node@26.1.1)(supports-color@8.1.1)
+        specifier: 21.0.3
+        version: 21.0.3(@types/node@26.1.1)(supports-color@8.1.1)
       rimraf:
         specifier: 6.1.3
         version: 6.1.3
@@ -300,6 +300,9 @@ importers:
       '@js-toolkit/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
+      '@release-it/conventional-changelog':
+        specifier: 12.0.2
+        version: 12.0.2(conventional-commits-filter@6.0.1)(conventional-commits-parser@7.1.2)(release-it@21.0.3(@types/node@26.1.1)(supports-color@8.1.1))
       '@types/node':
         specifier: 26.1.1
         version: 26.1.1
@@ -312,6 +315,9 @@ importers:
       prettier:
         specifier: 3.9.6
         version: 3.9.6
+      release-it:
+        specifier: 21.0.3
+        version: 21.0.3(@types/node@26.1.1)(supports-color@8.1.1)
       typescript:
         specifier: npm:@typescript/typescript6@^6.0.2
         version: '@typescript/typescript6@6.0.2'
@@ -830,9 +836,9 @@ packages:
     resolution: {integrity: sha512-SEeaJLb3qBNF/OaXnaR1NmmBbFYk1zC0ZH/52fATcRPLFg/p791YrcyFFy44Bo9sLaGuSuLp5Q6axbb/O+v/RA==}
     engines: {node: ^14.18.0 || >=16.0.0}
 
-  '@release-it/conventional-changelog@12.0.0':
-    resolution: {integrity: sha512-b9N8/tUjO9JNH1u2fVSmq8QmbqnE//Y5iCgvPcytsk0pj0GhgGCp+VmfzhEBIdd+lVGZJKs+ZSaGaOHjtmtv7g==}
-    engines: {node: ^22.21.0 || >=24.0.0}
+  '@release-it/conventional-changelog@12.0.2':
+    resolution: {integrity: sha512-mJsfycScVqud9O+GzVLT1wQBsIR2WO3kEe6Xm7ucf9yP9KyKRTY9yqoFe/kjLCNSu0lP0PzpuOooUYyzHm1oFw==}
+    engines: {node: ^22.22.2 || ^24.15.0 || >=26.0.0}
     peerDependencies:
       release-it: ^18.0.0 || ^19.0.0 || ^20.0.0 || ^21.0.0
 
@@ -2996,8 +3002,8 @@ packages:
     resolution: {integrity: sha512-G08Dxvm4iDN3MLM0EsP62EDV9IuhXPR6blNz6Utcp7zyV3tr4HVNINt6MpaRWbxoOHT3Q7YN2P+jaHX8vUbgog==}
     engines: {node: '>= 0.10'}
 
-  release-it@21.0.2:
-    resolution: {integrity: sha512-QwyDnWiQNB4d8Hc2b5FLMHcsKz9S2O1dMNnPB7w+0knsL5r8+qbnznDA1X7Bw5D863+Ud7eRHc71Cfth5Tlrgg==}
+  release-it@21.0.3:
+    resolution: {integrity: sha512-Pd5Uqj5hJmVAZzb+QSkkDgfvHJwRBazWryb90x5FYHhPxg35cE+1wX9v1DXk4ENy8C0osHxH/yRk1mvnZi7ZHQ==}
     engines: {node: ^22.21.0 || >=24.0.0}
     hasBin: true
 
@@ -4076,7 +4082,7 @@ snapshots:
 
   '@pkgr/core@0.3.6': {}
 
-  '@release-it/conventional-changelog@12.0.0(conventional-commits-filter@6.0.1)(conventional-commits-parser@7.1.2)(release-it@21.0.2(@types/node@26.1.1)(supports-color@8.1.1))':
+  '@release-it/conventional-changelog@12.0.2(conventional-commits-filter@6.0.1)(conventional-commits-parser@7.1.2)(release-it@21.0.3(@types/node@26.1.1)(supports-color@8.1.1))':
     dependencies:
       '@conventional-changelog/git-client': 3.1.2(conventional-commits-filter@6.0.1)(conventional-commits-parser@7.1.2)
       concat-stream: 2.0.0
@@ -4084,7 +4090,7 @@ snapshots:
       conventional-changelog-angular: 9.4.0
       conventional-changelog-conventionalcommits: 10.4.0
       conventional-recommended-bump: 12.1.0
-      release-it: 21.0.2(@types/node@26.1.1)(supports-color@8.1.1)
+      release-it: 21.0.3(@types/node@26.1.1)(supports-color@8.1.1)
       semver: 7.8.5
     transitivePeerDependencies:
       - conventional-commits-filter
@@ -6404,7 +6410,7 @@ snapshots:
 
   relateurl@0.2.7: {}
 
-  release-it@21.0.2(@types/node@26.1.1)(supports-color@8.1.1):
+  release-it@21.0.3(@types/node@26.1.1)(supports-color@8.1.1):
     dependencies:
       '@inquirer/prompts': 8.5.2(@types/node@26.1.1)
       '@octokit/rest': 22.0.1
