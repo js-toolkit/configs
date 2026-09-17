@@ -46,6 +46,7 @@ export function create({
   const hasMobxPlugin = hasDep('eslint-plugin-mobx');
   const hasConfigAirbnb = hasDep('eslint-config-airbnb');
   const hasConfigNext = hasDep('eslint-config-next');
+  const hasNextPlugin = hasDep('@next/eslint-plugin-next');
   const hasTypescriptPlugin =
     hasDep('typescript-eslint') || hasDep('@typescript-eslint/eslint-plugin');
   const hasPrettierPlugin = hasDep('eslint-plugin-prettier');
@@ -214,6 +215,10 @@ export function create({
       : []),
 
     ...(hasConfigNext ? replaceNextConfig() : []),
+
+    ...(hasNextPlugin && !hasConfigNext
+      ? [defaultRequire('@next/eslint-plugin-next').configs['core-web-vitals'] as Linter.Config]
+      : []),
 
     ...[
       hasWCPlugin &&
