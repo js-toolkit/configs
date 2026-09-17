@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.3.1](https://github.com/js-toolkit/configs/compare/%40js-toolkit%2Feslint-config%401.3.0...%24%7Bnpm.name%7D%401.3.1) (2026-09-17)
+
+### Bug Fixes
+
+* add prepublishOnly script to ensure build before publishing ([6d56032](https://github.com/js-toolkit/configs/commit/6d56032fef2df54dac47828e6323e4f6be052eb0))
+
 ## [1.3.0](https://github.com/js-toolkit/configs/compare/%40js-toolkit%2Feslint-config%401.2.1...%24%7Bnpm.name%7D%401.3.0) (2026-09-17)
 
 ### Features
