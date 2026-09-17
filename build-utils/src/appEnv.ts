@@ -155,11 +155,12 @@ export function getAppEnvironment(): AppEnvironment {
   if ((typeof window === 'undefined' ? global : window).Proxy) {
     return new Proxy(appEnv, {
       // prop always is string or symbol, not number
-      get(target, prop) {
+      get(target, prop, receiver) {
         if (typeof prop === 'string' && !(prop in target)) {
           return target.raw[prop as keyof CustomAppEnvVars];
         }
-        return target[prop as keyof typeof target];
+        const value = Reflect.get(target, prop, receiver);
+        return typeof value === 'function' ? value.bind(target) : value;
       },
       has(target, prop) {
         return prop in target || prop in target.raw;

@@ -1,4 +1,4 @@
-import type { Configuration, ExternalItem, RuleSetRule } from 'webpack';
+import type { Configuration, RuleSetRule } from 'webpack';
 import webpackNodeExternals from 'webpack-node-externals';
 import type { RequiredStrict } from '../types';
 import appEnv from '../appEnv.ts';
@@ -156,7 +156,7 @@ const config = ({
 
     // http://jlongster.com/Backend-Apps-with-Webpack--Part-I
     externals: [
-      webpackNodeExternals(nodeExternalsOptions) as ExternalItem,
+      webpackNodeExternals(nodeExternalsOptions),
       ...((restOptions.externals &&
         (Array.isArray(restOptions.externals) ? restOptions.externals : [restOptions.externals])) ||
         []),

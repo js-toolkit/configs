@@ -9,8 +9,7 @@ export function getWebAppConfig(root = 'web') {
   };
 
   type StaticContentOptions = (
-    | string
-    | { path: string; ignore?: (string | RegExp)[] | undefined }
+    string | { path: string; ignore?: (string | RegExp)[] | undefined }
   )[];
 
   return {
@@ -32,8 +31,7 @@ export function getWebAppConfig(root = 'web') {
       root,
       js: 'js',
       styles: 'styles' as
-        | string
-        | { dir?: string | undefined; extractorOptions?: AnyObject | undefined },
+        string | { dir?: string | undefined; extractorOptions?: AnyObject | undefined },
       assets: 'assets',
       external: 'lib',
       publicPath: '/',

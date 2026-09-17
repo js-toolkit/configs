@@ -1,4 +1,3 @@
-/* eslint-disable import-x/no-named-as-default-member */
 import path from 'path';
 import ts from 'typescript';
 import transformer from './transform-import.meta.ts';
