@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.3.2](https://github.com/js-toolkit/configs/compare/%40js-toolkit%2Feslint-config%401.3.1...%24%7Bnpm.name%7D%401.3.2) (2026-09-17)
+
+### Bug Fixes
+
+* remove peerDependenciesMeta ([1548666](https://github.com/js-toolkit/configs/commit/15486666609509e9c9a96ac8832ceb99870515c6))
+
 ## [1.3.1](https://github.com/js-toolkit/configs/compare/%40js-toolkit%2Feslint-config%401.3.0...%24%7Bnpm.name%7D%401.3.1) (2026-09-17)
 
 ### Bug Fixes
