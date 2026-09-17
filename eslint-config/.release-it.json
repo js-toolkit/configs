@@ -4,8 +4,8 @@
     "tag": true,
     "push": true,
     "requireUpstream": false,
-    "tagName": "${name}@${version}",
-    "tagMatch": "${name}@*",
+    "tagName": "${npm.name}@${version}",
+    "tagMatch": "${npm.name}@*",
     "commitMessage": "chore(release): ${name}@${version}"
   },
   "github": {
