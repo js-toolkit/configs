@@ -13,6 +13,7 @@
   },
   "npm": {
     "publish": true,
+    "publishPackageManager": "pnpm",
     "ignoreVersion": false
   },
   "hooks": {
