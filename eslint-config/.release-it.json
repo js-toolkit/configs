@@ -15,6 +15,7 @@
   "npm": {
     "publish": true,
     "publishPackageManager": "pnpm",
+    "publishArgs": ["--no-git-checks"],
     "ignoreVersion": false
   },
   "hooks": {
