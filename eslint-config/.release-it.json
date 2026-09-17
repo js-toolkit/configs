@@ -3,9 +3,10 @@
     "commit": true,
     "tag": true,
     "push": true,
-    "commitMessage": "chore: release v${version}",
-    "tagName": "v${version}",
-    "requireUpstream": false
+    "requireUpstream": false,
+    "tagName": "${name}@${version}",
+    "tagMatch": "${name}@*",
+    "commitMessage": "chore(release): ${name}@${version}"
   },
   "github": {
     "release": false
