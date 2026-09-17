@@ -33,6 +33,7 @@
     "lint": "eslint .",
     "format:check": "prettier --check .",
     "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build",
     "release": "release-it"
   },
   "peerDependencies": {
