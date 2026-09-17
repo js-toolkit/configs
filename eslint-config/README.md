@@ -13,11 +13,11 @@ pnpm add -D @js-toolkit/eslint-config eslint typescript typescript-eslint @eslin
 
 ## Exports
 
-| Export | Description |
-|--------|-------------|
+| Export     | Description                                              |
+| ---------- | -------------------------------------------------------- |
 | `./common` | Base config: TypeScript, import, promise, standard rules |
-| `./web` | Web config: React, JSX, a11y (extends `common`) |
-| `./plugin` | Custom ESLint plugin with additional rules |
+| `./web`    | Web config: React, JSX, a11y (extends `common`)          |
+| `./plugin` | Custom ESLint plugin with additional rules               |
 
 ## Usage
 
@@ -53,10 +53,7 @@ export default [
 import { create as createCommon } from '@js-toolkit/eslint-config/common';
 import { create as createWeb } from '@js-toolkit/eslint-config/web';
 
-export default [
-  ...createCommon(),
-  ...createWeb(),
-];
+export default [...createCommon(), ...createWeb()];
 ```
 
 ### With typed linting
