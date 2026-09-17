@@ -1,15 +1,18 @@
 {
   "git": {
+    "commit": true,
+    "tag": true,
+    "push": true,
     "commitMessage": "chore: release v${version}",
     "tagName": "v${version}",
-    "requireUpstream": false,
-    "push": true
+    "requireUpstream": false
   },
   "github": {
     "release": false
   },
   "npm": {
-    "publish": true
+    "publish": true,
+    "ignoreVersion": false
   },
   "hooks": {
     "before:init": ["pnpm run lint", "pnpm format:check", "pnpm run typecheck"]
