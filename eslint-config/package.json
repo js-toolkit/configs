@@ -24,9 +24,16 @@
     "dist",
     "!**/*.tsbuildinfo"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "clean": "rimraf dist/*",
-    "build": "npm run clean && tsc -p tsconfig.json"
+    "build": "npm run clean && tsc -p tsconfig.json",
+    "lint": "eslint .",
+    "format:check": "prettier --check .",
+    "typecheck": "tsc --noEmit",
+    "release": "release-it"
   },
   "peerDependencies": {
     "eslint": ">=9.0.0",
@@ -53,6 +60,12 @@
       "optional": true
     },
     "eslint-plugin-react": {
+      "optional": true
+    },
+    "@eslint-react/eslint-plugin": {
+      "optional": true
+    },
+    "eslint-plugin-react-compiler": {
       "optional": true
     },
     "eslint-plugin-react-hooks": {
@@ -94,9 +107,11 @@
     "@js-toolkit/config-utils": "workspace:^"
   },
   "devDependencies": {
-    "eslint-plugin-jsx-a11y": "6.10.2",
-    "eslint-plugin-react": "7.37.5",
-    "eslint-plugin-react-hooks": "7.0.1",
-    "@js-toolkit/tsconfig": "workspace:*"
+    "@typescript-eslint/utils": "8.70.0",
+    "@js-toolkit/tsconfig": "workspace:*",
+    "@types/node": "26.1.1",
+    "@typescript/native": "npm:typescript@^7.0.2",
+    "prettier": "3.9.6",
+    "typescript": "npm:@typescript/typescript6@^6.0.2"
   }
 }
