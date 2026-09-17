@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.2.1](https://github.com/js-toolkit/configs/compare/%40js-toolkit%2Feslint-config%401.2.0...%24%7Bnpm.name%7D%401.2.1) (2026-09-17)
+
+### Bug Fixes
+
+* add publishArgs to npm configuration in release-it ([f0bc56f](https://github.com/js-toolkit/configs/commit/f0bc56f25d55392a78950002ae64753c51638460))
+* add publishPackageManager to npm configuration for clarity ([85e1959](https://github.com/js-toolkit/configs/commit/85e1959240dfa4e4b1df69353a24fd984dd17eee))
+* enable commit and tag options in release-it configuration ([4901549](https://github.com/js-toolkit/configs/commit/490154969eaee15fd1691dadad909c74da1d8b80))
+* ensure clean working directory requirement is set in release-it configuration ([f47a5df](https://github.com/js-toolkit/configs/commit/f47a5df4a3a5b45376572cbdc7be8fe18d66b263))
+* remove unnecessary commit and tag options from release-it configuration ([8d07686](https://github.com/js-toolkit/configs/commit/8d07686128d0a883b1ac0343c2dc8958311b7be6))
+
 ## [1.2.0](https://github.com/js-toolkit/configs/compare/%40js-toolkit%2Feslint-config%401.1.4...%24%7Bnpm.name%7D%401.2.0) (2026-09-17)
 
 ### Features
