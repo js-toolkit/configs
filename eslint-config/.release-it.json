@@ -4,6 +4,7 @@
     "tag": true,
     "push": true,
     "requireUpstream": false,
+    "requireCleanWorkingDir": false,
     "tagName": "${npm.name}@${version}",
     "tagMatch": "${npm.name}@*",
     "commitMessage": "chore(release): ${name}@${version}"
