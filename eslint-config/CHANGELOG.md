@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.3.0](https://github.com/js-toolkit/configs/compare/%40js-toolkit%2Feslint-config%401.2.1...%24%7Bnpm.name%7D%401.3.0) (2026-09-17)
+
+### Features
+
+* add support for @next/eslint-plugin-next ([7cd535c](https://github.com/js-toolkit/configs/commit/7cd535ca8621970de43365ee7a6e928f374d6511))
+
 ## [1.2.1](https://github.com/js-toolkit/configs/compare/%40js-toolkit%2Feslint-config%401.2.0...%24%7Bnpm.name%7D%401.2.1) (2026-09-17)
 
 ### Bug Fixes
