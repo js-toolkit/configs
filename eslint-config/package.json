@@ -37,68 +37,9 @@
     "release": "release-it"
   },
   "peerDependencies": {
-    "eslint": ">=9.0.0",
-    "typescript": ">=5.0.0",
+    "eslint": ">=10.0.0",
+    "typescript": ">=6.0.0",
     "typescript-eslint": ">=8.0.0"
-  },
-  "peerDependenciesMeta": {
-    "eslint-config-airbnb-base": {
-      "optional": true
-    },
-    "eslint-config-airbnb": {
-      "optional": true
-    },
-    "eslint-plugin-import": {
-      "optional": true
-    },
-    "eslint-plugin-import-x": {
-      "optional": true
-    },
-    "eslint-import-resolver-typescript": {
-      "optional": true
-    },
-    "eslint-plugin-promise": {
-      "optional": true
-    },
-    "eslint-plugin-react": {
-      "optional": true
-    },
-    "@eslint-react/eslint-plugin": {
-      "optional": true
-    },
-    "eslint-plugin-react-compiler": {
-      "optional": true
-    },
-    "eslint-plugin-react-hooks": {
-      "optional": true
-    },
-    "eslint-plugin-jsx-a11y": {
-      "optional": true
-    },
-    "eslint-plugin-prettier": {
-      "optional": true
-    },
-    "eslint-config-prettier": {
-      "optional": true
-    },
-    "eslint-plugin-jsdoc": {
-      "optional": true
-    },
-    "eslint-plugin-tsdoc": {
-      "optional": true
-    },
-    "eslint-plugin-wc": {
-      "optional": true
-    },
-    "eslint-plugin-lit": {
-      "optional": true
-    },
-    "eslint-plugin-mobx": {
-      "optional": true
-    },
-    "@babel/eslint-parser": {
-      "optional": true
-    }
   },
   "dependencies": {
     "@eslint/compat": "2.0.4",
